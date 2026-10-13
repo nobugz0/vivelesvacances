@@ -982,7 +982,6 @@ function goFull(){
   } catch(e){}
 }
 function start(){
-  goFull();
   ensureAudio(); tutoOn = tutoBox.checked; applyLevel(level); reset();
   try { music.currentTime = 0; } catch(e){}
   if (!tutoOn) skipTutorial(); else t = -2.6;   // a calm run-up before the first event, while the camera is close
