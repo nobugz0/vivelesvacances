@@ -200,7 +200,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = '0.1.1', BUILD = '14/10/2026 à 10h02';
+const VERSION = '0.1.1', BUILD = '14/10/2026 à 11h56';
 
 // ---------- sprite atlas (cut from the provided sheets) ----------
 const ATLAS = {"vfImg":[0,0,471,589,235.6,294.4],"ride0":[473,0,200,186,102.3,164.9],"ride1":[675,0,200,186,102.3,164.9],"ride2":[877,0,200,186,102.3,164.9],"ride3":[1079,0,200,186,102.3,164.9],"ride4":[1281,0,200,186,102.3,164.9],"ride5":[1483,0,200,186,102.3,164.9],"ride6":[1685,0,200,186,102.3,164.9],"ride7":[0,591,200,186,102.3,164.9],"ride8":[202,591,200,186,102.3,164.9],"ride9":[404,591,200,186,102.3,164.9],"crouch0":[606,591,200,186,102.3,164.9],"crouch1":[808,591,200,186,102.3,164.9],"crouch2":[1010,591,200,186,102.3,164.9],"takeoff":[1212,591,200,186,99.2,117.8],"bride0":[1414,591,184,171,94.1,151.7],"bride1":[1600,591,184,171,94.1,151.7],"bride2":[1786,591,184,171,94.1,151.7],"houses":[0,779,869,169,434.4,169.2],"land":[871,779,200,150,102.3,143.8],"navBoat":[1073,779,212,142,106.0,142.0],"navire":[1287,779,219,136,108.9,129.8],"portMlp":[1508,779,132,132,66.0,66.0],"air":[1642,779,200,124,99.2,117.8],"bair":[1844,779,184,114,91.3,108.4],"bm2":[0,950,214,99,107.0,90.5],"wall":[216,950,74,99,36.8,99.2],"bigpot2":[292,950,167,87,83.4,87.4],"potJ":[300,950,147,87,47.5,85],"bm0":[461,950,224,84,112.2,75.0],"bm1":[687,950,222,84,111.0,75.0],"bigpot":[911,950,150,77,75.0,76.9],"rail":[1063,950,96,77,48.0,76.8],"quay":[1161,950,159,74,79.5,74.4],"arch":[1322,950,114,74,57.0,74.4],"treeA":[1438,950,72,72,36.1,72.2],"treeB":[1512,950,71,72,35.7,72.2],"treeC":[1585,950,71,72,35.3,72.2],"stairs":[1658,950,77,72,38.4,72.0],"mSail2":[1737,950,82,70,41.2,70.1],"pan0":[1821,950,88,60,44.0,59.5],"mSail":[1911,950,75,60,37.4,59.6],"mFish":[0,1051,89,60,44.5,59.6],"bs0":[91,1051,133,59,66.7,51.5],"bs1":[226,1051,156,59,78.1,51.5],"bs2":[384,1051,148,59,73.8,51.5],"bs3":[534,1051,131,59,65.7,51.5],"bs4":[667,1051,149,59,74.4,51.5],"pan2":[818,1051,83,59,41.3,59.2],"pan1":[903,1051,90,58,45.1,58.1],"pan3":[995,1051,81,58,40.5,57.8],"bs5":[1078,1051,87,57,43.4,49.6],"pan4":[1167,1051,88,55,44.2,55.1],"mFish2":[1257,1051,86,55,43.0,55.4],"pan5":[1345,1051,88,53,44.2,52.7],"pan6":[1435,1051,88,52,43.9,52.4],"pan7":[1525,1051,89,49,44.4,49.0],"pan8":[1616,1051,91,48,45.7,47.9],"pan10":[1709,1051,78,48,38.8,48.3],"pan9":[1789,1051,82,45,40.8,44.5],"pan11":[1873,1051,65,45,32.6,44.5],"pan13":[1940,1051,68,44,33.8,43.9],"pan14":[0,1113,72,42,35.9,42.2],"umbrellas":[74,1113,89,42,44.5,42.0],"pan15":[165,1113,64,41,32.1,40.8],"lamp":[231,1113,20,40,10.1,39.9],"cafe":[253,1113,64,40,31.9,39.9],"bush":[319,1113,72,39,36.1,38.6],"bollards":[393,1113,183,38,91.3,37.8],"barrels":[578,1113,269,38,134.4,37.8],"pan12":[849,1113,80,36,40.1,36.0],"mBoats":[931,1113,170,34,85.0,34.4],"bench":[1103,1113,39,29,19.3,29.4],"buoyR":[1144,1113,15,28,7.6,28.1],"buoyR2":[1161,1113,15,28,7.6,28.1],"gull":[1178,1113,24,28,12.0,28.0],"buoyB":[1204,1113,14,27,7.2,26.6],"buoyY":[1220,1113,14,25,6.8,25.2]};
@@ -317,7 +317,7 @@ let VW = 800, scale = 1, dpr = 1, rotated = false;
 const C = {ink:'#1b1f2a', muted:'#5b6475', red:'#d63b3b', green:'#16a34a', blue:'#2563eb', orange:'#ea7a18', yel:'#f5b301', white:'#ffffff'};
 // the calendar runs TIME_K times faster than the gameplay track: obstacle spacing keeps its feel while the dates fly by
 // the real game covers May 2022 -> May 2027; the tutorial happens before, outside the calendar
-const TUT_END = 51.6;  // game unit at which the scripted tutorial hands over to the real game
+const TUT_END = 56.6;  // game unit at which the scripted tutorial hands over to the real game
 const DAY = 86400000, START = Date.UTC(2023,0,2), CAL_END = Date.UTC(2027,4,2);
 const TIME_K = 1.0;   // calendar weeks per game unit (trial ~54 s of riding after the tutorial)
 const TOTAL_WEEKS = TUT_END + (CAL_END - START)/(7*DAY)/TIME_K;
@@ -334,13 +334,13 @@ const MEDS = ['med0','med1','med2','med3','med4','med5'];
 
 // ---------- tuning ----------
 const DEF = {
-  speed:1.35, speedTuto:0.9, boostMul:1.2, boostZoom:0.08, boostShift:40, ptsRam:0.2, pxPerWeek:400, decor:2.0, dayParallax:1.5, camZoom:0.68, zoomJump:0.9,
+  speed:1.35, speedTuto:0.9, boostMul:1.32, riseK:1.3, boostZoom:0.08, boostShift:40, ptsRam:0.2, pxPerWeek:400, decor:2.0, dayParallax:1.5, camZoom:0.68, zoomJump:0.9,
   gravity:900, jumpMin:330, jumpMax:560, chargeTime:0.45, glideTime:1.4, glideFall:80, sinkMax:42,
   obsGapMin:2.0, obsGapMax:3.2, earlyGapFactor:1.8, earlyGapLen:14, lateStart:137, lateGapFactor:0.65, bankChance:0.55, bankMax:4, bankSpacing:0.16, mediumBoatChance:0.3, doubleBoatChance:0.15,
   actuEveryEarly:3.0, actuEveryLate:3.8, trapEarly:0.2, trapLate:0.45, goldShareEarly:0.12, goldShareLate:0.2, silverShare:0.35,
   grabTime:1.2, grabTarget:0.72, grabWindow:0.16, grabZoom:1.9, touchR:46, minGapTime:0.3,
   ptsBronze:0.1, ptsSilver:0.2, ptsGold:0.4, cfSilver:20, cfGold:30,
-  voltFirst:49.7, tutLead:2.6, voltInterval:0, voltCount:6, itemGap:0.15, startWeight:30, eventGap:1.8, ambEvery:1.5, bardEvery:3.2, bigFirst:6, bigEvery:18, voltAfter:1.6, bigSmallsMax:2, smallBefore:1.9, ptsJudg:-1, bigLead:2.0, approachLead:2.4, justiceEvery:5,
+  voltFirst:54.7, tutLead:2.6, voltInterval:0, voltCount:6, itemGap:0.15, startWeight:0, eventGap:1.8, ambEvery:1.5, bardEvery:3.2, bigFirst:6, bigEvery:18, voltAfter:1.6, bigSmallsMax:2, smallBefore:1.9, ptsJudg:-1, bigLead:2.0, approachLead:2.4, justiceEvery:5,
   girTime:3, girCross:0.85, girSpeedStart:12, girSpeedEnd:2.5, girPerfect:27, girGood:45, salvoGap:1.6,
   slowmo:0.03, bannerTime:1.9,
   pollStart:25, ptsDodge:0.2, ptsHit:-0.1, ptsVoltePerfect:0.5, ptsVolteGood:0.2, ptsVolteFail:-0.5,
@@ -351,24 +351,24 @@ const DEF = {
 // slack shrinks from slackStart to slackEnd along the game (smoothstep), the other knobs ramp the same way.
 const LEVELS = ['Facile', 'Normal', 'Difficile'];
 const DIFF = [
-  {seed: 11, flotFrom: 0.6, flotEnd: 0.15, slackStart: 1.1, slackEnd: 0.55, jitter: 0.4, bankChance: 0.25, bankMaxStart: 2, bankMaxEnd: 3, seriesChance: 0.15, medBoatEnd: 0.1, doubleEnd: 0, doubleFrom: 1, trapStart: 0, trapEnd: 0.1, bigFollowFrom: 2, justiceShare: 0.25, actuEvery: 3.0, goldShare: 0.1, grabWindow: 0.22, girPerfect: 32, girGood: 55, glideTime: 1.6, ptsHit: -0.05, wSmall: 4},
-  {seed: 24, flotFrom: 0.3, flotEnd: 0.9, slackStart: 0.4, slackEnd: 0.12, jitter: 0.35, bankChance: 0.35, bankMaxStart: 2, bankMaxEnd: 4, seriesChance: 0.15, medBoatEnd: 0.4, doubleEnd: 0.25, doubleFrom: 0.45, trapStart: 0.1, trapEnd: 0.35, bigFollowFrom: 0.7, justiceShare: 0.35, actuEvery: 2.4, goldShare: 0.15, grabWindow: 0.16, girPerfect: 24, girGood: 40, glideTime: 1.4, ptsHit: -0.1, wSmall: 5},
+  {seed: 11, reactTime: 0.6, cfGold: 30, ptsGold: 0.5, flotFrom: 0.6, flotEnd: 0.15, slackStart: 1.1, slackEnd: 0.55, jitter: 0.4, bankChance: 0.25, bankMaxStart: 2, bankMaxEnd: 3, seriesChance: 0.15, medBoatEnd: 0.1, doubleEnd: 0, doubleFrom: 1, trapStart: 0, trapEnd: 0.1, bigFollowFrom: 2, justiceShare: 0.25, actuEvery: 3.0, goldShare: 0.1, grabWindow: 0.22, girPerfect: 32, girGood: 55, glideTime: 1.6, ptsHit: -0.05, wSmall: 5},
+  {seed: 24, reactTime: 0.3, cfGold: 20, ptsGold: 0.4, flotFrom: 0.3, flotEnd: 0.9, slackStart: 0.4, slackEnd: 0, jitter: 0.35, bankChance: 0.35, bankMaxStart: 2, bankMaxEnd: 4, seriesChance: 0.15, medBoatEnd: 0.4, doubleEnd: 0.25, doubleFrom: 0.45, trapStart: 0.1, trapEnd: 0.35, bigFollowFrom: 0.7, justiceShare: 0.35, actuEvery: 2.4, goldShare: 0.15, grabWindow: 0.16, girPerfect: 24, girGood: 40, glideTime: 1.4, ptsHit: -0.1, wSmall: 5},
   {seed: 33, flotFrom: 0.3, flotEnd: 0.4, slackStart: 0.45, slackEnd: 0.12, jitter: 0.3, bankChance: 0.45, bankMaxStart: 3, bankMaxEnd: 5, seriesChance: 0.15, medBoatEnd: 0.4, doubleEnd: 0.3, doubleFrom: 0.35, trapStart: 0.2, trapEnd: 0.5, bigFollowFrom: 0.45, justiceShare: 0.45, actuEvery: 3.4, goldShare: 0.22, grabWindow: 0.12, girPerfect: 20, girGood: 35, glideTime: 1.2, ptsHit: -0.15, wSmall: 6}
 ];
 Object.assign(DEF, DIFF[1]);
 let level = 1;
 // difficulty modes are hidden for now: the game always runs the Normal preset
 // the knobs the tutorial adapts: obstacle density, timing windows, traps under the orbs
-const ADAPT_KEYS = ['slackStart', 'slackEnd', 'jitter', 'bankChance', 'bankMaxStart', 'bankMaxEnd', 'medBoatEnd', 'doubleEnd', 'doubleFrom', 'flotFrom', 'flotEnd', 'bigFollowFrom', 'grabWindow', 'girPerfect', 'girGood', 'trapStart', 'trapEnd'];
+const ADAPT_KEYS = ['reactTime', 'cfGold', 'ptsGold', 'slackStart', 'slackEnd', 'jitter', 'bankChance', 'bankMaxStart', 'bankMaxEnd', 'medBoatEnd', 'doubleEnd', 'doubleFrom', 'flotFrom', 'flotEnd', 'bigFollowFrom', 'grabWindow', 'girPerfect', 'girGood', 'trapStart', 'trapEnd'];
 let adaptLvl = 1, adaptSaved = 1, adaptInfo = null;   // adaptLvl: preset in use; adaptSaved: the last tutorial's verdict, used when the tutorial is skipped
 try { const v = localStorage.getItem('vdd-adapt'); if (v === '0' || v === '1') adaptSaved = +v; } catch(e){}
 function setAdapt(i){ adaptLvl = i; for (const k of ADAPT_KEYS) P[k] = DIFF[i][k]; }
 function judgeTuto(){
   // easy when at least two of the four signs show up
-  const o = flags.tutOrbs || {off: 0, got: 0}, rate = o.off ? o.got/o.off : 1, cass = flags.tutCass || 0, grabOk = flags.tutGrab === 'ok' || flags.tutGrab === undefined;
-  const retries = Object.values(flags.tutFails || {}).reduce((a, b) => a + b, 0);
-  const signs = [rate < 0.6, cass >= 2, !grabOk, retries >= 2], n = signs.filter(Boolean).length;
-  adaptInfo = {rate: +rate.toFixed(2), cass, grab: flags.tutGrab || null, retries, signs: n, level: n >= 2 ? 0 : 1};
+  const o = flags.tutOrbs || {off: 0, got: 0}, rate = o.off ? o.got/o.off : 1, cass = flags.tutCass || 0, rams = flags.tutRams || 0;
+  const res = flags.tutRes || [], volteOk = res[TUT.length - 1] !== false, grabOk = flags.tutGrab === 'ok';
+  const signs = [rate < 0.6, cass >= 2, rams < 3, !grabOk || !volteOk], n = signs.filter(Boolean).length;
+  adaptInfo = {rate: +rate.toFixed(2), cass, rams, grab: flags.tutGrab || null, volte: volteOk, steps: res.map(Number).join(''), signs: n, level: n >= 2 ? 0 : 1};
   return adaptInfo.level;
 }
 function adaptAfterTuto(){
@@ -404,6 +404,7 @@ const TXT = {
   tut:[
     {bl:"Je saute sur l’occasion", face:"actu", title:"Les actualités sont des opportunités", text:"Appuie n’importe où pour sauter et attrape l’actu : elle te fait gagner des points dans les sondages."},
     {bl:"Je fonce dans le tas", face:"journo", title:"Bouscule les journalistes", text:"Maintiens appuyé : Marine accélère et renverse les journalistes. Chaque journaliste renversé te fait gagner des points ; sans élan, l’interview subie t’en fait perdre."},
+    {bl:"Je les renverse toutes", face:"journo", title:"Trois barques d’affilée", text:"Garde appuyé sans lâcher : Marine fonce et renverse toutes les barques, une par une."},
     {bl:"Je charge !", face:"actu", title:"Celles-ci sont plus haut", text:"Garde appuyé jusqu’à ce que la barre sous ta planche soit pleine, puis relâche : Marine fait un saut chargé."},
     {bl:"Je sais nager", face:"mlp", title:"Évite les casseroles pour ne pas couler", text:"Chaque casserole touchée s’accroche à ta planche et t’enfonce un peu plus dans l’eau."},
     {bl:"Je m’élance", face:"actu", title:"Toute une série d’actus en hauteur", text:"Fais un saut chargé pour attraper la première."},
@@ -423,12 +424,12 @@ const TXT = {
   ],
   next:'Suivant', letsGo:'À moi l’actu !', choose:'Choisir', caught:'ATTRAPÉE !', retryBanner:'Raté ! On recommence…',
   vStamp:{perfect:'Parfait !', good:'Ni vu ni connu', fail:'Raté !'},
-  waitTap:'Appuie n’importe où pour sauter !', infos:'Infos', waitBoost:'Maintiens appuyé pour foncer sur le journaliste !', rammed:'Renversé !', waitCharge:'Maintiens appuyé pour charger, puis relâche !', waitChargeHold:'Garde appuyé… la barre se remplit', waitChargeFull:'Barre pleine : relâche !', waitChargeEarly:'Trop tôt ! Attends que la barre soit pleine', waitGlide:'Reste appuyé pour planer !', waitGlide2:'Reste appuyé pour planer et rester en l’air plus longtemps.',
+  waitTap:'Appuie n’importe où pour sauter !', infos:'Infos', cfUseless:'Inutile pour l’instant', waitBoost:'Maintiens appuyé pour foncer sur le journaliste !', rammed:'Renversé !', waitCharge:'Maintiens appuyé pour charger, puis relâche !', waitChargeHold:'Garde appuyé… la barre se remplit', waitChargeFull:'Barre pleine : relâche !', waitChargeEarly:'Trop tôt ! Attends que la barre soit pleine', waitGlide:'Reste appuyé pour planer !', waitGlide2:'Reste appuyé pour planer et rester en l’air plus longtemps.',
   tutGlide:{face:'journo', title:'Plane au-dessus des journalistes', text:'Maintiens PLANER pour rester en l’air plus longtemps.'},
   tutGrab:{title:'Attrape-la au bon moment !', text:'Une jauge apparaît : appuie quand la barre passe dans le vert, l’actu est à toi.'},
-  retry:{kicker:'TUTORIEL {n}/8', title:'On recommence !', btn:'Réessayer'},
+  retry:{kicker:'TUTORIEL {n}/9', title:'On recommence !', btn:'Réessayer'},
   btnJump:'SAUT', btnGlide:'PLANER', btnGrab:'ATTRAPER', soundOn:'Son activé', soundOff:'Son coupé',
-  tutKicker:'TUTORIEL {n}/8', tutEnd:{kicker:'FIN DU TUTORIEL', title:'Cap sur 2027 !', text:'À toi de jouer jusqu’à la présidentielle.', bl:'Cap sur l’Élysée'},
+  tutKicker:'TUTORIEL {n}/9', tutEnd:{kicker:'FIN DU TUTORIEL', title:'Cap sur 2027 !', text:'À toi de jouer jusqu’à la présidentielle.', bl:'Cap sur l’Élysée'},
   bigKicker:'GROSSE CASSEROLE', bigBtn:{rn:['Ça glisse !','Même pas mal','Circulez !'], bard:['Merci, Jordan…','Range ça, Jordan','Pas devant les caméras']}, bigKickerN:'SALVE DU BATEAU RN', salvo:'Le bateau RN tire {n} grosses casseroles !',
   moreInfo:'En savoir plus', sign:'LA TRINITÉ-SUR-MER', srcKicker:'SOURCES DES RÉPLIQUES', srcCf:'Contre-feu, citation réelle : ', srcRec:'Récupération, citation réelle : ',
   rnIntro:{bl:'Je les porte bien', kicker:'LE BATEAU RN ARRIVE', title:'Un parti, c’est pratique, mais parfois ça traîne des casseroles.'}, close:'Fermer', sources:'SOURCES', validated:'Choix validé !',
@@ -857,7 +858,7 @@ let state = 'title', paused = false, invincible = false, tutoOn = true;
 let mode = null, card = null, choice = null, vf = null, pending = null, grab = null;
 let t, gt, py, vy, onWater, charging, charge, holding, glideLeft, airT, inv, weight, poll, sea;
 let obs, actus, proj, chain, pops, ripples, spray, band, tutI = 0, tutS = {};
-let dist = 0, spdMul = 1, boostK = 0, glintAt = null;
+let dist = 0, spdMul = 1, jumpSpd = 1, boostK = 0, glintAt = null;
 let fx, landT, fallT, turnT, rnThrowT, rnWho, crashW, sparkle, bardX, bardThrowT;
 let nextObs, nextActu, voltW, bigs, flags, stats, phraseDeck, actuDeck, justice, endT, endReason, rnAt, nextJustice;
 let infoOv = null, hudFx = [], bubble = null, jumpId = 0, phraseJump = -1, cine = null, bardCrashT = -99;
@@ -879,33 +880,41 @@ const glideDrop = dt => dt <= P.glideTime ? P.glideFall*dt : P.glideFall*P.glide
 // orbs on the curve of a full charged jump (fractions of the flight time), used by the tutorial and by the orb series of the game
 const ARC_F = [0.14, 0.3, 0.5, 0.7, 0.86];
 const ORB_UP = 80, ORB_MIN = 155;   // orbs sit above the jump path; nothing below ORB_MIN, out of reach from the water
-const arcH = (v, tau) => v*tau - 0.5*P.gravity*tau*tau + ORB_UP;
+// jumps: the climb is riseK times longer than the fall (same height), the ride keeps the speed of the charge
+const jFac = v => 1 + (P.boostMul - 1)*clamp((v - P.jumpMin)/(P.jumpMax - P.jumpMin), 0, 1);
+const jUp = v => P.riseK*v/P.gravity;
+const jT = v => (1 + P.riseK)*v/P.gravity;
+const jY = (v, tau) => { const g = P.gravity, K = P.riseK, tu = K*v/g; return tau <= tu ? (v/K)*tau - 0.5*(g/(K*K))*tau*tau : v*v/(2*g) - 0.5*g*(tau - tu)*(tau - tu); };
+const arcH = (v, tau) => jY(v, tau) + ORB_UP;
 const TUT = [
+  // every step is played once: missed or not, the ride goes on and the result feeds the difficulty chosen at the end
   // 1. a low bronze orb: a quick jump
-  {w0: 0.5, end: 5.0, wait:'tap', key: 3.4, dist: 0.33, orb: 160, bronze: true, nOrb: 1, spawn: () => [makeOrbObj(3.4, 'b', 160, 0)], ok: s => s.caught},
+  {w0: 0.5, end: 5.0, wait:'tap', key: 3.4, dist: 'peakMin', orb: 160, nOrb: 1, hud: 'poll', spawn: () => [makeOrbObj(3.4, 'b', 160, 0)], ok: s => (s.caught || 0) >= 1},
   // 2. one journalist: hold to speed up and knock him over
-  {w0: 5.2, end: 9.6, wait:'boost', key: 8.0, dist: 1.1, soft: true, spawn: () => [makeBoat(8.0, false)], ok: s => s.rammed},
-  // 3. three bronze orbs higher up, close in height: a charged jump reaches them
-  {w0: 9.8, end: 15.2, bronze: true, nOrb: 3, wait:'charge', key: 13.2, dist: 'peak', orb: 210, span: 0.44, spawn: () => [[12.98, 205], [13.2, 215], [13.42, 210]].map(([w, h]) => makeOrbObj(w, 'b', h, 0)), ok: s => s.caught},
-  // 3 bis. the same skill again: five bronze orbs drawing the whole curve of a charged jump, no glide
-  {w0: 15.4, end: 19.2, quiet: true, bronze: true, nOrb: 5, wait:'charge', key: 17.2, dist: 0, orb: 200, span: 1.1,
-   spawn: () => ARC_F.map((fr, k) => { const v = P.jumpMax, tau = fr*2*v/P.gravity; return Object.assign(makeOrbObj(17.2 + tau*P.speedTuto, 'b', arcH(v, tau), 0), {gk: k}); }), ok: s => (s.caught || 0) >= 3},
-  // 4. two casseroles
-  {w0: 19.6, end: 25.2, key: 22.3, span: 1.6, spawn: () => [makePan(22.3), makePan(23.9)], ok: s => !s.fail},
-  // 5. five bronze orbs on a glide path: charged jump, then glide (the orbs stay where they are: a full charge at the prompt reaches them)
-  {w0: 25.4, end: 32.0, bronze: true, nOrb: 5, wait:'charge', key: 28.8, dist: 'peak', orb: 200, span: 1.2, glideOrbs: true,
-   spawn: () => [0,1,2,3,4].map(k => Object.assign(makeOrbObj(28.8 + k*GLIDE_DT*P.speedTuto, 'b', 230 - glideDrop(k*GLIDE_DT), 0), {gk: k})), ok: s => (s.glideCaught || 0) >= 2},
-  // 6. a small flotilla: boat, two casseroles, boat (not blocking)
-  {w0: 32.7, end: 38.2, glide: true, key: 35.7, span: 0.85, spawn: () => [makeBoat(35.7, false), makePan(36.0), makePan(36.25), makeBoat(36.55, false)], ok: s => true},
-  // 7. a silver orb, twice (timing then choice; not blocking, the second time without the explanations)
-  {w0: 38.4, end: 45.6, key: 41.6, orb: 170, bronze: true, spawn: () => [makeOrbObj(41.6, 'g', 170, 0)], ok: s => (s.caught || 0) >= 1},
-  // 8. volte-face (not blocking: the wall no longer ends the game)
-  {w0: 46.8, end: 51.2, key: 49.7, wall: true, spawn: () => [{kind:'wall', w: P.voltFirst, wid: SW('wall', WALL_S), idx: 0}, {kind:'sand', w: P.voltFirst, len: 1.25}], ok: s => !s.fail}
+  {w0: 5.2, end: 9.6, wait:'boost', key: 8.0, dist: 1.1, spawn: () => [makeBoat(8.0, false)], ok: s => (s.rams || 0) >= 1},
+  // 3. three boats in a row: keep holding
+  {w0: 9.8, end: 14.6, wait:'boost', key: 12.6, dist: 1.1, span: 1.3, spawn: () => [makeBoat(12.6, false), makeBoat(13.25, false), makeBoat(13.9, false)], ok: s => (s.rams || 0) >= 2},
+  // 4. three bronze orbs higher up, close in height: a charged jump reaches them
+  {w0: 14.8, end: 20.2, nOrb: 3, wait:'charge', key: 18.2, dist: 'peak', orb: 210, span: 0.44, spawn: () => [[17.98, 205], [18.2, 215], [18.42, 210]].map(([w, h]) => makeOrbObj(w, 'b', h, 0)), ok: s => (s.caught || 0) >= 2},
+  // 4 bis. the same skill again: five bronze orbs drawing the whole curve of a charged jump, no glide
+  {w0: 20.4, end: 24.4, quiet: true, nOrb: 5, wait:'charge', key: 22.2, dist: 0, orb: 200, span: 1.4,
+   spawn: () => ARC_F.map((fr, k) => { const v = P.jumpMax, tau = fr*jT(v); return Object.assign(makeOrbObj(22.2 + tau*P.speedTuto*jFac(v), 'b', arcH(v, tau), 0), {gk: k}); }), ok: s => (s.caught || 0) >= 3},
+  // 5. two casseroles
+  {w0: 24.6, end: 30.2, key: 27.3, span: 1.6, hud: 'cass', spawn: () => [makePan(27.3), makePan(28.9)], ok: s => !s.cassHit},
+  // 6. five bronze orbs on a glide path: charged jump, then glide (the orbs stay where they are: a full charge at the prompt reaches them)
+  {w0: 30.4, end: 37.2, nOrb: 5, wait:'charge', key: 33.8, dist: 'peak', orb: 200, span: 1.4, glideOrbs: true,
+   spawn: () => [0,1,2,3,4].map(k => Object.assign(makeOrbObj(33.8 + k*GLIDE_DT*P.speedTuto*jFac(P.jumpMax), 'b', 230 - glideDrop(k*GLIDE_DT), 0), {gk: k})), ok: s => (s.glideCaught || 0) >= 2},
+  // 7. a small flotilla: boat, two casseroles, boat
+  {w0: 37.7, end: 43.2, glide: true, key: 40.7, span: 0.85, spawn: () => [makeBoat(40.7, false), makePan(41.0), makePan(41.25), makeBoat(41.55, false)], ok: s => (s.rams || 0) >= 1 && !s.cassHit},
+  // 8. a gold orb (timing then choice)
+  {w0: 43.4, end: 50.6, key: 46.6, orb: 170, spawn: () => [makeOrbObj(46.6, 'g', 170, 0)], ok: s => (s.caught || 0) >= 1},
+  // 9. volte-face
+  {w0: 51.8, end: 56.2, key: 54.7, wall: true, spawn: () => [{kind:'wall', w: P.voltFirst, wid: SW('wall', WALL_S), idx: 0}, {kind:'sand', w: P.voltFirst, len: 1.25}], ok: s => !s.fail}
 ];
 // charge prompts: the world stays frozen while the player charges, so the take-off is always at the prompt;
 // 'peak' = the orb of reference sits at the top of a full charged jump taken from the prompt
-const tutDist = st => st.dist === 'peak' ? P.jumpMax/P.gravity*P.speedTuto : (st.dist || 0);
-const TUT_TX = [0, 1, 2, -1, 3, 4, 5, 6, 7];   // index into TXT.tut (-1: silent repeat step)
+const tutDist = st => st.dist === 'peak' ? jUp(P.jumpMax)*P.speedTuto*jFac(P.jumpMax) : st.dist === 'peakMin' ? jUp(P.jumpMin)*P.speedTuto : (st.dist || 0);
+const TUT_TX = [0, 1, 2, 3, -1, 4, 5, 6, 7, 8];   // index into TXT.tut (-1: silent repeat step)
 const tutNum = i => TUT.slice(0, i + 1).filter(st => !st.quiet).length;
 function spawnTut(n){ for (const o of TUT[n].spawn()){ o.tut = n; (o.tier ? actus : obs).push(o); } }
 const tutActive = () => tutoOn && tutI < TUT.length;
@@ -930,12 +939,10 @@ function updateTuto(){
   if (st.glide && S.introShown && !onWater && t > st.key - 1.2) S.jumped = true;
   if (st.glide && S.jumped && !S.glideShown && !onWater && vy > 0 && t < st.key + (st.span || 0)){ S.glideShown = true; if (holding) return false; openWait('glide'); return true; }
   if (t >= st.end && onWater && state === 'play'){
-    const fails = (flags.tutFails = flags.tutFails || {})[tutI] || 0;
+    // no second try: the result is noted and the ride goes on
     if (st.nOrb){ const o = flags.tutOrbs = flags.tutOrbs || {off: 0, got: 0}; o.off += st.nOrb; o.got += Math.min(st.nOrb, S.caught || 0); }
-    if (st.ok(S) || ((st.bronze || st.soft) && fails >= 2) || (st.wall && fails >= 1)){ sfx('up'); tutI++; tutS = {}; }
-    else flags.tutFails[tutI] = fails + 1;
-    if (tutI !== TUT.indexOf(st)) return true;
-    else tutRetry();
+    const ok = !!st.ok(S); (flags.tutRes = flags.tutRes || [])[tutI] = ok; if (ok) sfx('up');
+    tutI++; tutS = {};
     return true;
   }
   return false;
@@ -1005,13 +1012,15 @@ function reset(){
 }
 
 // ---------- input ----------
-function tti(){ const d = WATER - py; const disc = vy*vy + 2*P.gravity*Math.max(0, d); return (-vy + Math.sqrt(disc))/P.gravity; }
+function tti(){ const g = P.gravity, gu = g/(P.riseK*P.riseK), d = Math.max(0, WATER - py);
+  if (vy < 0){ const ta = -vy/gu, ha = d + vy*vy/(2*gu); return ta + Math.sqrt(2*ha/g); }
+  return (-vy + Math.sqrt(vy*vy + 2*g*d))/g; }
 function press(){
   if (onWater){ charging = true; charge = 0; sfx('charge'); return; }
   holding = true;
 }
 function release(){
-  if (charging){ if (tutActive()) tutS.jumped = true; jumpId++; charging = false; onWater = false; vy = -(P.jumpMin + (P.jumpMax-P.jumpMin)*charge); glideLeft = P.glideTime; airT = 0; holding = false; sfx('jump'); for (let i=0;i<10;i++) spray.push({x: PX() + rnd(-30,20), y: WATER - 2, vx: rnd(-200,60), vy: rnd(-260,-100), life: 0.5}); }
+  if (charging){ if (tutActive()) tutS.jumped = true; jumpId++; charging = false; onWater = false; { const v = P.jumpMin + (P.jumpMax-P.jumpMin)*charge; vy = -v/P.riseK; jumpSpd = jFac(v); spdMul = jumpSpd; } glideLeft = P.glideTime; airT = 0; holding = false; sfx('jump'); for (let i=0;i<10;i++) spray.push({x: PX() + rnd(-30,20), y: WATER - 2, vx: rnd(-200,60), vy: rnd(-260,-100), life: 0.5}); }
   else holding = false;
 }
 function pointerDown(p){
@@ -1209,14 +1218,14 @@ const smooth = x => x*x*(3 - 2*x);
 let jthrows = [], throws = [], ambT = 0, voltOrder = [], rnEnterW = 1e9;
 function jumpNeed(spanPx, h){
   // smallest jump whose part above height h covers the obstacle; reach = horizontal distance from take-off to landing (px)
-  const sp = P.speed*P.pxPerWeek, g = P.gravity;
+  const sp0 = P.speed*P.pxPerWeek, g = P.gravity, K = P.riseK;
   for (let c = 0; c <= 1.0001; c += 0.05){
-    const v = P.jumpMin + (P.jumpMax - P.jumpMin)*c; if (v*v <= 2*g*h) continue;
-    if (2*Math.sqrt(v*v - 2*g*h)/g*sp >= spanPx + 30) return {reach: 2*v/g*sp, glide: false};
+    const v = P.jumpMin + (P.jumpMax - P.jumpMin)*c, sp = sp0*jFac(v); if (v*v <= 2*g*h) continue;
+    if ((1 + K)*Math.sqrt(v*v - 2*g*h)/g*sp >= spanPx + 30) return {reach: jT(v)*sp, glide: false};
   }
-  const v = P.jumpMax, tUp = v/g, hPeak = v*v/(2*g), gl = Math.min(P.glideTime, Math.max(0, (hPeak - h)/P.glideFall));
+  const v = P.jumpMax, sp = sp0*jFac(v), tUp = jUp(v), hPeak = v*v/(2*g), gl = Math.min(P.glideTime, Math.max(0, (hPeak - h)/P.glideFall));
   const reach = (tUp + gl + Math.sqrt(2*Math.max(0, hPeak - P.glideFall*gl)/g))*sp;
-  const above = (Math.sqrt(Math.max(0, v*v - 2*g*h))/g + gl + Math.sqrt(2*Math.max(0, hPeak - P.glideFall*gl - h)/g))*sp;
+  const above = (K*Math.sqrt(Math.max(0, v*v - 2*g*h))/g + gl + Math.sqrt(2*Math.max(0, hPeak - P.glideFall*gl - h)/g))*sp;
   return {reach, glide: true, ok: above >= spanPx + 30};
 }
 const objHeight = o => o.kind === 'cass' ? (o.medium ? 32 : 21) : o.kind === 'boat' ? o.hgt*0.82 - 4 : o.kind === 'big' ? 60 : 65;
@@ -1277,10 +1286,10 @@ function justiceZones(){ return [{a: W_TRIAL - 1.2, b: W_TRIAL + 1.2}, {a: W_JUD
 // one chain of orbs from the take-off point w: all bronze but one special orb (silver or gold) at the apex or at the end.
 // The chains vary: 1 to 6 orbs, on the whole curve or only a stretch of it (way up, top, way down), a quick hop, a longer or shorter glide.
 function makeChain(w, kind, special, last){
-  const sp = P.speed, g = P.gravity, pts = [];
-  let flight;
+  const g = P.gravity, pts = [], vMax = P.jumpMax, fullGlide = jUp(vMax) + P.glideTime + Math.sqrt(2*Math.max(0, vMax*vMax/(2*g) - P.glideFall*P.glideTime)/g);
+  let flight, sp = P.speed*jFac(vMax), safe;
   if (kind === 'glide' || kind === 'glideLong'){
-    const v = P.jumpMax, tUp = v/g, hp = v*v/(2*g);
+    const v = P.jumpMax, tUp = jUp(v), hp = v*v/(2*g);
     const up = RNG() < 0.3 ? [] : RNG() < 0.5 ? [tUp] : [tUp*0.55, tUp];
     let n = kind === 'glideLong' ? ri(3, 5) : ri(1, 3);
     if (!up.length) n = Math.max(n, 2);
@@ -1288,19 +1297,20 @@ function makeChain(w, kind, special, last){
     const step = n <= 2 ? GLIDE_DT*rnd(1.3, 1.8) : n === 3 ? GLIDE_DT*rnd(1, 1.3) : Math.min(GLIDE_DT, 1.3/n);   // few orbs: farther apart; never past the end of the fall
     up.forEach(tau => pts.push([tau, arcH(v, tau)]));
     for (let k=1;k<=n;k++) pts.push([tUp + k*step, hp + ORB_UP - glideDrop(k*step)]);
-    flight = tUp + P.glideTime + Math.sqrt(2*Math.max(0, hp - P.glideFall*P.glideTime)/g);
+    flight = tUp + P.glideTime + Math.sqrt(2*Math.max(0, hp - P.glideFall*P.glideTime)/g); safe = flight*sp;
   } else {
-    const v = kind === 'hop' ? P.jumpMin + 0.2*(P.jumpMax - P.jumpMin) : kind === 'arcMid' ? P.jumpMin + 0.55*(P.jumpMax - P.jumpMin) : P.jumpMax, T = 2*v/g;
+    const v = kind === 'hop' ? P.jumpMin + 0.2*(P.jumpMax - P.jumpMin) : kind === 'arcMid' ? P.jumpMin + 0.55*(P.jumpMax - P.jumpMin) : P.jumpMax, T = jT(v);
+    sp = P.speed*jFac(v);
     // [from, to] as fractions of the flight, then the min and max number of orbs
     const shapes = kind === 'hop' ? [[0.2, 0.8, 2, 3]] : [[0.12, 0.88, 3, 6], [0.12, 0.88, 3, 6], [0.1, 0.5, 2, 4], [0.36, 0.64, 1, 3], [0.5, 0.9, 2, 4]];
     const [f0, f1, nMin, nMax] = shapes[Math.floor(RNG()*shapes.length)], n = ri(nMin, nMax);
     for (let k=0;k<n;k++){ const fr = n === 1 ? (f0 + f1)/2 : lerp(f0, f1, k/(n - 1)); pts.push([fr*T, arcH(v, fr*T)]); }
     { const low = pts.filter(p => p[1] < ORB_MIN); for (const p of low) pts.splice(pts.indexOf(p), 1); if (!pts.length) pts.push([T/2, Math.max(ORB_MIN, arcH(v, T/2))]); }
-    flight = T;
+    flight = T; safe = Math.max(T*sp, 0.75*jT(vMax)*P.speed*jFac(vMax));
   }
   let apex = 0; pts.forEach(([, h], k) => { if (h > pts[apex][1]) apex = k; });
   const si = special ? (last ? pts.length - 1 : apex) : -1;
-  return {orbs: pts.map(([tau, h], k) => makeOrbObj(w + tau*sp, k === si ? special : 'b', h, 0)), a: w - 0.35, b: w + flight*sp + P.reactTime*sp};
+  return {orbs: pts.map(([tau, h], k) => makeOrbObj(w + tau*sp, k === si ? special : 'b', h, 0)), a: w - 0.35, b: w + safe + P.reactTime*P.speed};
 }
 // a salvo of casseroles thrown by Bardella or the RN boat: one challenge after the other, each harder than the last
 // (bigger banks, less room to land and react before the next one). The shape is drawn when the plan is made, so the layout stays stable;
@@ -1334,11 +1344,11 @@ function buildLevel(){
     plan.push({t:'big', smalls: 2, who: w1, pad: c > 0 ? 1.6 : 0});   // after a volte-face, the RN boat shows up first, then throws
     for (let k=0;k<nA;k++){
       const r = RNG();
-      plan.push({t:'chain', kind: pick2(late ? ['arc', 'arcMid', 'glide', 'hop'] : ['arc', 'arcMid', 'arc', 'hop']), special: r < 0.3 ? 'g' : r < 0.55 ? 's' : null, last: RNG() < 0.5, opt: k === 2 ? 3 : 0});
-      if (k < nA - 1){ const r = RNG(); plan.push(r < 0.2 ? Object.assign({t:'salvo', opt: 4, who: wSalvo()}, salvoPlan(ri(2, 3), (c + 0.5)/N)) : r < 0.6 ? {t:'pan', who: 'bard'} : {t:'boat'}); }
+      plan.push({t:'chain', kind: pick2(late ? ['arc', 'arcMid', 'glide', 'hop'] : ['arc', 'arcMid', 'arc', 'hop']), special: r < 0.3 ? 'g' : r < 0.55 ? 's' : null, last: RNG() < 0.5, opt: k >= 1 ? 3 : 0});
+      if (k < nA - 1){ const r = RNG(); plan.push(r < 0.2 ? Object.assign({t:'salvo', opt: 4, who: wSalvo()}, salvoPlan(ri(2, 3), (c + 0.5)/N)) : r < 0.6 ? {t:'pan', who: 'bard', opt: 3} : {t:'boat', opt: 3}); }
     }
-    plan.push({t:'chain', kind: pick2(['arc', 'arcMid', 'hop']), special: RNG() < 0.4 ? 's' : null, last: false});
-    plan.push({t:'pan', who: 'bard'});
+    plan.push({t:'chain', kind: pick2(['arc', 'arcMid', 'hop']), special: RNG() < 0.4 ? 's' : null, last: false, opt: 2});
+    plan.push({t:'pan', who: 'bard', opt: 2});
     plan.push(Object.assign({t:'salvo', who: w1, opt: 1}, salvoPlan(late ? ri(4, 5) : ri(3, 4), (c + 0.5)/N)));
     plan.push({t:'boat', opt: 2});
     plan.push({t:'chain', kind: pick2(['arc', 'glide']), special: 'g', last: true});
@@ -1538,9 +1548,9 @@ function syncChain(big, label, pan){
   const n = chain.nodes, a = chainAnchor(), target = Math.floor(weight/10 + 1e-6);
   while (chain.items.length < target){
     if (!n.length) n.push({x: a.x, y: a.y, ox: a.x, oy: a.y});
-    const links = big ? 4 : 2;
-    for (let i=0;i<links;i++){ const last = n[n.length-1]; n.push({x: last.x - 10, y: last.y + 2, ox: last.x - 10, oy: last.y + 2}); }
-    chain.items.push({node: n.length - 1, w: 10, big, label, pan: pan || (big ? 'coc0' : pick(PANS)), rot: rnd(-0.3, 0.3)});
+    const links = big ? 5 : 3;
+    for (let i=0;i<links;i++){ const last = n[n.length-1]; n.push({x: last.x - 12, y: last.y + 2, ox: last.x - 12, oy: last.y + 2}); }
+    chain.items.push({node: n.length - 1, w: 10, big, label, pan: pan || (big ? 'coc0' : pick(PANS)), rot: rnd(-0.3, 0.3), sz: rnd(0.75, 1.2)});
     pan = null; label = null;
   }
 }
@@ -1655,7 +1665,7 @@ function pickActu(){
 }
 function placeTrap(b){
   // the trap boat sits exactly where this jump will land (unless the player glides past it)
-  const lw = t + tti()*curSpeed(t);
+  const lw = t + tti()*curSpeed(t)*spdMul;
   obs = obs.filter(o => o === b || !((o.kind === 'cass' || o.kind === 'boat') && Math.abs(o.w - lw) < 0.5));
   b.w = lw + 0.03; b.hit = false; b.passed = false; if (!obs.includes(b)) obs.push(b);
 }
@@ -1788,7 +1798,7 @@ function updateVolte(dt){
 
 // ---------- main update ----------
 function riderY(){
-  const sink = weight/100 * P.sinkMax;
+  const sink = 0;   // the casseroles no longer pull Marine down: easier to read
   if (state === 'sinking') return WATER + 6;
   return onWater ? py + sink : py + sink*clamp(1 - airT*3, 0, 1);
 }
@@ -1802,12 +1812,14 @@ function orbPos(a){
 }
 function update(gdt){
   // holding on the water: Marine speeds up (boost) while the jump charges; she can knock journalists over
-  spdMul += ((charging && onWater ? P.boostMul : 1) - spdMul)*Math.min(1, gdt*3);
+  if (charging && onWater) spdMul = 1 + (P.boostMul - 1)*charge;
+  else if (!onWater) spdMul = jumpSpd;
+  else spdMul += (1 - spdMul)*Math.min(1, gdt*3);
   t += curSpeed(t) * spdMul * gdt; dist += curSpeed(t) * spdMul * gdt; gt += gdt; landT += gdt; fallT += gdt; turnT += gdt;
   director();
   const px = PX(), pxw = P.pxPerWeek, live = !mode;
   if (!onWater){
-    vy += P.gravity * gdt;
+    vy += (vy < 0 ? P.gravity/(P.riseK*P.riseK) : P.gravity) * gdt;
     if (holding && glideLeft > 0 && vy > 0){ glideLeft -= gdt; if (vy > P.glideFall) vy = P.glideFall; if ((gt % 0.22) < gdt) sfx('glide'); }
     py += vy * gdt; airT += gdt;
     if (py >= WATER){
@@ -1842,7 +1854,7 @@ function update(gdt){
     }
     const half = o.kind === 'cass' ? (o.medium ? 52 : 36*o.sz) : (o.wid || 60)/2, overlapX = Math.abs(x - px) < half + 18;
     if (o.kind === 'cass' && !o.gone && live){
-      if (overlapX && py > WATER - (o.medium ? 32 : 21) && !invincible){ o.gone = true; stats.cass++; if (tutActive()){ tutS.fail = true; flags.tutCass = (flags.tutCass || 0) + 1; } attach(o.medium ? P.wMedium : P.wSmall, o.medium, null, o.medium ? o.pan : null); pop(TXT.cass, C.red, px + 10, py - 120); }
+      if (overlapX && py > WATER - (o.medium ? 32 : 21) && !invincible){ o.gone = true; stats.cass++; if (tutActive()){ tutS.fail = true; tutS.cassHit = true; flags.tutCass = (flags.tutCass || 0) + 1; } attach(o.medium ? P.wMedium : P.wSmall, o.medium, null, o.medium ? o.pan : null); pop(TXT.cass, C.red, px + 10, py - 120); }
       else if (!o.passed && x + half < px - 20){ o.passed = true; stats.cassOk++; }
     } else if (o.kind === 'big' && !o.gone && !o.passed && live && x + half < px - 20){
       // big casserole cleared: a dedicated line about it
@@ -1855,7 +1867,7 @@ function update(gdt){
     } else if (o.kind === 'boat' && live){
       const top = WATER - o.hgt*0.82;
       if (!o.hit && !o.rammed && !o.passed && overlapX && py > top + 4){
-        if (charging && onWater){ o.rammed = true; o.ramT = 0; stats.ram++; sfx('bonk'); shakeT = 0.22; if (tutActive()) tutS.rammed = true; addPoll(P.ptsRam * o.n, px + 10, py - 130); pop(TXT.rammed, C.green, px + 40, py - 150); sayPhrase();
+        if (charging && onWater){ o.rammed = true; o.ramT = 0; stats.ram++; sfx('bonk'); shakeT = 0.22; if (tutActive()){ tutS.rams = (tutS.rams || 0) + 1; flags.tutRams = (flags.tutRams || 0) + 1; } addPoll(P.ptsRam * o.n, px + 10, py - 130); pop(TXT.rammed, C.green, px + 40, py - 150); sayPhrase();
           for (let i=0;i<14;i++) spray.push({x: x + rnd(-30, 30), y: WATER - 6, vx: rnd(-60, 320), vy: rnd(-380, -140), life: rnd(0.4, 0.7)}); }
         else if (inv <= 0){ o.hit = true; inv = 0.5; fallT = 0; stats.hit++; sfx('bonk'); if (tutActive()) tutS.fail = true; addPoll(P.ptsHit, px + 10, py - 120); }
       }
@@ -1992,7 +2004,7 @@ function updateChain(dt){
   }
   const big = new Set(chain.items.filter(c => c.big).map(c => c.node));
   for (let it=0; it<5; it++) for (let i=1;i<n.length;i++){
-    const A2 = n[i-1], B = n[i]; const seg = big.has(i) || big.has(i+1) ? 16 : 12;
+    const A2 = n[i-1], B = n[i]; const seg = big.has(i) || big.has(i+1) ? 18 : 14;
     const dx = B.x - A2.x, dy = B.y - A2.y; const d = Math.hypot(dx, dy) || 0.001; const diff = (d - seg)/d;
     if (i === 1){ B.x -= dx*diff; B.y -= dy*diff; } else { A2.x += dx*diff*0.5; A2.y += dy*diff*0.5; B.x -= dx*diff*0.5; B.y -= dy*diff*0.5; }
   }
@@ -2098,9 +2110,9 @@ function drawTownSign(x){
   const a = UIA.sign, bob = Math.sin(realT*1.4)*1.5;
   if (uiReady && a){
     // the piece: gull on top, sign face around (208, 150), waterline at 91 % of its height
-    const k = 0.42, w = a[2]*k, h = a[3]*k, y0 = WATER + 8 - 0.91*h + bob;
+    const k = 0.3, w = a[2]*k, h = a[3]*k, y0 = WATER + 8 - 0.91*h + bob;
     ctx.save(); ctx.imageSmoothingEnabled = true; ctx.drawImage(uiImg, a[0], a[1], a[2], a[3], x - w/2, y0, w, h);
-    ctx.fillStyle = '#111'; font(13, 900); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(TXT.sign, x - w/2 + 208*k, y0 + 150*k, 300*k);
+    ctx.fillStyle = '#111'; font(9.5, 900); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(TXT.sign, x - w/2 + 208*k, y0 + 150*k, 300*k);
     ctx.restore(); return;
   }
   const w = 168, h = 46, y = WATER - 132 + bob;
@@ -2251,7 +2263,7 @@ function renderWorld(){
     updateChain(Math.min(lastDt, 0.033) * (mode ? Math.max(timeScale, 0) : 1));
     const n = chain.nodes;
     if (n.length > 1){ ctx.strokeStyle = '#5a6988'; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(n[0].x, n[0].y); for (let i=1;i<n.length;i++) ctx.lineTo(n[i].x, n[i].y); ctx.stroke(); }
-    for (const c of chain.items){ const e = n[c.node]; if (!e) continue; if (c.big){ sprO(c.pan, e.x, e.y + 18, c.pan === 'potJ' ? 0.95 : c.pan.startsWith('med') ? 1.0 : 0.75, false, c.rot*0.5); } else sprO(c.pan, e.x, e.y + 14, PAN_S*0.75, false, c.rot); }
+    for (const c of chain.items){ const e = n[c.node]; if (!e) continue; if (c.big){ sprO(c.pan, e.x, e.y + 14, c.pan === 'potJ' ? 0.62 : c.pan.startsWith('med') ? 0.66 : 0.5, false, c.rot*0.5); } else sprO(c.pan, e.x, e.y + 12, PAN_S*0.7*(c.sz || 1), false, c.rot); }
     const tilt = onWater ? 0 : clamp(vy/1600, -0.25, 0.25);
     const fr = riderFrame();
     if (state === 'crash'){ const f = 'wallHit' + Math.min(2, Math.floor(endT/0.3)), cx2 = sx(crashW); drawKite(f, cx2, WATER, RS); spr(f, cx2, WATER, RS); }
@@ -2360,25 +2372,27 @@ function drawProgress(){
 }
 function drawHUD(){
   drawProgress();
-  // driftwood board with two grooves: polls on top, casseroles below; the text sits on the gauges
-  const x = 8, y = 34, w = 330, a = UIA.hud;
-  let gx, gw, gh, g1, g2;
-  if (uiReady && a){ const k = w/a[2]; ctx.drawImage(uiImg, a[0], a[1], a[2], a[3], x, y, w, a[3]*k); gx = x + 106*k; gw = 431*k; gh = 25*k; g1 = y + 93*k; g2 = y + 134*k; }
-  else { panel(x, y + 22, w, 74, PAPER, 8); gx = x + 14; gw = w - 28; gh = 14; g1 = y + 38; g2 = y + 66; }
+  // a plain panel: polls on top, casseroles below; the text sits on the gauges
+  const x = 10, y = 42, w = 300, gh = 22, gx = x + 10, gw = w - 20, g1 = y + 10, g2 = y + 40;
+  ctx.fillStyle = 'rgba(15,29,51,.72)'; rr(x, y, w, 72, 12); ctx.fill();
   const bar = (gy, f, col, label, val, valCol, kind) => {
     ctx.save(); rr(gx, gy, gw, gh, gh/2); ctx.clip();
     ctx.fillStyle = 'rgba(20,33,61,.18)'; ctx.fillRect(gx, gy, gw, gh);
-    ctx.fillStyle = col; ctx.fillRect(gx, gy, Math.max(gh, gw*clamp(f, 0, 1)), gh);
+    if (f > 0){ ctx.fillStyle = col; ctx.fillRect(gx, gy, Math.max(gh, gw*clamp(f, 0, 1)), gh); }
     ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(gx, gy, gw, gh*0.35);
     ctx.restore();
     for (const fx2 of hudFx){ if (fx2.kind !== kind) continue; const al = clamp(1 - fx2.t/0.7, 0, 1); if (al <= 0) continue; ctx.save(); ctx.globalAlpha = al; ctx.strokeStyle = fx2.good ? '#22c55e' : '#ef4444'; ctx.lineWidth = 3; rr(gx - 3, gy - 3, gw + 6, gh + 6, gh/2 + 3); ctx.stroke(); ctx.restore(); }
-    font(Math.round(gh*0.8), 900); ctx.textBaseline = 'middle'; ctx.lineJoin = 'round'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(20,33,61,.92)';
+    font(12, 900); ctx.textBaseline = 'middle'; ctx.lineJoin = 'round'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(20,33,61,.92)';
     ctx.textAlign = 'left'; ctx.fillStyle = '#fff'; ctx.strokeText(label, gx + 8, gy + gh/2 + 1); ctx.fillText(label, gx + 8, gy + gh/2 + 1);
     ctx.textAlign = 'right'; ctx.fillStyle = valCol; ctx.strokeText(val, gx + gw - 8, gy + gh/2 + 1); ctx.fillText(val, gx + gw - 8, gy + gh/2 + 1);
   };
   bar(g1, (poll - 15)/20, COL_POLL, 'SONDAGES', fmtPct(poll), poll >= 30 ? '#86efac' : '#fff', 'poll');
   ctx.fillStyle = 'rgba(20,33,61,.8)'; ctx.fillRect(gx + gw*0.75 - 1, g1 - 2, 2, gh + 4);
   bar(g2, weight/100, COL_CASS, 'CASSEROLES', Math.round(weight) + '/100', weight > 70 ? '#fecaca' : '#fff', 'cass');
+  { const st = tutActive() && TUT[tutI], hk = st && st.hud;
+    if (hk && tutS.introShown && !mode){ const ay = (hk === 'poll' ? g1 : g2) + gh/2, ax = x + w + 14 + 8*Math.abs(Math.sin(realT*6));
+      ctx.save(); ctx.fillStyle = '#ffd23f'; ctx.strokeStyle = '#14213d'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(ax + 18, ay - 14); ctx.lineTo(ax + 18, ay - 6); ctx.lineTo(ax + 40, ay - 6); ctx.lineTo(ax + 40, ay + 6); ctx.lineTo(ax + 18, ay + 6); ctx.lineTo(ax + 18, ay + 14); ctx.closePath(); ctx.stroke(); ctx.fill(); ctx.restore(); } }
   for (const f of hudFx) f.t += lastDt;
   hudFx = hudFx.filter(f => f.t < 1.5);
   ctx.textBaseline = 'alphabetic';
@@ -2621,7 +2635,8 @@ function drawChoice(){
     yy += 14; panel(tx, yy, tw, 58, key === 'cf' ? '#fdecec' : '#e7efff', 8, false);
     font(10.5, 900); ctx.fillStyle = col; ctx.fillText(gName, tx + 10, yy + 18, tw - 70);
     font(11, 900); ctx.textAlign = 'right'; ctx.fillStyle = C.green; ctx.fillText(delta, tx + tw - 10, yy + 18); ctx.textAlign = 'left';
-    font(16, 900); ctx.fillStyle = C.muted; const vo = vOld + '  →  '; ctx.fillText(vo, tx + 10, yy + 44); const vw = ctx.measureText(vo).width; ctx.fillStyle = C.green; ctx.fillText(vNew, tx + 10 + vw, yy + 44, tw - 20 - vw);
+    if (key === 'cf' && weight <= 0){ font(14, 800); ctx.fillStyle = C.muted; ctx.fillText(TXT.cfUseless, tx + 10, yy + 44, tw - 20); }
+    else { font(16, 900); ctx.fillStyle = C.muted; const vo = vOld + '  →  '; ctx.fillText(vo, tx + 10, yy + 44); const vw = ctx.measureText(vo).width; ctx.fillStyle = C.green; ctx.fillText(vNew, tx + 10 + vw, yy + 44, tw - 20 - vw); }
     yy += 58 + 24;
     font(13.5, 700); ctx.fillStyle = C.ink; wrapLines(o.x, tw).slice(0, 6).forEach((ln, k) => { const ly = yy + k*18; if (ly < oy + oh - 12) ctx.fillText(ln, tx, ly); });
     ctx.restore();
@@ -2728,23 +2743,22 @@ function drawFrame(){
 }
 // generated weathervane dial: the coloured zones are painted on its blank band, then the needle (fish tail, red pennant) turns on top
 function drawDial(cx, cy, D){
-  const a = UIA.dial, nd = UIA.needle, k = D/512;
-  if (uiReady && a && nd){
-    ctx.drawImage(uiImg, a[0], a[1], a[2], a[3], cx - D/2, cy - D/2, D, D);
-    const r0 = 150*k, r1 = 190*k, N = 72;
-    ctx.save(); ctx.globalAlpha = 0.92; ctx.lineWidth = r1 - r0;
-    for (let i=0;i<N;i++){ const a0 = i/N*Math.PI*2, a1 = (i+1)/N*Math.PI*2; ctx.strokeStyle = zoneColor(angDiff((a0 + a1)/2, 0)*180/Math.PI); ctx.beginPath(); ctx.arc(cx, cy, (r0 + r1)/2, a0, a1 + 0.01); ctx.stroke(); }
-    ctx.restore();
-    ctx.lineWidth = 1.5; ctx.strokeStyle = LINE; ctx.beginPath(); ctx.arc(cx, cy, r0, 0, 7); ctx.stroke(); ctx.beginPath(); ctx.arc(cx, cy, r1, 0, 7); ctx.stroke();
-    const s = (r1 - 2)/(nd[2] - nd[4]);
-    ctx.save(); ctx.translate(cx, cy); ctx.rotate(vf.ang); ctx.shadowColor = 'rgba(10,20,40,.4)'; ctx.shadowOffsetY = 3; ctx.shadowBlur = 4;
-    ctx.drawImage(uiImg, nd[0], nd[1], nd[2], nd[3], -nd[4]*s, -nd[5]*s, nd[2]*s, nd[3]*s); ctx.restore();
-    return;
-  }
-  const Rr = D*0.36;
-  ctx.fillStyle = PAPER; ctx.beginPath(); ctx.arc(cx, cy, Rr + 24, 0, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = LINE; ctx.stroke();
-  for (let i=0;i<72;i++){ const a0 = i/72*Math.PI*2, a1 = (i+1)/72*Math.PI*2; ctx.strokeStyle = zoneColor(angDiff((a0 + a1)/2, 0)*180/Math.PI); ctx.lineWidth = 18; ctx.beginPath(); ctx.arc(cx, cy, Rr, a0, a1 + 0.01); ctx.stroke(); }
-  ctx.save(); ctx.translate(cx, cy); ctx.rotate(vf.ang); ctx.fillStyle = LINE; ctx.fillRect(-Rr*0.6, -4, Rr*1.25, 8); ctx.beginPath(); ctx.moveTo(Rr*0.84, 0); ctx.lineTo(Rr*0.6, -16); ctx.lineTo(Rr*0.6, 16); ctx.closePath(); ctx.fill(); ctx.restore();
+  // a plain vector weathervane: paper disc, coloured ring (green = new position, on the right), a simple needle
+  const R0 = D*0.5, r1 = D*0.45, r0 = D*0.33, N = 90;
+  ctx.save();
+  ctx.fillStyle = 'rgba(10,20,40,.35)'; ctx.beginPath(); ctx.arc(cx + 3, cy + 5, R0, 0, 7); ctx.fill();
+  ctx.fillStyle = PAPER; ctx.beginPath(); ctx.arc(cx, cy, R0, 0, 7); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = LINE; ctx.stroke();
+  ctx.lineWidth = r1 - r0;
+  for (let i=0;i<N;i++){ const a0 = i/N*Math.PI*2, a1 = (i+1)/N*Math.PI*2; ctx.strokeStyle = zoneColor(angDiff((a0 + a1)/2, 0)*180/Math.PI); ctx.beginPath(); ctx.arc(cx, cy, (r0 + r1)/2, a0, a1 + 0.01); ctx.stroke(); }
+  ctx.lineWidth = 2; ctx.strokeStyle = LINE; ctx.beginPath(); ctx.arc(cx, cy, r0, 0, 7); ctx.stroke(); ctx.beginPath(); ctx.arc(cx, cy, r1, 0, 7); ctx.stroke();
+  // needle: red head, navy shaft and tail
+  ctx.translate(cx, cy); ctx.rotate(vf.ang); ctx.shadowColor = 'rgba(10,20,40,.35)'; ctx.shadowOffsetY = 3; ctx.shadowBlur = 4;
+  const L = r1 - 4, T = r0*0.85;
+  ctx.fillStyle = '#14213d'; ctx.fillRect(-T, -4, T + L*0.7, 8);
+  ctx.beginPath(); ctx.moveTo(-T - 4, -14); ctx.lineTo(-T + 22, -4); ctx.lineTo(-T + 22, 4); ctx.lineTo(-T - 4, 14); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#d62828'; ctx.beginPath(); ctx.moveTo(L, 0); ctx.lineTo(L*0.62, -15); ctx.lineTo(L*0.62, 15); ctx.closePath(); ctx.fill();
+  ctx.shadowColor = 'transparent'; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, 9, 0, 7); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke();
+  ctx.restore();
 }
 function drawVolte(){
   if (vf.phase === 'impact'){ drawImpact(); return; }
@@ -2929,7 +2943,7 @@ function render(rdt){
   if (state === 'play' && !mode && !paused){ ctx.fillStyle = 'rgba(255,255,255,.55)'; for (let i=0;i<14;i++){ const yy = 80 + (i*67) % (WATER - 110); const len = 40 + (i%3)*30; const xx = VW - ((realT*900*Math.min(2, P.decor/1.2) + i*173) % (VW + len)); ctx.fillRect(Math.round(xx), Math.round(yy), Math.round(len), 2); } }
   if (state === 'title' || state === 'end') return;
   // the HUD steps aside while the camera zooms on a character with something to read
-  if (!((mode === 'card' && card && !card.mini && !card.wait) || mode === 'cine' || mode === 'volte')) drawHUD();
+  if (!((mode === 'card' && card && !card.mini && !card.wait) || mode === 'cine' || mode === 'volte' || realT - camIntro < 4.3)) drawHUD();
   drawPops(rdt);
   drawGains();
   drawBubble(rdt);
