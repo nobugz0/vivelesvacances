@@ -200,7 +200,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = '0.1.1', BUILD = '14/10/2026 à 11h56';
+const VERSION = '0.1.1', BUILD = '14/10/2026 à 12h29';
 
 // ---------- sprite atlas (cut from the provided sheets) ----------
 const ATLAS = {"vfImg":[0,0,471,589,235.6,294.4],"ride0":[473,0,200,186,102.3,164.9],"ride1":[675,0,200,186,102.3,164.9],"ride2":[877,0,200,186,102.3,164.9],"ride3":[1079,0,200,186,102.3,164.9],"ride4":[1281,0,200,186,102.3,164.9],"ride5":[1483,0,200,186,102.3,164.9],"ride6":[1685,0,200,186,102.3,164.9],"ride7":[0,591,200,186,102.3,164.9],"ride8":[202,591,200,186,102.3,164.9],"ride9":[404,591,200,186,102.3,164.9],"crouch0":[606,591,200,186,102.3,164.9],"crouch1":[808,591,200,186,102.3,164.9],"crouch2":[1010,591,200,186,102.3,164.9],"takeoff":[1212,591,200,186,99.2,117.8],"bride0":[1414,591,184,171,94.1,151.7],"bride1":[1600,591,184,171,94.1,151.7],"bride2":[1786,591,184,171,94.1,151.7],"houses":[0,779,869,169,434.4,169.2],"land":[871,779,200,150,102.3,143.8],"navBoat":[1073,779,212,142,106.0,142.0],"navire":[1287,779,219,136,108.9,129.8],"portMlp":[1508,779,132,132,66.0,66.0],"air":[1642,779,200,124,99.2,117.8],"bair":[1844,779,184,114,91.3,108.4],"bm2":[0,950,214,99,107.0,90.5],"wall":[216,950,74,99,36.8,99.2],"bigpot2":[292,950,167,87,83.4,87.4],"potJ":[300,950,147,87,47.5,85],"bm0":[461,950,224,84,112.2,75.0],"bm1":[687,950,222,84,111.0,75.0],"bigpot":[911,950,150,77,75.0,76.9],"rail":[1063,950,96,77,48.0,76.8],"quay":[1161,950,159,74,79.5,74.4],"arch":[1322,950,114,74,57.0,74.4],"treeA":[1438,950,72,72,36.1,72.2],"treeB":[1512,950,71,72,35.7,72.2],"treeC":[1585,950,71,72,35.3,72.2],"stairs":[1658,950,77,72,38.4,72.0],"mSail2":[1737,950,82,70,41.2,70.1],"pan0":[1821,950,88,60,44.0,59.5],"mSail":[1911,950,75,60,37.4,59.6],"mFish":[0,1051,89,60,44.5,59.6],"bs0":[91,1051,133,59,66.7,51.5],"bs1":[226,1051,156,59,78.1,51.5],"bs2":[384,1051,148,59,73.8,51.5],"bs3":[534,1051,131,59,65.7,51.5],"bs4":[667,1051,149,59,74.4,51.5],"pan2":[818,1051,83,59,41.3,59.2],"pan1":[903,1051,90,58,45.1,58.1],"pan3":[995,1051,81,58,40.5,57.8],"bs5":[1078,1051,87,57,43.4,49.6],"pan4":[1167,1051,88,55,44.2,55.1],"mFish2":[1257,1051,86,55,43.0,55.4],"pan5":[1345,1051,88,53,44.2,52.7],"pan6":[1435,1051,88,52,43.9,52.4],"pan7":[1525,1051,89,49,44.4,49.0],"pan8":[1616,1051,91,48,45.7,47.9],"pan10":[1709,1051,78,48,38.8,48.3],"pan9":[1789,1051,82,45,40.8,44.5],"pan11":[1873,1051,65,45,32.6,44.5],"pan13":[1940,1051,68,44,33.8,43.9],"pan14":[0,1113,72,42,35.9,42.2],"umbrellas":[74,1113,89,42,44.5,42.0],"pan15":[165,1113,64,41,32.1,40.8],"lamp":[231,1113,20,40,10.1,39.9],"cafe":[253,1113,64,40,31.9,39.9],"bush":[319,1113,72,39,36.1,38.6],"bollards":[393,1113,183,38,91.3,37.8],"barrels":[578,1113,269,38,134.4,37.8],"pan12":[849,1113,80,36,40.1,36.0],"mBoats":[931,1113,170,34,85.0,34.4],"bench":[1103,1113,39,29,19.3,29.4],"buoyR":[1144,1113,15,28,7.6,28.1],"buoyR2":[1161,1113,15,28,7.6,28.1],"gull":[1178,1113,24,28,12.0,28.0],"buoyB":[1204,1113,14,27,7.2,26.6],"buoyY":[1220,1113,14,25,6.8,25.2]};
@@ -334,13 +334,13 @@ const MEDS = ['med0','med1','med2','med3','med4','med5'];
 
 // ---------- tuning ----------
 const DEF = {
-  speed:1.35, speedTuto:0.9, boostMul:1.32, riseK:1.3, boostZoom:0.08, boostShift:40, ptsRam:0.2, pxPerWeek:400, decor:2.0, dayParallax:1.5, camZoom:0.68, zoomJump:0.9,
+  speed:1.35, speedTuto:0.9, boostMul:1.32, riseK:1.3, landLead:1.1, boostZoom:0.08, boostShift:40, ptsRam:0.2, pxPerWeek:400, decor:2.0, dayParallax:1.5, camZoom:0.68, zoomJump:0.9,
   gravity:900, jumpMin:330, jumpMax:560, chargeTime:0.45, glideTime:1.4, glideFall:80, sinkMax:42,
   obsGapMin:2.0, obsGapMax:3.2, earlyGapFactor:1.8, earlyGapLen:14, lateStart:137, lateGapFactor:0.65, bankChance:0.55, bankMax:4, bankSpacing:0.16, mediumBoatChance:0.3, doubleBoatChance:0.15,
   actuEveryEarly:3.0, actuEveryLate:3.8, trapEarly:0.2, trapLate:0.45, goldShareEarly:0.12, goldShareLate:0.2, silverShare:0.35,
   grabTime:1.2, grabTarget:0.72, grabWindow:0.16, grabZoom:1.9, touchR:46, minGapTime:0.3,
   ptsBronze:0.1, ptsSilver:0.2, ptsGold:0.4, cfSilver:20, cfGold:30,
-  voltFirst:54.7, tutLead:2.6, voltInterval:0, voltCount:6, itemGap:0.15, startWeight:0, eventGap:1.8, ambEvery:1.5, bardEvery:3.2, bigFirst:6, bigEvery:18, voltAfter:1.6, bigSmallsMax:2, smallBefore:1.9, ptsJudg:-1, bigLead:2.0, approachLead:2.4, justiceEvery:5,
+  voltFirst:54.7, tutLead:2.6, voltInterval:0, voltCount:6, itemGap:0.15, startWeight:0, eventGap:1.8, ambEvery:1.5, bardEvery:3.2, bigFirst:6, bigEvery:18, voltAfter:1.6, bigSmallsMax:2, smallBefore:1.4, ptsJudg:-1, bigLead:2.0, approachLead:2.4, justiceEvery:5,
   girTime:3, girCross:0.85, girSpeedStart:12, girSpeedEnd:2.5, girPerfect:27, girGood:45, salvoGap:1.6,
   slowmo:0.03, bannerTime:1.9,
   pollStart:25, ptsDodge:0.2, ptsHit:-0.1, ptsVoltePerfect:0.5, ptsVolteGood:0.2, ptsVolteFail:-0.5,
@@ -1208,7 +1208,7 @@ function jumpTo(w){
   if (t > W_JUDG + 2){ flags.judged = true; flags.judgeHit = true; flags.bardElysee = true; }
   if (t > W_APPEAL + 2){ flags.appealed = true; flags.bardHit = true; flags.nieceWait = true; flags.niece = true; justice.on = false; }
   if (t > TUT_END + 1){ flags.bardIntro = flags.bardIntro || t > TUT_END + 3; flags.rnIntro = flags.rnIntro || t > rnEnterW + 1; }
-  for (const jt of jthrows) if (jt.w < t + 2) jt.thrown = true;
+  for (const jt of jthrows) if (jt.w < t + throwLead(1.0)) jt.thrown = true;
   for (const th of throws) if (!th.thrown && th.w < t + 2.2){ th.thrown = true; if (th.w > t + 1.2) for (const o of th.objs) obs.push(o); }
 }
 
@@ -1278,7 +1278,7 @@ function makeUnit(w, p){
 function bigZone(bg){
   const sp = P.speed, follow = prog(bg.w) >= P.bigFollowFrom, half = SW('cocF0', BIG_S)/2/P.pxPerWeek + 18/P.pxPerWeek;
   const need = jumpNeed(2*half*P.pxPerWeek, 60);
-  const w0 = bg.w + (bg.smalls >= 2 ? Math.max(0, 1.5 + P.smallBefore - P.bigLead) : 0), pan = jumpNeed(2*(36 + 18), 21).reach/P.pxPerWeek;
+  const w0 = bg.w + Math.max(0, bigAhead(bg.smalls >= 2) - P.bigLead), pan = jumpNeed(2*(36 + 18), 21).reach/P.pxPerWeek;
   return {a: bg.w - P.bigLead - 0.4, b: (bg.smalls ? w0 + P.salvoGap - 0.14 + pan : w0 - half + need.reach/P.pxPerWeek) + (P.reactTime + (follow ? P.slackEnd : P.slackStart))*sp};
 }
 function voltZone(v, warned){ return {a: v - (warned ? P.approachLead + 0.4 : 1.7), b: v + P.voltAfter}; }
@@ -1341,20 +1341,22 @@ function buildLevel(){
   const plan = [];
   for (let c=0;c<N;c++){
     const late = c >= N/2, nA = RNG() < 0.55 ? 2 : 3, w1 = c === 0 ? 'bard' : 'rn', wSalvo = () => c === 0 ? 'bard' : RNG() < 0.5 ? 'bard' : 'rn';
-    plan.push({t:'big', smalls: 2, who: w1, pad: c > 0 ? 1.6 : 0});   // after a volte-face, the RN boat shows up first, then throws
-    for (let k=0;k<nA;k++){
-      const r = RNG();
-      plan.push({t:'chain', kind: pick2(late ? ['arc', 'arcMid', 'glide', 'hop'] : ['arc', 'arcMid', 'arc', 'hop']), special: r < 0.3 ? 'g' : r < 0.55 ? 's' : null, last: RNG() < 0.5, opt: k >= 1 ? 3 : 0});
-      if (k < nA - 1){ const r = RNG(); plan.push(r < 0.2 ? Object.assign({t:'salvo', opt: 4, who: wSalvo()}, salvoPlan(ri(2, 3), (c + 0.5)/N)) : r < 0.6 ? {t:'pan', who: 'bard', opt: 3} : {t:'boat', opt: 3}); }
-    }
-    plan.push({t:'chain', kind: pick2(['arc', 'arcMid', 'hop']), special: RNG() < 0.4 ? 's' : null, last: false, opt: 2});
-    plan.push({t:'pan', who: 'bard', opt: 2});
-    plan.push(Object.assign({t:'salvo', who: w1, opt: 1}, salvoPlan(late ? ri(4, 5) : ri(3, 4), (c + 0.5)/N)));
-    plan.push({t:'boat', opt: 2});
-    plan.push({t:'chain', kind: pick2(['arc', 'glide']), special: 'g', last: true});
-    plan.push({t:'big', smalls: RNG() < 0.5 ? 0 : 1, who: 'bard'});
-    plan.push({t:'chain', kind: RNG() < 0.6 ? 'glideLong' : 'glide', special: RNG() < 0.5 ? 'g' : null, last: true});
-    plan.push({t:'volte', first: c === 0});
+    const chainKind = () => pick2(late ? ['arc', 'arcMid', 'glide', 'hop'] : ['arc', 'arcMid', 'arc', 'hop']), sp1 = () => { const r = RNG(); return r < 0.25 ? 'g' : r < 0.5 ? 's' : null; };
+    const cyc = [
+      {t:'big', smalls: 2, who: w1, pad: c > 0 ? 1.6 : 0},   // after a volte-face, the RN boat shows up first, then throws
+      {t:'chain', kind: chainKind(), special: sp1(), last: RNG() < 0.5},
+      {t:'boat', n: RNG() < 0.5 ? 1 : 2},
+      {t:'chain', kind: chainKind(), special: sp1(), last: RNG() < 0.5, opt: 2},
+      {t:'pan', who: 'bard'},
+      {t:'chain', kind: chainKind(), special: sp1(), last: RNG() < 0.5, opt: 3},
+      {t:'boat', n: late ? 3 : 2 + (RNG() < 0.5 ? 1 : 0), opt: 2},
+      Object.assign({t:'salvo', who: wSalvo(), opt: c % 2 ? 3 : 1}, salvoPlan(late ? ri(2, 3) : 2, (c + 0.5)/N)),
+      {t:'chain', kind: pick2(['arc', 'glide']), special: 'g', last: true},
+      {t:'boat', n: 1, opt: 3},
+      {t:'big', smalls: RNG() < 0.5 ? 0 : 1, who: 'bard', opt: 4},
+      {t:'chain', kind: RNG() < 0.6 ? 'glideLong' : 'glide', special: RNG() < 0.5 ? 'g' : null, last: true, opt: 2},
+      {t:'volte', first: c === 0}];
+    cyc.forEach(it => { it.c = c; plan.push(it); });
   }
   plan.push({t:'chain', kind: 'glide', special: 'g', last: true, opt: 5});
   const start = TUT_END + 2.2, end = TOTAL_WEEKS - 3.5;
@@ -1370,9 +1372,11 @@ function buildLevel(){
           a = jus ? pw - 0.4 : ch.a; b = ch.b;
           place = () => { actus.push(...ch.orbs); if (jus) jthrows.push({w: pw, pan: pick(MEDS), thrown: false});
             const tc = lerp(P.trapStart, P.trapEnd, smooth(prog(w))); for (const o of ch.orbs) if (o.tier !== 'b' && Math.random() < tc){ o.trap = true; o.trapBoat = makeBoat(0, false); } }; }
-        else if (it.t === 'pan' || it.t === 'boat'){ const w = cur + 0.5; a = w - 0.4; b = w + 1.0;
-          place = () => { if (it.t === 'boat') obs.push(makeBoat(w, false));
-            else if (w > W_TRIAL + 1.2 && w < W_APPEAL - 1.2) jthrows.push({w, pan: pick(MEDS), thrown: false});
+        else if (it.t === 'boat'){ const w = cur + 0.5, n = it.n || 1; a = w - 0.4; b = w + (n - 1)*0.65 + 0.6 + P.reactTime*P.speed;
+          place = () => { for (let k=0;k<n;k++) obs.push(makeBoat(w + k*0.65, false)); }; }
+        else if (it.t === 'pan'){ const w = cur + 0.5; a = w - 0.4; b = w + 1.0;
+          place = () => {
+            if (w > W_TRIAL + 1.2 && w < W_APPEAL - 1.2) jthrows.push({w, pan: pick(MEDS), thrown: false});
             else { const p = makePan(w); throws.push({w, objs: [p], thrown: false, who: it.who}); } }; }
         else if (it.t === 'salvo'){ const sv = makeSalvo(cur + 0.5, it); a = sv.a; b = sv.b;
           place = () => sv.groups.forEach((ws, k) => { const objs = ws.map(x => { const o = makePan(x); o.sz = 1; return o; }); throws.push({w: objs[0].w, objs, thrown: false, who: it.who, salvo: k === 0}); }); }
@@ -1383,7 +1387,7 @@ function buildLevel(){
         else { const v = cur + (it.first ? P.approachLead + 0.4 : 1.7), z = voltZone(v, it.first); a = z.a; b = z.b; place = () => voltW.push(v); }
         const jz = JZ.find(z => b + 0.6 > z.a && a - 0.6 < z.b);
         if (jz){ cur = jz.b + 0.6; continue; }
-        if (commit) place();
+        if (commit){ place(); (buildLevel.trace = buildLevel.trace || []).push({t: it.t, k: it.kind || it.n || '', a: +a.toFixed(2), b: +b.toFixed(2), cur: +cur.toFixed(2)}); }
         cur = b + gap; break;
       }
     }
@@ -1391,11 +1395,14 @@ function buildLevel(){
   };
   // fit the plan in the ride: drop optional items if it is too long, spread the slack if it is too short
   let items = plan.slice();
-  while (layout(items, 0, false) > end && items.some(it => it.opt)){ const top = Math.max(...items.map(it => it.opt || 0)), k = items.map(it => it.opt === top).lastIndexOf(true); items.splice(k, 1); }
+  while (layout(items, 0, false) > end && items.some(it => it.opt)){
+    const top = Math.max(...items.map(it => it.opt || 0)), cnt = {}; items.forEach(it => { cnt[it.c] = (cnt[it.c] || 0) + 1; });
+    let k = -1; items.forEach((it, i) => { if (it.opt === top && (k < 0 || cnt[it.c] >= cnt[items[k].c])) k = i; });
+    items.splice(k, 1); }
   let lo = 0, hi = 2.5;
   for (let k=0;k<20;k++){ const mid = (lo + hi)/2; if (layout(items, mid, false) > end) hi = mid; else lo = mid; }
   buildLevel.decks = null;
-  layout(items, lo, true);
+  buildLevel.trace = []; buildLevel.extra = lo; layout(items, lo, true);
   rnEnterW = (voltW[1] || TUT_END + 30) + 0.2;
   voltW.forEach((w,i) => { if (i === 0) return; obs.push({kind:'wall', w, wid: SW('wall', WALL_S), idx:i}); obs.push({kind:'sand', w, len:1.25}); });
   RNG = Math.random;
@@ -1608,11 +1615,14 @@ function rnX(){
   const k = t - rnAt, near = smooth(clamp(k/1.6, 0, 1))*(1 - smooth(clamp((k - 4.2)/2, 0, 1)));
   return lerp(VW + 520, lerp(idle, throwX, near), smooth(enter));
 }
+// weeks between Marine and the spot where a thrown object lands, counted when it is thrown (flight in seconds)
+const throwLead = (dur, sp) => (P.landLead + dur*P.boostMul)*(sp || curSpeed(t));
+const bigAhead = before => throwLead(0.95, P.speed) + (before ? P.smallBefore : 0);
 function triggerBig(b){
   b.triggered = true;
   const it = b.item, bard = it.who === 'bard', from = () => bard ? bardHand() : rnHand(), sp = from();
   const throwIt = () => {
-    const before = b.smalls >= 2, w0 = Math.max(b.w, t + 1.5 + (before ? P.smallBefore : 0)), s0 = from();
+    const before = b.smalls >= 2, w0 = Math.max(b.w, t + bigAhead(before)), s0 = from();
     if (bard) bardThrowT = gt; else rnThrowT = gt;
     if (before) proj.push({x0: s0.x, y0: s0.y, w1: w0 - P.smallBefore, t0: gt, dur: 0.7, kind:'small', pan: pick(PANS)});
     proj.push({x0: s0.x, y0: s0.y, w1: w0, t0: gt + (before ? 0.25 : 0), dur: 0.95, item: it, kind:'big'});
@@ -1897,7 +1907,7 @@ function update(gdt){
   if (updateBard(gdt, live)) return;
   // thrown small casseroles: the justice barge between the trial and the verdict, otherwise the RN boat or Bardella
   for (const th of throws){
-    if (th.thrown || t < th.w - 2.1) continue;
+    if (th.thrown || t < th.w - throwLead(0.85 + 0.12*(th.objs.length - 1))) continue;
     th.thrown = true;
     const who = throwers(), k0 = th.who && who.includes(th.who) ? th.who : who.length ? pick(who) : t < rnEnterW ? 'bard' : 'rn', h = throwFrom(k0);
     if (th.salvo && !mode){ if (k0 === 'bard') say('bard', pick(BARD_LINES), 2.2); else if (k0 === 'rn') say('rn', pick(RN_SALVO_LINES), 2.2); }
@@ -1976,7 +1986,7 @@ function updateJustice(gdt, live){
   }
   if (live && onWater && flags.judgeHit && !flags.appealed && t >= W_APPEAL){ flags.appealed = true; openCard(Object.assign({face:'justice', info: [jInfo('appeal')], focus:{x: px + 300, y: LANE2 - 60}, zoom: 1.3}, TXT.appeal)); return; }
   for (const jt of jthrows){
-    if (jt.thrown || t < jt.w - 2.0) continue;
+    if (jt.thrown || t < jt.w - throwLead(1.0)) continue;
     jt.thrown = true;
     const who = throwers(), jh = throwFrom(who.includes('jus') ? 'jus' : who.length ? pick(who) : 'rn');
     proj.push({x0: jh.x, y0: jh.y, w1: jt.w, t0: gt, dur: 1.0, kind:'medium', pan: jt.pan});
@@ -2230,7 +2240,7 @@ function renderWorld(){
   if (playing){
     if (t >= rnEnterW - 0.5) drawRN();
     if (justice.on && justice.x > -300){
-      const jf = (!flags.judged && t > W_JUDG - 0.8) ? 'jus3' : gt - justice.fireT < 0.35 ? 'jus2' : (!flags.appealed && jthrows.some(jt => !jt.thrown && jt.w - 2.0 - t < 0.6 && jt.w - 2.0 > t)) ? 'jus1' : 'jus0';
+      const jf = (!flags.judged && t > W_JUDG - 0.8) ? 'jus3' : gt - justice.fireT < 0.35 ? 'jus2' : (!flags.appealed && jthrows.some(jt => !jt.thrown && jt.w - throwLead(1.0) - t < 0.6 && jt.w - throwLead(1.0) > t)) ? 'jus1' : 'jus0';
       const sk = clamp((justice.sinkT || 0)/1.6, 0, 1);
       ctx.save(); ctx.globalAlpha = 1 - sk*sk;
       drawJustice(justice.x, lerp(LANE2 + 2, WATER + 10, justice.lane || 0) + 46*sk, justice.s, jf); ctx.restore();
@@ -2984,7 +2994,7 @@ buildProc();
 reset(); showTitle();
 requestAnimationFrame(loop);
 // hooks for automated tests
-window.__vdd = {get t(){ return t; }, set t(v){ jumpTo(v); }, get mode(){ return mode; }, get adapt(){ return {lvl: adaptLvl, info: adaptInfo, grabWindow: P.grabWindow, girPerfect: P.girPerfect, slackEnd: P.slackEnd, trapEnd: P.trapEnd}; }, get boostK(){ return boostK; }, get poll(){ return poll; }, get weight(){ return weight; }, get state(){ return state; }, get grab(){ return grab && {t: grab.t, dur: grab.dur, win: grab.win, res: grab.res, tut: grab.tut}; }, get choice(){ return choice && {tut: choice.tut, picked: choice.picked}; }, get infoOv(){ return infoOv && {i: infoOv.i, n: infoOv.pages.length, title: infoOv.pages[infoOv.i].title}; }, openInfo, closeInfo, get bigs(){ return bigs.map(b => ({w: +b.w.toFixed(1), smalls: b.smalls, who: b.item.who, t: b.item.t})); }, get voltW(){ return voltW.map(v => +v.toFixed(1)); }, get voltOrder(){ return voltOrder; }, get chainN(){ return chain.items.length; }, get charging(){ return charging; }, get charge(){ return charge; }, get actusTut(){ return actus.filter(a => a.tut !== undefined && !a.got).map(a => ({w: +a.w.toFixed(2), h: Math.round(a.h), tier: a.tier, tut: a.tut})); }, get actusAll(){ return actus.filter(a => a.diff === 0 && a.tut === undefined).map(a => a.w); }, get combo(){ return comboN; }, get seriesInfo(){ const z = actus.filter(a => a.diff === 0 && a.tut === undefined); return {orbs: z.length, special: z.filter(a => a.tier !== 'b').map(a => a.tier).join(''), ws: z.filter((a,i) => i === 0 || a.w - z[i-1].w > 1).map(a => +a.w.toFixed(1))}; }, get rnX(){ return rnX(); }, get rnEnterW(){ return rnEnterW; }, get spdMul(){ return spdMul; }, bardFree: w => bardFree(w), get throwers(){ return throwers(); }, get view(){ return view(); }, get justiceOn(){ return justice.on; }, get projKinds(){ return proj.map(p => p.kind); }, zonesAll: () => ({volt: voltW.filter(v => v > TUT_END).map((v, i) => voltZone(v, i === 0)), bigs: bigs.map(bigZone), jus: justiceZones()}), get bardX(){ return bardX; }, get cineOn(){ return !!cine; }, get flags(){ return flags; }, get bubble(){ return bubble && bubble.text; }, get band(){ return band && band.text; }, get card(){ return card && {title: card.title, info: !!card.info, kicker: card.kicker}; }, W: {TUT_END, W_TRIAL, W_JUDG, W_APPEAL, TOTAL_WEEKS}, get vf(){ return vf && {phase: vf.phase, t: vf.t, grade: vf.grade}; }, trapOrb: (dw, h) => { const o = makeOrbObj(t + dw, 's', h, 0.3, true), b = makeBoat(t + dw + landDist(h) + 0.6, false); o.trapBoat = b; window.__tb = b; actus.push(o); obs.push(b); }, gaps: () => { const o = obs.filter(q => q.kind === 'cass' || q.kind === 'boat').map(q => [q.w - hitHalf(q), q.w + hitHalf(q)]).sort((a,b) => a[0]-b[0]); const g = []; for (let i=1;i<o.length;i++) g.push(o[i][0] - Math.max(...o.slice(0,i).map(z => z[1]))); return g; }, get onWater(){ return onWater; }, get tut(){ return {i: tutI, s: tutS, wait: card && card.wait, btn: !!(card && card.button), title: card && card.title}; }, get vy(){ return vy; }, get tti(){ return onWater ? null : tti(); }, get stats(){ return stats; }, orb: (tier, dw, h) => { actus.push(makeOrbObj(t + dw, tier, h, 0)); }, startVolte, finish: r => finish(r), level: i => { applyLevel(i); reset(); }, boats: (dw, n) => { for (let k=0;k<n;k++) obs.push(makeBoat(t + dw + k*0.45, false)); }, setSeed: sd => { P.seed = sd; reset(); return sd; }, info: () => {
+window.__vdd = {get t(){ return t; }, set t(v){ jumpTo(v); }, get mode(){ return mode; }, get trace(){ return {extra: buildLevel.extra, items: buildLevel.trace}; }, get adapt(){ return {lvl: adaptLvl, info: adaptInfo, grabWindow: P.grabWindow, girPerfect: P.girPerfect, slackEnd: P.slackEnd, trapEnd: P.trapEnd}; }, get boostK(){ return boostK; }, get poll(){ return poll; }, get weight(){ return weight; }, get state(){ return state; }, get grab(){ return grab && {t: grab.t, dur: grab.dur, win: grab.win, res: grab.res, tut: grab.tut}; }, get choice(){ return choice && {tut: choice.tut, picked: choice.picked}; }, get infoOv(){ return infoOv && {i: infoOv.i, n: infoOv.pages.length, title: infoOv.pages[infoOv.i].title}; }, openInfo, closeInfo, get bigs(){ return bigs.map(b => ({w: +b.w.toFixed(1), smalls: b.smalls, who: b.item.who, t: b.item.t})); }, get voltW(){ return voltW.map(v => +v.toFixed(1)); }, get voltOrder(){ return voltOrder; }, get chainN(){ return chain.items.length; }, get charging(){ return charging; }, get charge(){ return charge; }, get actusTut(){ return actus.filter(a => a.tut !== undefined && !a.got).map(a => ({w: +a.w.toFixed(2), h: Math.round(a.h), tier: a.tier, tut: a.tut})); }, get actusAll(){ return actus.filter(a => a.diff === 0 && a.tut === undefined).map(a => a.w); }, get combo(){ return comboN; }, get seriesInfo(){ const z = actus.filter(a => a.diff === 0 && a.tut === undefined); return {orbs: z.length, special: z.filter(a => a.tier !== 'b').map(a => a.tier).join(''), ws: z.filter((a,i) => i === 0 || a.w - z[i-1].w > 1).map(a => +a.w.toFixed(1))}; }, get rnX(){ return rnX(); }, get rnEnterW(){ return rnEnterW; }, get spdMul(){ return spdMul; }, bardFree: w => bardFree(w), get throwers(){ return throwers(); }, get view(){ return view(); }, get justiceOn(){ return justice.on; }, get projKinds(){ return proj.map(p => p.kind); }, zonesAll: () => ({volt: voltW.filter(v => v > TUT_END).map((v, i) => voltZone(v, i === 0)), bigs: bigs.map(bigZone), jus: justiceZones()}), get bardX(){ return bardX; }, get cineOn(){ return !!cine; }, get flags(){ return flags; }, get bubble(){ return bubble && bubble.text; }, get band(){ return band && band.text; }, get card(){ return card && {title: card.title, info: !!card.info, kicker: card.kicker}; }, W: {TUT_END, W_TRIAL, W_JUDG, W_APPEAL, TOTAL_WEEKS}, get vf(){ return vf && {phase: vf.phase, t: vf.t, grade: vf.grade}; }, trapOrb: (dw, h) => { const o = makeOrbObj(t + dw, 's', h, 0.3, true), b = makeBoat(t + dw + landDist(h) + 0.6, false); o.trapBoat = b; window.__tb = b; actus.push(o); obs.push(b); }, gaps: () => { const o = obs.filter(q => q.kind === 'cass' || q.kind === 'boat').map(q => [q.w - hitHalf(q), q.w + hitHalf(q)]).sort((a,b) => a[0]-b[0]); const g = []; for (let i=1;i<o.length;i++) g.push(o[i][0] - Math.max(...o.slice(0,i).map(z => z[1]))); return g; }, get onWater(){ return onWater; }, get tut(){ return {i: tutI, s: tutS, wait: card && card.wait, btn: !!(card && card.button), title: card && card.title}; }, get vy(){ return vy; }, get tti(){ return onWater ? null : tti(); }, get stats(){ return stats; }, orb: (tier, dw, h) => { actus.push(makeOrbObj(t + dw, tier, h, 0)); }, startVolte, finish: r => finish(r), level: i => { applyLevel(i); reset(); }, boats: (dw, n) => { for (let k=0;k<n;k++) obs.push(makeBoat(t + dw + k*0.45, false)); }, setSeed: sd => { P.seed = sd; reset(); return sd; }, info: () => {
     const real = obs.filter(o => (o.kind === 'cass' || o.kind === 'boat') && o.w > TUT_END && !o.tut).concat(throws.filter(th => !th.thrown).flatMap(th => th.objs)).sort((a, b) => a.w - b.w);
     // group into units: objects whose collision extents touch or are within 0.35 belong together
     const units = []; for (const o of real){ const hh = hitHalf(o), u = units[units.length - 1]; if (u && o.w - hh <= u.b + 0.35){ u.objs.push(o); u.b = Math.max(u.b, o.w + hh); } else units.push({a: o.w - hh, b: o.w + hh, objs: [o]}); }
