@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sprite Studio</title>
+<style>
+:root{--bg:#141c2b;--panel:#1b2433;--panel2:#22304a;--line:#33425e;--ink:#e8eef8;--muted:#9fb0c9;--accent:#ffd23f;--ok:#2fb24e;--bad:#e5484d;--blue:#3b82f6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+header h1{font-size:18px;margin:0 8px 0 0}
+label.f{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+input,select,textarea,button{font:inherit;color:var(--ink)}
+input[type=password],input[type=text],select,input[type=number]{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+input[type=password]{width:260px}
+input[type=number]{width:60px}
+button{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 14px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button.primary{background:var(--blue);border-color:var(--blue);font-weight:600}
+button.ok{background:var(--ok);border-color:var(--ok);font-weight:600}
+button:disabled{opacity:.45;cursor:default}
+main{max-width:1200px;margin:0 auto;padding:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.card h2{font-size:16px;margin:0}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sp{flex:1}
+.muted{color:var(--muted);font-size:13px}
+.refs{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.ref{position:relative;width:110px;height:110px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#000}
+.ref img{width:100%;height:100%;object-fit:cover}
+.ref button{position:absolute;top:4px;right:4px;padding:0 7px;font-size:13px;background:rgba(0,0,0,.65)}
+.drop{width:110px;height:110px;border:2px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:13px;cursor:pointer;padding:6px}
+.drop.small{width:auto;height:auto;padding:6px 12px;border-width:1px}
+.drop.hover{border-color:var(--accent);color:var(--accent)}
+.step{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--panel2);font-weight:700;font-size:13px;margin-right:8px;flex:none}
+.badge{font-size:12px;border-radius:99px;padding:2px 9px;border:1px solid var(--line);color:var(--muted)}
+.badge.ok{border-color:var(--ok);color:#7ee2a0}
+.badge.wait{border-color:var(--accent);color:var(--accent)}
+details{margin-top:10px}
+summary{cursor:pointer;color:var(--muted);font-size:13px}
+textarea{width:100%;min-height:220px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;margin-top:8px}
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
+.res{border:2px solid var(--line);border-radius:10px;overflow:hidden;background:#000}
+.res.approved{border-color:var(--ok)}
+.res img{display:block;width:100%;cursor:zoom-in}
+.res .bar{display:flex;gap:6px;padding:8px;background:var(--panel2)}
+.res .bar button{padding:5px 10px;font-size:13px}
+.status{margin-top:10px;font-size:13px}
+.status.err{color:#ff9a9d;white-space:pre-wrap}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--muted);border-top-color:transparent;border-radius:50%;animation:s 1s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}
+#zoom{position:fixed;inset:0;background:rgba(5,8,14,.92);display:none;align-items:center;justify-content:center;z-index:20;cursor:zoom-out}
+#zoom img{max-width:96vw;max-height:94vh;image-rendering:pixelated}
+@media (max-width:640px){header{padding:10px 16px}main{padding:16px}input[type=password]{width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Sprite Studio</h1>
+  <label class="f">API key <input type="password" id="key" placeholder="sk-..." autocomplete="off"></label>
+  <label class="f"><input type="checkbox" id="remember"> remember on this computer</label>
+  <label class="f">Model <select id="model"><option>gpt-image-2</option><option>gpt-image-1</option></select></label>
+  <label class="f">Quality <select id="quality"><option>high</option><option>medium</option><option>low</option></select></label>
+  <label class="f">Variants <input type="number" id="n" min="1" max="4" value="2"></label>
+  <span class="sp"></span>
+  <button class="primary" id="runAll">Generate all remaining</button>
+</header>
+<main>
+  <section class="card">
+    <div class="row"><h2>Reference photos</h2><span class="sp"></span><span class="muted">Sent with every request. Drop more photos, or remove one.</span></div>
+    <div class="refs" id="refs"></div>
+  </section>
+  <div id="steps"></div>
+  <p class="muted">Approve one result per step: the approved image goes along as a reference to the following steps. <span id="sendNote"></span></p>
+</main>
+<div id="zoom"><img alt=""></div>
+<script>
+const SHEETS = __SHEETS__;
+const BOARD = 'data:image/jpeg;base64,__BOARD__';
+const API = 'https://api.openai.com/v1/images/edits';
+const $ = s => document.querySelector(s);
+const state = {refs: [], results: {}, approved: {}, sent: {}, busy: {}};
+let assets = null, sdb = null;   // claude.ai capabilities: only on the published page
+const rid = () => Math.random().toString(36).slice(2, 10);
+
+// ---------- small storage (IndexedDB), always optional ----------
+let db = null;
+function openDB(){ return new Promise(res => { try { const r = indexedDB.open('sprite-studio', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => { db = r.result; res(); }; r.onerror = () => res(); } catch(e){ res(); } }); }
+function dbSet(k, v){ try { if (db) db.transaction('kv', 'readwrite').objectStore('kv').put(v, k); } catch(e){} }
+function dbGet(k){ return new Promise(res => { try { if (!db) return res(null); const r = db.transaction('kv').objectStore('kv').get(k); r.onsuccess = () => res(r.result || null); r.onerror = () => res(null); } catch(e){ res(null); } }); }
+function lsGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function lsSet(k, v){ try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch(e){} }
+
+// ---------- reference photos ----------
+function dataURLtoBlob(u){ const [h, b] = u.split(','), m = h.match(/:(.*?);/)[1], bin = atob(b), a = new Uint8Array(bin.length); for (let i=0;i<bin.length;i++) a[i] = bin.charCodeAt(i); return new Blob([a], {type: m}); }
+function addRef(name, url){ state.refs.push({name, url}); saveRefs(); renderRefs(); }
+function saveRefs(){ dbSet('refs', state.refs); }
+function renderRefs(){
+  const el = $('#refs'); el.innerHTML = '';
+  state.refs.forEach((r, i) => { const d = document.createElement('div'); d.className = 'ref'; d.innerHTML = '<img alt=""><button title="Remove">×</button>'; d.querySelector('img').src = r.url; d.querySelector('img').title = r.name;
+    d.querySelector('button').onclick = () => { state.refs.splice(i, 1); saveRefs(); renderRefs(); renderSteps(); }; el.appendChild(d); });
+  const drop = document.createElement('label'); drop.className = 'drop'; drop.innerHTML = 'Drop or click to add photos<input type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>';
+  const take = files => [...files].forEach(f => { const fr = new FileReader(); fr.onload = () => addRef(f.name, fr.result); fr.readAsDataURL(f); });
+  drop.querySelector('input').onchange = e => take(e.target.files);
+  drop.ondragover = e => { e.preventDefault(); drop.classList.add('hover'); }; drop.ondragleave = () => drop.classList.remove('hover');
+  drop.ondrop = e => { e.preventDefault(); drop.classList.remove('hover'); take(e.dataTransfer.files); };
+  el.appendChild(drop);
+}
+
+// ---------- steps ----------
+const label = id => (SHEETS.find(s => s.id === id) || {}).name || id;
+function missing(s){ return (s.uses || []).filter(u => !state.approved[u]); }
+function renderSteps(){
+  const host = $('#steps'); host.innerHTML = '';
+  SHEETS.forEach((s, i) => {
+    const miss = missing(s), appr = state.approved[s.id], busy = state.busy[s.id];
+    const c = document.createElement('section'); c.className = 'card'; c.id = 'step-' + s.id;
+    c.innerHTML = `<div class="row"><span class="step">${i + 1}</span><h2>${s.name}</h2><span class="sp"></span>
+      <span class="badge ${appr ? 'ok' : miss.length ? '' : 'wait'}">${appr ? 'Approved' : miss.length ? 'Waiting for ' + miss.map(label).join(', ') : 'Ready'}</span>
+      <button class="primary gen" ${miss.length || busy || !state.refs.length ? 'disabled' : ''}>${busy ? '<span class="spin"></span>Generating…' : (state.results[s.id] || []).length ? 'Generate again' : 'Generate'}</button></div>
+      <div class="muted" style="margin-top:6px">${s.size} · references: photos${(s.uses || []).length ? ' + ' + s.uses.map(label).join(' + ') : ''}</div>
+      <details><summary>Edit the prompt</summary><textarea spellcheck="false"></textarea></details>
+      <div class="row" style="margin-top:8px"><label class="drop small">Add an image made elsewhere<input type="file" accept="image/png,image/jpeg,image/webp" multiple hidden></label>${(state.results[s.id] || []).length ? '<button class="rejall">Reject all</button>' : ''}<span class="sp"></span>${appr ? (state.sent[s.id] ? '<span class="badge ok">Sent to Claude</span>' : assets ? '<span class="badge wait">Sending…</span>' : '<span class="badge">Not sent: open the published page to send to Claude</span>') : ''}</div>
+      <div class="status"></div><div class="results"></div>`;
+    const ta = c.querySelector('textarea'); ta.value = s.prompt;
+    ta.oninput = () => { s.prompt = ta.value; lsSet('prompt-' + s.id, ta.value); };
+    c.querySelector('.gen').onclick = () => generate(s);
+    c.querySelector('.drop.small input').onchange = e => [...e.target.files].forEach(fl => { const fr = new FileReader(); fr.onload = () => { (state.results[s.id] = state.results[s.id] || []).unshift({id: rid(), url: fr.result}); saveResults(); renderSteps(); }; fr.readAsDataURL(fl); });
+    const ra = c.querySelector('.rejall'); if (ra) ra.onclick = () => { if (!confirmReject(s.id, null)) return; state.results[s.id] = []; if (state.approved[s.id]) unapprove(s.id); saveResults(); renderSteps(); };
+    if (s.status) { const st = c.querySelector('.status'); st.textContent = s.status; if (s.err) st.classList.add('err'); }
+    const rs = c.querySelector('.results');
+    (state.results[s.id] || []).forEach((r, k) => {
+      const on = appr && appr.id === r.id;
+      const d = document.createElement('div'); d.className = 'res' + (on ? ' approved' : '');
+      d.innerHTML = `<img alt=""><div class="bar"><button class="${on ? 'ok' : ''} ap">${on ? '✓ Approved' : 'Approve'}</button><button class="rej">Reject</button><span class="sp"></span><button class="dl">Download</button></div>`;
+      d.querySelector('img').src = r.url; d.querySelector('img').onclick = () => zoom(r.url);
+      d.querySelector('.ap').onclick = () => { if (on) unapprove(s.id); else approve(s, r); };
+      d.querySelector('.rej').onclick = () => { if (!confirmReject(s.id, r.id)) return; state.results[s.id] = state.results[s.id].filter(x => x.id !== r.id); if (on) unapprove(s.id); saveResults(); renderSteps(); };
+      d.querySelector('.dl').onclick = () => download(r.url, `${s.id}_v${k + 1}.png`);
+      rs.appendChild(d);
+    });
+    host.appendChild(c);
+  });
+}
+let dls = null;
+function download(url, name){ if (dls){ dls.save({filename: name, data: dataURLtoBlob(url)}).catch(() => {}); return; } const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+function saveResults(){ dbSet('results', state.results); }
+function confirmReject(step, id){ const a = state.approved[step]; return !(a && (id === null || a.id === id)) || confirm('This image is approved. Reject it anyway?'); }
+function dependents(step){ return SHEETS.filter(x => (x.uses || []).includes(step)).map(x => x.name); }
+async function approve(s, r){
+  state.approved[s.id] = {id: r.id, url: r.url}; delete state.sent[s.id]; dbSet('approved', state.approved); renderSteps();
+  await sendToClaude(s);
+}
+async function unapprove(step){
+  const st = SHEETS.find(x => x.id === step); if (st){ st.status = ''; st.err = false; }
+  const old = state.sent[step]; delete state.approved[step]; delete state.sent[step]; dbSet('approved', state.approved); dbSet('sent', state.sent); renderSteps();
+  if (sdb) { try { await sdb.doc('approved/' + step).delete(); } catch(e){} }
+  if (assets && old) { try { await assets.delete(old.assetId); } catch(e){} }
+}
+async function sendToClaude(s){
+  // published page only: the approved image goes to the artifact's file store, and a row tells Claude which step it is
+  if (!assets || !sdb) return;
+  const a = state.approved[s.id]; if (!a) return;
+  const prev = state.sent[s.id];
+  try {
+    const up = await assets.upload(dataURLtoBlob(a.url), {type: 'image/png'});
+    await sdb.doc('approved/' + s.id).set({step: s.id, name: s.name, assetId: up.id, url: up.url, at: new Date().toISOString()});
+    if (state.approved[s.id] && state.approved[s.id].id === a.id){ state.sent[s.id] = {assetId: up.id}; dbSet('sent', state.sent); }
+    if (prev && prev.assetId !== up.id){ try { await assets.delete(prev.assetId); } catch(e){} }
+    s.status = 'Approved image sent to Claude.'; s.err = false;
+  } catch(e){ s.status = 'Could not send to Claude: ' + (e.code || '') + ' ' + (e.message || e); s.err = true; }
+  renderSteps();
+}
+function zoom(url){ $('#zoom img').src = url; $('#zoom').style.display = 'flex'; }
+$('#zoom').onclick = () => { $('#zoom').style.display = 'none'; };
+
+// ---------- API ----------
+async function callAPI(s, fidelity){
+  // multipart body built by hand as one Blob: some embedded viewers relay fetch() and cannot pass a FormData object
+  const boundary = '----spritestudio' + Math.random().toString(16).slice(2), parts = [];
+  const field = (name, value) => parts.push(`--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`);
+  const file = (name, blob, filename) => { parts.push(`--${boundary}\r\nContent-Disposition: form-data; name="${name}"; filename="${filename}"\r\nContent-Type: ${blob.type || 'application/octet-stream'}\r\n\r\n`, blob, '\r\n'); };
+  field('model', $('#model').value); field('prompt', s.prompt); field('size', s.size);
+  field('quality', $('#quality').value); field('n', String(Math.max(1, Math.min(4, +$('#n').value || 1)))); field('output_format', 'png');
+  if (fidelity) field('input_fidelity', 'high');
+  state.refs.forEach((r, i) => file('image[]', dataURLtoBlob(r.url), 'ref' + i + '.' + (r.url.includes('image/png') ? 'png' : r.url.includes('image/webp') ? 'webp' : 'jpg')));
+  (s.uses || []).forEach(u => file('image[]', dataURLtoBlob(state.approved[u].url), u + '.png'));
+  parts.push(`--${boundary}--\r\n`);
+  const body = await new Blob(parts).arrayBuffer();
+  return fetch(API, {method: 'POST', headers: {Authorization: 'Bearer ' + $('#key').value.trim(), 'Content-Type': 'multipart/form-data; boundary=' + boundary}, body});
+}
+async function generate(s){
+  if (!$('#key').value.trim()){ s.status = 'Enter your API key at the top first.'; s.err = true; renderSteps(); return false; }
+  state.busy[s.id] = true; s.status = 'Sending… a high-quality sheet can take one to two minutes.'; s.err = false; renderSteps();
+  let fidelity = !state.noFidelity, ok = false;
+  try {
+    for (let attempt = 1; attempt <= 3; attempt++){
+      let r;
+      try { r = await callAPI(s, fidelity); }
+      catch(e){ if (attempt < 3){ s.status = 'Network error, retrying…'; renderSteps(); await new Promise(z => setTimeout(z, 4000*attempt)); continue; } throw new Error('Network error: ' + e.message + '\nThis page could not reach OpenAI. If it is the published page, open the downloaded file in Chrome, Safari, Edge or Firefox to generate, then add the images here with « Add an image made elsewhere ». If it is the file, open it in a browser rather than the Claude app preview.'); }
+      const txt = await r.text();
+      if (r.ok){
+        const data = JSON.parse(txt).data || [];
+        const urls = data.map(d => ({id: rid(), url: 'data:image/png;base64,' + d.b64_json}));
+        state.results[s.id] = urls.concat(state.results[s.id] || []);
+        saveResults();
+        s.status = urls.length + ' new result(s). Approve the one you want to keep.'; ok = true; break;
+      }
+      if (r.status === 400 && fidelity && txt.includes('input_fidelity')){ fidelity = false; state.noFidelity = true; continue; }
+      if ([429, 500, 502, 503, 504].includes(r.status) && attempt < 3){ s.status = 'Server busy (HTTP ' + r.status + '), retrying…'; renderSteps(); await new Promise(z => setTimeout(z, 8000*attempt)); continue; }
+      let msg = txt; try { msg = JSON.parse(txt).error.message; } catch(e){}
+      throw new Error('HTTP ' + r.status + ': ' + msg);
+    }
+  } catch(e){ s.status = e.message; s.err = true; }
+  state.busy[s.id] = false; renderSteps();
+  return ok;
+}
+$('#runAll').onclick = async () => {
+  $('#runAll').disabled = true;
+  for (const s of SHEETS){
+    if (state.approved[s.id] || (state.results[s.id] || []).length) continue;
+    if (missing(s).length){ document.getElementById('step-' + s.id).scrollIntoView({behavior: 'smooth', block: 'center'}); break; }
+    document.getElementById('step-' + s.id).scrollIntoView({behavior: 'smooth', block: 'center'});
+    if (!await generate(s)) break;
+    if (!s.uses || !s.uses.length || s.id === 'charref' || s.id === 'sheet1') break;   // the next steps need your approval first
+  }
+  $('#runAll').disabled = false;
+};
+
+// ---------- settings ----------
+$('#remember').onchange = () => lsSet('key', $('#remember').checked ? $('#key').value : null);
+$('#key').oninput = () => { if ($('#remember').checked) lsSet('key', $('#key').value); };
+['model', 'quality', 'n'].forEach(id => { const v = lsGet(id); if (v) $('#' + id).value = v; $('#' + id).onchange = () => lsSet(id, $('#' + id).value); });
+{ const k = lsGet('key'); if (k){ $('#key').value = k; $('#remember').checked = true; } }
+SHEETS.forEach(s => { const p = lsGet('prompt-' + s.id); if (p) s.prompt = p; });
+
+(async () => {
+  await openDB();
+  const refs = await dbGet('refs'); state.refs = refs && refs.length ? refs : [{name: 'character-reference.jpg', url: BOARD}];
+  state.results = (await dbGet('results')) || {}; state.approved = (await dbGet('approved')) || {}; state.sent = (await dbGet('sent')) || {};
+  for (const k in state.results) state.results[k] = state.results[k].map(r => typeof r === 'string' ? {id: rid(), url: r} : r);
+  for (const k in state.approved){ const a = state.approved[k]; if (typeof a === 'string'){ const r = (state.results[k] || []).find(x => x.url === a); state.approved[k] = r ? {id: r.id, url: a} : {id: rid(), url: a}; } }
+  renderRefs(); renderSteps();
+  if (window.claude && window.claude.use){
+    try { [assets, sdb, dls] = await Promise.all([window.claude.use('assets'), window.claude.use('db'), window.claude.use('downloads')]); } catch(e){ assets = sdb = dls = null; }
+    if (!(assets && sdb)) assets = sdb = null;
+    $('#sendNote').textContent = assets ? 'Approving an image sends it to Claude automatically.' : '';
+    renderSteps();
+    for (const s of SHEETS) if (state.approved[s.id] && !state.sent[s.id]) await sendToClaude(s);
+  }
+})();
+</script>
+</body>
+</html>
