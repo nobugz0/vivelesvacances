@@ -22,7 +22,7 @@ def bot(pg, seconds, wind):
     t0 = time.time(); ceil = ev(pg, 'window.__vdd.P.ceil')
     if wind: pg.mouse.move(900, 360); pg.mouse.down()
     while time.time() - t0 < seconds and ev(pg, 'window.__vdd.state') == 'play':
-        cs = ev(pg, 'window.__vdd.coinsList.filter(c => c.x > 150 && c.x < 460)'); y = ev(pg, 'window.__vdd.y')
+        cs = ev(pg, 'window.__vdd.coinsList.filter(c => c.x > window.__vdd.px - 10 && c.x < window.__vdd.px + 500)'); y = ev(pg, 'window.__vdd.y')
         ty = max(ceil + (170 if wind else 70), min(cs, key=lambda c: c['x'])['y']) if cs else ceil + 200
         if wind:
             d = max(-1, min(1, (y - ty)/140.0)); pg.mouse.move(900, 360 - d*290)
@@ -41,17 +41,17 @@ with sync_playwright() as p:
     check(y1 < y0 - 60, 'appui = monte (%.0f -> %.0f)' % (y0, y1))
     pg.mouse.up(); pg.wait_for_timeout(1400); y2 = ev(pg, 'window.__vdd.y')
     check(y2 > y1 + 60, 'relâché = inversion, plané puis chute (%.0f -> %.0f)' % (y1, y2))
-    # atterrissage parfait : on remonte, puis on freine juste avant l'eau (contrôleur dans la page, à la frame)
+    # atterrissage parfait (mode appui) : on monte, on relâche, et on redonne l'input sous landH de hauteur
     l0 = ev(pg, 'window.__vdd.stats.lands')
     ev(pg, '''() => new Promise(res => { const v = window.__vdd; v.hold(true); let ph = 'up', t0 = performance.now();
       const step = () => { const now = performance.now();
-        if (ph === 'up' && now - t0 > 600){ v.hold(false); ph = 'fall'; }
-        else if (ph === 'fall' && v.y > v.P.yMax - 40 && v.vy > 120){ v.hold(true); ph = 'brake'; }
-        else if (ph === 'brake' && v.vy < 20){ v.hold(false); ph = 'drop'; }
-        if (ph !== 'up' && v.onWater){ v.hold(false); res(); return; }
-        if (now - t0 > 6000){ v.hold(false); res(); return; }
+        if (ph === 'up' && now - t0 > 700){ v.hold(false); ph = 'fall'; }
+        else if (ph === 'fall' && v.vy > 0 && v.P.yMax - v.y <= v.P.landH - 6){ v.hold(true); ph = 'press'; }
+        else if (ph === 'press' && now - t0 > 2500){ v.hold(false); ph = 'done'; }
+        if (ph === 'done' || now - t0 > 6000){ v.hold(false); res(); return; }
         requestAnimationFrame(step); }; requestAnimationFrame(step); })''')
-    check(ev(pg, 'window.__vdd.stats.lands') > l0, 'atterrissage parfait en freinant avant l\'eau (vy à la pose %.0f, seuil %.0f)' % (ev(pg, 'window.__vdd.lastLandV'), ev(pg, 'window.__vdd.P.landSoft')))
+    check(ev(pg, 'window.__vdd.stats.lands') > l0, 'atterrissage parfait validé à l\'input (input à %s px, seuil %s, chute depuis %.0f px)' % (ev(pg, 'window.__vdd.lastPressH'), ev(pg, 'window.__vdd.P.landH'), ev(pg, 'window.__vdd.P.yMax - window.__vdd.airTop')))
+    pg.screenshot(path=D + 'p3_land.png')
     # limite d'altitude : monter tout droit finit emporté par le vent
     pg.mouse.down(); t0 = time.time()
     while time.time() - t0 < 6 and ev(pg, 'window.__vdd.state') == 'play': pg.wait_for_timeout(50)
