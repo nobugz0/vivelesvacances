@@ -143,13 +143,7 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
       <img src="start.jpg" alt="Marine Le Pen en kitesurf tend la main vers une actu ailée">
       <div class="scard s-start" style="left:24.16%;top:36.34%;width:69.5%;height:55.69%">
         <h1 id="tName">Marine la maline</h1>
-        <p id="tSub">Proto 3 · banc d'essai des commandes. Attrape l'argent du parti, évite les journalistes, va voir les électeurs.</p>
-        <div class="srow">
-          <div class="levels" id="ctrlSel">
-            <button type="button" data-ctrl="wind" aria-pressed="true">Le vent · planche à voile</button>
-            <button type="button" data-ctrl="tap" aria-pressed="false">Appuyer · kitesurf</button>
-          </div>
-        </div>
+        <p id="tSub">Proto 3 · Appuie pour monter, relâche pour descendre. Attrape l'argent du parti, évite les journalistes, va voir les électeurs.</p>
         <div class="srow">
           <button class="sbtn go" id="startBtn" type="button">C'est parti !</button>
           <button class="sbtn ic" id="musicTitle" type="button"></button>
@@ -171,7 +165,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.1', BUILD = '18/10/2026 à 20h47';
+const VERSION = 'proto 3 · 0.2', BUILD = '18/10/2026 à 20h47';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -340,8 +334,13 @@ function sfxP3(k, n){
 const P = {
   speed: 260,            // défilement, px/s
   yMin: 92, yMax: WATER - 26,
-  // option 2 : appuyer pour monter
-  tapUp: 1500, tapGrav: 1150, tapVmax: 440,
+  // vol en kite : appuyer pour monter, relâcher pour descendre (modèle progressif, voir le document de design §14)
+  vUpMax: 300, vDownMax: 380,            // vitesses verticales maximales, px/s
+  aUpMin: 500, aUpMax: 1400, rampUp: 0.6,     // accélération de montée : faible au premier contact, pleine après rampUp s d'appui
+  aDownMin: 250, aDownMax: 1000, rampDown: 0.8,  // gravité : douce à la relâche, pleine après rampDown s
+  glideTime: 0.25,                        // plané : temps suspendu une fois la montée annulée, avant que la gravité n'agisse
+  brake: 1600,                            // freinage quand on inverse le sens
+  softZone: 20,                           // zone de ralentissement au plafond et au plancher, px
   // option 1 : le vent
   windVmax: 380, windRate: 4.2, windDead: 0.07, windAngle: 60,
   flight: 75,            // durée du vol, s
@@ -350,13 +349,13 @@ const P = {
 };
 
 // ---------- state ----------
-let state = 'title', paused = false, ctrl = 'wind';
-let tFlight, realT = 0, py, vy, aIn, aVane, holding, inv, poll, coins, mult, multT, maxMult, stats;
+let state = 'title', paused = false, ctrl = 'tap';   // 'wind' reste accessible par __vdd.setCtrl pour mémoire
+let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, mult, multT, maxMult, stats;
 let coinsList, journos, crowds, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
 let keyUp = false, keyDown = false, pointerY = null, pointerDown = false;
 
 function start(){
-  seed = 7; realT = 0; tFlight = 0; py = (P.yMin + P.yMax)/2; vy = 0; aIn = 0; aVane = 0; holding = false; inv = 0;
+  seed = 7; realT = 0; tFlight = 0; py = (P.yMin + P.yMax)/2; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0;
   poll = P.pollStart; coins = 0; mult = 1; multT = 0; maxMult = 1; stats = {hits: 0, crowds: 0, blocks: 0, coins: 0};
   coinsList = []; journos = []; crowds = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0;
   pointerY = null; pointerDown = false; keyUp = keyDown = false;
@@ -371,7 +370,15 @@ function inputFromPointer(ly){ return clamp((H/2 - ly)/(H*0.40), -1, 1); }
 function applyInput(dt){
   if (ctrl === 'tap'){
     holding = pointerDown || keyUp;
-    vy += (holding ? -P.tapUp : P.tapGrav)*dt; vy = clamp(vy, -P.tapVmax, P.tapVmax);
+    if (holding){
+      relT = 0;
+      if (vy > 0){ vy = Math.max(0, vy - P.brake*dt); holdT = 0; }   // on appuie en descente : freinage d'abord
+      else { holdT += dt; const a = lerp(P.aUpMin, P.aUpMax, clamp(holdT/P.rampUp, 0, 1)); vy = Math.max(-P.vUpMax, vy - a*dt); }
+    } else {
+      holdT = 0;
+      if (vy < 0){ vy = Math.min(0, vy + P.brake*dt); relT = 0; }   // on relâche en montée : la montée s'amortit
+      else { relT += dt; if (relT >= P.glideTime){ const a = lerp(P.aDownMin, P.aDownMax, clamp((relT - P.glideTime)/P.rampDown, 0, 1)); vy = Math.min(P.vDownMax, vy + a*dt); } }   // sinon : plané
+    }
   } else {
     if (pointerDown && pointerY !== null) aIn = inputFromPointer(pointerY);
     else if (keyUp || keyDown) aIn = clamp(aIn + ((keyUp ? 1 : 0) - (keyDown ? 1 : 0))*3*dt, -1, 1);
@@ -380,7 +387,11 @@ function applyInput(dt){
     const a = Math.abs(aVane) < P.windDead ? 0 : aVane;
     vy = -a*P.windVmax;
   }
-  py += vy*dt;
+  // zones molles : la vitesse se réduit sur les derniers px avant le plafond et le plancher
+  let k = 1;
+  if (vy < 0 && py < P.yMin + P.softZone) k = clamp((py - P.yMin)/P.softZone, 0.15, 1);
+  if (vy > 0 && py > P.yMax - P.softZone) k = clamp((P.yMax - py)/P.softZone, 0.15, 1);
+  py += vy*k*dt;
   if (py < P.yMin){ py = P.yMin; if (vy < 0) vy = 0; }
   if (py > P.yMax){ py = P.yMax; if (vy > 0) vy = 0; }
 }
@@ -606,7 +617,7 @@ const RS = 0.69;
 function drawMarine(){
   const x = PX(), y = py, blink = inv > 0 && Math.floor(realT*18) % 2 === 0;
   if (blink) return;
-  const tilt = clamp(vy/P.tapVmax, -1, 1)*0.22;
+  const tilt = clamp(vy/P.vDownMax, -1, 1)*0.22;
   if (ctrl === 'tap'){
     // kitesurf : la voile au-dessus, Marine en vol
     const kn = kiteFrame(), ks = 0.69*0.6, kx = x + 100, ky = y - 108 + Math.sin(realT*1.7)*4 - vy*0.04;
@@ -664,8 +675,7 @@ function drawHud(){
   const mc = mult >= 4 ? '#d63b3b' : mult >= 2 ? '#16a34a' : '#5b6475';
   text('×' + mult, 262, 34, 19, 900, mc);
   ctx.fillStyle = 'rgba(20,33,61,.18)'; rr(262, 44, 46, 5, 2); ctx.fill(); ctx.fillStyle = mc; rr(262, 44, 46*clamp(multT/P.multEvery, 0, 1), 5, 2); ctx.fill();
-  const lbl = ctrl === 'wind' ? 'Le vent · planche à voile' : 'Appuyer pour monter · kitesurf';
-  outText(lbl, VW/2, 24, 12, 800, 'rgba(255,255,255,.85)', 'center', 'rgba(20,33,61,.6)');
+  if (ctrl === 'wind') outText('Le vent · planche à voile', VW/2, 24, 12, 800, 'rgba(255,255,255,.85)', 'center', 'rgba(20,33,61,.6)');
 }
 function drawPops(){ for (const p of pops){ const a = clamp(p.life/0.4, 0, 1); ctx.globalAlpha = a; outText(p.t, p.x, p.y, p.big ? 22 : 16, 900, p.color); ctx.globalAlpha = 1; } }
 function drawFx(){
@@ -679,7 +689,7 @@ function drawRecap(){
   text('Fin du vol', VW/2, y + 44, 30, 900, '#14213d', 'center', UIT);
   text('Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièces  ·  max ×' + maxMult, VW/2, y + 88, 16, 800, '#14213d', 'center');
   text(stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + ' touché' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.crowds + ' bain' + (stats.crowds > 1 ? 's' : '') + ' de foule  ·  ' + stats.blocks + ' bloc' + (stats.blocks > 1 ? 's' : '') + ' complet' + (stats.blocks > 1 ? 's' : ''), VW/2, y + 116, 13, 700, '#5b6475', 'center');
-  btn(VW/2 - 190, y + 160, 180, 46, 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Changer de commande', '#fff', '#14213d', 'title');
+  btn(VW/2 - 190, y + 160, 180, 46, 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Menu', '#fff', '#14213d', 'title');
 }
 let btns = [];
 function btn(x, y, w, h, label, bg, fg, id){ ctx.fillStyle = '#14213d'; rr(x + 3, y + 3, w, h, 10); ctx.fill(); ctx.fillStyle = bg; rr(x, y, w, h, 10); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke(); text(label, x + w/2, y + h/2 + 1, 15, 900, fg, 'center'); btns.push({x, y, w, h, id}); }
@@ -722,12 +732,11 @@ setMuted(muted); setSfxMuted(sfxMuted);
 for (const id of ['musicBtn', 'musicTitle']) document.getElementById(id).addEventListener('click', () => setMuted(!muted));
 for (const id of ['soundBtn', 'soundTitle']) document.getElementById(id).addEventListener('click', () => { ensureAudio(); setSfxMuted(!sfxMuted); });
 document.getElementById('startBtn').addEventListener('click', start);
-document.querySelectorAll('#ctrlSel button').forEach(b => b.addEventListener('click', () => { ctrl = b.dataset.ctrl; document.querySelectorAll('#ctrlSel button').forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false')); }));
 
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get mult(){ return mult; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; },
+  get poll(){ return poll; }, get coins(){ return coins; }, get mult(){ return mult; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; },
   get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); }, get crowds(){ return crowds.map(g => ({x: g.x, gauge: g.gauge, done: g.done})); },
   setCtrl(c){ ctrl = c; }, start, setT(v){ tFlight = v; }, P,
 };

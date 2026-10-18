@@ -10,7 +10,7 @@ def boot(p, ctrl):
     b = p.chromium.launch(args=['--allow-file-access-from-files', '--autoplay-policy=no-user-gesture-required']); pg = b.new_page(viewport={'width': 1280, 'height': 720})
     errs = []; pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append('console.' + m.type + ': ' + m.text) if m.type == 'error' else None)
     pg.goto('file://' + D + FILE); pg.wait_for_timeout(1200)
-    pg.click('#ctrlSel button[data-ctrl=%s]' % ctrl); pg.click('#startBtn'); pg.wait_for_timeout(600)
+    ev(pg, 'window.__vdd.setCtrl(%r)' % ctrl); pg.click('#startBtn'); pg.wait_for_timeout(600)
     return b, pg, errs
 ok = True
 def check(cond, msg):
@@ -23,8 +23,8 @@ with sync_playwright() as p:
     check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.ctrl') == 'tap', 'démarrage en mode kite')
     y0 = ev(pg, 'window.__vdd.y'); pg.mouse.move(640, 360); pg.mouse.down(); pg.wait_for_timeout(700); y1 = ev(pg, 'window.__vdd.y')
     check(y1 < y0 - 60, 'appui = monte (%.0f -> %.0f)' % (y0, y1))
-    pg.mouse.up(); pg.wait_for_timeout(900); y2 = ev(pg, 'window.__vdd.y')
-    check(y2 > y1 + 60, 'relâché = descend (%.0f -> %.0f)' % (y1, y2))
+    pg.mouse.up(); pg.wait_for_timeout(1400); y2 = ev(pg, 'window.__vdd.y')
+    check(y2 > y1 + 60, 'relâché = freine, plane puis descend (%.0f -> %.0f)' % (y1, y2))
     pg.mouse.down(); pg.wait_for_timeout(2500); check(abs(ev(pg, 'window.__vdd.y') - ev(pg, 'window.__vdd.P.yMin')) < 1, 'plafond atteint, pas au-delà'); pg.mouse.up()
     pg.wait_for_timeout(2500); check(abs(ev(pg, 'window.__vdd.y') - ev(pg, 'window.__vdd.P.yMax')) < 1, 'plancher : stationnaire au ras de l\'eau')
     pg.screenshot(path=D + 'p3_tap.png')
