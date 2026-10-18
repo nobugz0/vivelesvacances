@@ -115,6 +115,10 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
 .scredit{position:absolute;left:0;right:0;bottom:6px;margin:0;text-align:center;font-size:11px;color:#fff;text-shadow:0 1px 3px #000;padding:0 16px}
 #debug{position:absolute;top:80px;right:12px;bottom:12px;width:min(380px,calc(100% - 24px));overflow-y:scroll;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(15,29,51,.35);padding:10px 14px 14px;z-index:6;font-size:13px;box-sizing:border-box;touch-action:pan-y}
 #debug h2{font-size:18px;margin:4px 0}
+#debug label .val{font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
+#debug label small{color:var(--muted);font-size:11px;line-height:1.25;display:block}
+#debug input[type=range]{width:100%;margin:2px 0 10px}
+#debug .levels{margin:6px 0 4px}
 #debug h3{font-size:13px;margin:12px 0 2px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
 #debug label{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:2px 0;line-height:1.2}
 #debug label em{font-style:normal;color:var(--muted);font-size:11px}
@@ -131,6 +135,7 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
     <button class="ib" id="pauseBtn" type="button" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
     <button class="ib" id="musicBtn" type="button" aria-label="Couper la musique"></button>
     <button class="ib" id="soundBtn" type="button" aria-label="Couper le son"></button>
+    <button class="ib" id="gearBtn" type="button" aria-label="Réglages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button class="ib" id="closeBtn" type="button" aria-label="Quitter la partie">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
@@ -160,6 +165,7 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
     </div>
   </div>
 
+  <div id="debug" hidden></div>
   <audio id="music" src="music.mp3" loop preload="auto"></audio>
   <div id="loading">Chargement…</div>
 </div>
@@ -171,7 +177,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.3', BUILD = '18/10/2026 à 20h47';
+const VERSION = 'proto 3 · 0.4', BUILD = '18/10/2026 à 20h47';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -231,10 +237,11 @@ let seed = 1; function rnd(){ seed = (seed*1664525 + 1013904223) % 4294967296; r
 const pick = arr => arr[Math.floor(rnd()*arr.length)];
 
 // ---------- layout ----------
-const H = 450, Z = 0.8, WH = H/Z;           // écran logique 450 px de haut ; le monde est vu à l'échelle Z (caméra reculée)
-const WATER = WH - 92, HZ = WATER - 112;    // ligne d'eau et horizon, en px monde
+const H = 450;                                // écran logique 450 px de haut ; le monde est vu à l'échelle Z (distance de la caméra)
+let Z = 0.8, WH = H/Z, WATER = WH - 115, HZ = WATER - 140;   // hauteur du monde, ligne d'eau et horizon, en px monde (recalculés par applyCam)
 let VW = 800, VWW = 1000, scale = 1, dpr = 1, rotated = false;
 const PX = () => Math.max(190, VWW*0.22);   // x de Marine, en px monde
+function applyCam(){ Z = P.cam; WH = H/Z; WATER = WH - 92/Z; HZ = WATER - 140; VWW = VW/Z; P.yMax = WATER - 62; }
 function layoutScreens(W, H2){
   const IW = 1672, IH = 941;
   document.querySelectorAll('.stage').forEach(st => {
@@ -333,38 +340,70 @@ function sfxP3(k, n){
   if (k === 'hit'){ tone(140, 0.14, 'square', 0.07); noise(0.12, 0.06, 500, 0, 1); sweep(600, 300, 0.22, 'triangle', 0.04, 0.06); return; }
   if (k === 'crowd'){ [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.1, 'triangle', 0.05, i*0.07)); noise(0.35, 0.03, 3000, 0.1, 0.6); return; }
   if (k === 'alert'){ tone(1200, 0.08, 'square', 0.04); tone(1200, 0.08, 'square', 0.04, 0.16); return; }
-  if (k === 'mult'){ tone(880, 0.06, 'square', 0.03); tone(1320, 0.1, 'square', 0.03, 0.06); return; }
+  if (k === 'gust'){ noise(0.9, 0.09, 600, 0, 0.4, 'bandpass'); sweep(200, 1200, 0.8, 'sine', 0.05); return; }
   sfx(k, n);
 }
 
 // ---------- réglages ----------
-const P = {
-  speed: 380,            // défilement, px monde/s (soit 304 px écran/s)
-  yMin: 140, yMax: WATER - 62,   // en bas, les pieds de Marine sont sur l'eau
-  // vol en kite : appuyer pour monter, relâcher pour descendre (modèle progressif, voir le document de design §14)
-  vUpMax: 300, vDownMax: 320,            // vitesses verticales maximales, px/s
-  aUpMin: 500, aUpMax: 1400, rampUp: 0.6,     // accélération de montée : faible au premier contact, pleine après rampUp s d'appui
-  aDownMin: 180, aDownMax: 700, rampDown: 1.1,  // gravité : douce à la relâche, pleine après rampDown s
-  glideTime: 0.35,                        // plané : temps suspendu une fois la montée annulée, avant que la gravité n'agisse
-  brake: 1600,                            // freinage quand on inverse le sens
-  softZone: 20,                           // zone de ralentissement au plafond et au plancher, px
-  // option 1 : le vent
-  windVmax: 340, windRate: 2.6, windDead: 0.07, windAngle: 60,   // windRate : vitesse de la girouette (2,6 = environ 0,4 s pour un demi-tour)
-  flight: 75,            // durée du vol, s
-  pollStart: 25, hitPoll: 1, hitInv: 1.0, multEvery: 10, multMax: 5, crowdTime: 1.2, crowdGain: 0.5, blockGain: 0.3,
-  coinGap: 26, coinR: 9,
-};
+// PSPEC décrit chaque paramètre réglable (menu debug) ; P porte les valeurs courantes.
+const PSPEC = [
+  {k:'cam', g:'Commun', l:'Distance de la caméra', u:'×', d:'0,4 = très loin (on voit beaucoup, tout est petit), 1,2 = très proche. La hauteur jouable suit.', min:0.4, max:1.2, step:0.05},
+  {k:'speed', g:'Commun', l:'Vitesse de vol', u:'px écran/s', d:'Défilement à l’œil, constant quelle que soit la distance de caméra.', min:150, max:500, step:10},
+  {k:'flight', g:'Commun', l:'Durée du vol', u:'s', d:'Longueur de la phase de vol d’un niveau.', min:30, max:120, step:5},
+  {k:'ceil', g:'Commun', l:'Limite d’altitude', u:'px monde', d:'Marge sous le bord haut du monde : au-dessus, le vent emporte Marine (niveau perdu).', min:20, max:200, step:5},
+  {k:'landSoft', g:'Commun', l:'Atterrissage parfait', u:'px/s', d:'Vitesse de chute maximale pour que la pose sur l’eau soit parfaite.', min:20, max:300, step:10},
+  {k:'landGain', g:'Commun', l:'Gain d’atterrissage', u:'pt', d:'Points de sondage par atterrissage parfait (après un vol au-dessus de 120 px).', min:0, max:2, step:0.1},
+  {k:'pollLevel', g:'Commun', l:'Sondages par niveau', u:'pt', d:'Gain continu sur toute la durée du vol si on ne touche aucun journaliste.', min:0, max:20, step:1},
+  {k:'hitPoll', g:'Commun', l:'Coût d’un journaliste', u:'pt', d:'Points de sondage perdus à chaque contact (puis 1 s d’invincibilité).', min:0, max:3, step:0.1},
+  {k:'vUp', g:'Appui', l:'Vitesse de montée', u:'px/s', d:'Vitesse verticale maximale quand on tient l’appui.', min:100, max:600, step:10},
+  {k:'tUp', g:'Appui', l:'Mise en vitesse (montée)', u:'s', d:'Temps pour atteindre la vitesse de montée max en tenant l’appui (progressif).', min:0.1, max:1.5, step:0.05},
+  {k:'vDown', g:'Appui', l:'Vitesse de chute', u:'px/s', d:'Vitesse verticale maximale une fois relâché.', min:100, max:600, step:10},
+  {k:'tDown', g:'Appui', l:'Mise en vitesse (chute)', u:'s', d:'Temps pour atteindre la vitesse de chute max une fois la gravité enclenchée.', min:0.1, max:2, step:0.05},
+  {k:'glide', g:'Appui', l:'Plané', u:'s', d:'Temps à altitude constante après la relâche, avant que la gravité n’agisse.', min:0, max:0.8, step:0.05},
+  {k:'tTurn', g:'Appui', l:'Temps d’inversion', u:'s', d:'Temps pour annuler la vitesse en cours quand on inverse le sens (réactivité).', min:0.05, max:0.8, step:0.05},
+  {k:'windV', g:'Vent', l:'Vitesse à pleine pente', u:'px/s', d:'Vitesse verticale quand le vent pointe à fond vers le haut ou le bas.', min:100, max:600, step:10},
+  {k:'windLag', g:'Vent', l:'Retard de la girouette', u:'s', d:'Temps que met le vent (grande flèche) à faire un demi-tour pour rejoindre la commande.', min:0.05, max:1.5, step:0.05},
+  {k:'windDead', g:'Vent', l:'Zone morte', u:'%', d:'Autour de l’horizontale, Marine reste stationnaire.', min:0, max:30, step:1},
+  {k:'windCurve', g:'Vent', l:'Courbe de réponse', u:'exposant', d:'1 = linéaire ; 2 = fin près du centre, brutal aux extrêmes.', min:0.5, max:3, step:0.1},
+  {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
+];
+const PDEF = {cam: 0.8, speed: 300, flight: 75, ceil: 70, landSoft: 110, landGain: 0.5, pollLevel: 10, hitPoll: 1,
+  vUp: 300, tUp: 0.45, vDown: 320, tDown: 0.9, glide: 0.15, tTurn: 0.2,
+  windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
+const P = Object.assign({}, PDEF, {
+  yMax: 0,               // dérivé de la caméra (applyCam) : en bas, les pieds de Marine sont sur l'eau
+  hitInv: 1.0, pollStart: 25, coinGap: 26, coinR: 9, landFly: 120,
+});
+let settingsSrc = 'défaut';
+function loadLocal(){ try { const j = JSON.parse(localStorage.getItem('p3-settings') || 'null'); if (j){ applySettings(j); settingsSrc = 'cet appareil'; } } catch(e){} }
+function applySettings(j){ for (const sp of PSPEC) if (typeof j[sp.k] === 'number') P[sp.k] = clamp(j[sp.k], sp.min, sp.max); if (j.ctrl === 'wind' || j.ctrl === 'tap') ctrl = j.ctrl; applyCam(); }
+function settingsJson(){ const j = {ctrl}; for (const sp of PSPEC) j[sp.k] = P[sp.k]; return j; }
+let dbDoc = null;
+async function loadShared(){
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const db = await window.claude.use('db'); if (!db) return;
+    dbDoc = db.doc('settings/main'); const snap = await dbDoc.get();
+    if (snap.exists){ applySettings(snap.data()); settingsSrc = 'artifact'; debugRefresh(); }
+  } catch(e){ dbDoc = null; }
+}
+async function saveSettings(){
+  const j = settingsJson(); let msg = 'Enregistré sur cet appareil';
+  try { localStorage.setItem('p3-settings', JSON.stringify(j)); } catch(e){}
+  if (dbDoc){ try { await dbDoc.set(j); msg = 'Enregistré dans l’artifact (tous les appareils)'; } catch(e){ msg = 'Enregistré sur cet appareil ; l’artifact a refusé (' + (e && e.code || 'erreur') + ')'; } }
+  return msg;
+}
 
 // ---------- state ----------
 let state = 'title', paused = false, ctrl = 'tap';
-let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, mult, multT, maxMult, stats;
-let coinsList, journos, crowds, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
+let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, stats, onWater = false, airTop, blownT = 0, endReason = '';
+let coinsList, journos, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
 let keyUp = false, keyDown = false, pointerY = null, pointerDown = false;
 
 function start(){
-  seed = 7; realT = 0; tFlight = 0; py = (P.yMin + P.yMax)/2; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0;
-  poll = P.pollStart; coins = 0; mult = 1; multT = 0; maxMult = 1; stats = {hits: 0, crowds: 0, blocks: 0, coins: 0};
-  coinsList = []; journos = []; crowds = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0;
+  applyCam(); seed = 7; realT = 0; tFlight = 0; py = P.yMax; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0; onWater = true; airTop = py; blownT = 0; endReason = '';
+  poll = P.pollStart; coins = 0; stats = {hits: 0, lands: 0, coins: 0};
+  coinsList = []; journos = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0;
   pointerY = null; pointerDown = false; keyUp = keyDown = false;
   state = 'play'; paused = false;
   document.getElementById('titleScreen').hidden = true;
@@ -373,34 +412,46 @@ function start(){
 function toTitle(){ state = 'title'; musicStop(); document.getElementById('titleScreen').hidden = false; }
 
 // ---------- commandes ----------
-function inputFromPointer(ly){ return clamp((H/2 - ly)/(H*0.40), -1, 1); }
+function inputFromPointer(ly){ const raw = clamp((H/2 - ly)/(H*P.windRange/200), -1, 1); return Math.sign(raw)*Math.pow(Math.abs(raw), P.windCurve); }
 function applyInput(dt){
   if (ctrl === 'tap'){
+    // accélérations dérivées : la montée part à 35 % et atteint 100 % en tUp (la vitesse max arrive alors exactement à tUp) ; la gravité part à 25 % et atteint 100 % en tDown
+    const aUp = P.vUp/(0.675*P.tUp), aDown = P.vDown/(0.625*P.tDown), brake = Math.max(P.vUp, P.vDown)/P.tTurn;
     holding = pointerDown || keyUp;
     if (holding){
       relT = 0;
-      if (vy > 0){ vy = Math.max(0, vy - P.brake*dt); holdT = 0; }   // on appuie en descente : freinage d'abord
-      else { holdT += dt; const a = lerp(P.aUpMin, P.aUpMax, clamp(holdT/P.rampUp, 0, 1)); vy = Math.max(-P.vUpMax, vy - a*dt); }
+      if (vy > 0){ vy = Math.max(0, vy - brake*dt); holdT = 0; }   // on appuie en descente : inversion d'abord
+      else { holdT += dt; const a = aUp*lerp(0.35, 1, clamp(holdT/P.tUp, 0, 1)); vy = Math.max(-P.vUp, vy - a*dt); }
     } else {
       holdT = 0;
-      if (vy < 0){ vy = Math.min(0, vy + P.brake*dt); relT = 0; }   // on relâche en montée : la montée s'amortit
-      else { relT += dt; if (relT >= P.glideTime){ const a = lerp(P.aDownMin, P.aDownMax, clamp((relT - P.glideTime)/P.rampDown, 0, 1)); vy = Math.min(P.vDownMax, vy + a*dt); } }   // sinon : plané
+      if (vy < 0){ vy = Math.min(0, vy + brake*dt); relT = 0; }   // on relâche en montée : la montée s'annule
+      else { relT += dt; if (relT >= P.glide){ const a = aDown*lerp(0.25, 1, clamp((relT - P.glide)/P.tDown, 0, 1)); vy = Math.min(P.vDown, vy + a*dt); } }   // sinon : plané
     }
   } else {
     if (pointerDown && pointerY !== null) aIn = inputFromPointer(pointerY);
     else if (keyUp || keyDown) aIn = clamp(aIn + ((keyUp ? 1 : 0) - (keyDown ? 1 : 0))*3*dt, -1, 1);
     // doigt levé : la direction donnée se maintient
-    const d = aIn - aVane; aVane += clamp(d, -P.windRate*dt, P.windRate*dt);   // la girouette suit avec retard
-    const a = Math.abs(aVane) < P.windDead ? 0 : aVane;
-    vy = -a*P.windVmax;
+    const rate = 2/Math.max(0.02, P.windLag);   // la girouette parcourt un demi-tour (2 unités) en windLag s
+    aVane += clamp(aIn - aVane, -rate*dt, rate*dt);
+    const a = Math.abs(aVane) < P.windDead/100 ? 0 : aVane;
+    vy = -a*P.windV;
   }
-  // zones molles : la vitesse se réduit sur les derniers px avant le plafond et le plancher
-  let k = 1;
-  if (vy < 0 && py < P.yMin + P.softZone) k = clamp((py - P.yMin)/P.softZone, 0.15, 1);
-  if (vy > 0 && py > P.yMax - P.softZone) k = clamp((P.yMax - py)/P.softZone, 0.15, 1);
-  py += vy*k*dt;
-  if (py < P.yMin){ py = P.yMin; if (vy < 0) vy = 0; }
-  if (py > P.yMax){ py = P.yMax; if (vy > 0) vy = 0; }
+  const vyBefore = vy;
+  py += vy*dt;
+  if (py < airTop) airTop = py;
+  if (py >= P.yMax){
+    py = P.yMax; if (vy > 0) vy = 0;
+    if (!onWater){ land(vyBefore); onWater = true; }
+  } else if (onWater && py < P.yMax - 2){ onWater = false; airTop = py; }
+  // limite d'altitude : au-dessus, le vent emporte Marine
+  if (py < P.ceil){ state = 'blown'; blownT = 0; endReason = 'blown'; sfxP3('gust'); }
+}
+let lastLandV = 0;
+function land(v){
+  lastLandV = v; const flew = (P.yMax - airTop) >= P.landFly;
+  if (v <= P.landSoft && flew){ stats.lands++; addPoll(P.landGain); pop('Atterrissage parfait +' + P.landGain.toFixed(1).replace('.', ',') + ' pt', '#16a34a', PX() + 10, py - 70, true); sfxP3('catch'); fx.push({kind: 'splash', x: PX(), y: WATER, t: 0, big: true}); }
+  else { sfxP3('plouf'); fx.push({kind: 'splash', x: PX(), y: WATER, t: 0, big: false}); }
+  airTop = py;
 }
 cv.addEventListener('pointerdown', e => { ensureAudio(); if (state !== 'play') return; e.preventDefault(); const l = toLocal(e); pointerDown = true; pointerY = l.y; });
 cv.addEventListener('pointermove', e => { if (!pointerDown) return; const l = toLocal(e); pointerY = l.y; });
@@ -426,49 +477,51 @@ function coinWave(x0, yc, amp, n, b){ for (let i=0;i<n;i++) addCoin(x0 + i*P.coi
 function coinDiag(x0, y0, y1, n, b){ for (let i=0;i<n;i++) addCoin(x0 + i*P.coinGap, lerp(y0, y1, i/(n - 1)), b); return x0 + n*P.coinGap; }
 function coinRect(x0, y0, cols, rows, b){ for (let i=0;i<cols;i++) for (let j=0;j<rows;j++) addCoin(x0 + i*P.coinGap, y0 + j*P.coinGap, b); return x0 + cols*P.coinGap; }
 function coinArc(x0, yc, rad, n, b){ for (let i=0;i<n;i++){ const a = Math.PI + i/(n - 1)*Math.PI; addCoin(x0 + rad + Math.cos(a)*rad, yc + Math.sin(a)*rad*0.6, b); } return x0 + 2*rad + P.coinGap; }
-const BAND = {low: [WATER - 100, WATER - 60], mid: [240, 320], high: [150, 215]};
-const bandY = k => lerp(BAND[k][0], BAND[k][1], rnd());
+const BANDS = () => ({low: [WATER - 100, WATER - 60], mid: [lerp(P.ceil, WATER, 0.5) - 40, lerp(P.ceil, WATER, 0.5) + 40], high: [P.ceil + 60, P.ceil + 130], bait: [P.ceil + 14, P.ceil + 30]});
+const bandY = k => { const b = BANDS()[k]; return lerp(b[0], b[1], rnd()); };
 function addBoat(x){ journos.push({kind: 'boat', x, y: WATER - 2, w: 92, h: 50, fr: Math.floor(rnd()*6), bob: rnd()*6}); }
 function addGlider(x, y){ journos.push({kind: 'glider', x, y, w: 92, h: 44, bob: rnd()*6, col: pick(['#d63b3b', '#2563eb', '#f2b630'])}); }
-function addHeli(x, y, track){ journos.push({kind: 'heli', x, y, w: 78, h: 40, bob: rnd()*6, track: track ? 3.2 : 0, alert: track ? 1.1 : 0, vx: track ? P.speed*0.65 : 0}); }
-function addCrowd(x){ crowds.push({x, y: WATER - 2, w: 400, gauge: 0, done: false, cheer: 0, n: 9 + Math.floor(rnd()*3), flag: pick(['#2563eb', '#d63b3b', '#16a34a'])}); }
+function addHeli(x, y, track){ journos.push({kind: 'heli', x, y, w: 78, h: 40, bob: rnd()*6, track: track ? 3.2 : 0, alert: track ? 1.1 : 0, vx: track ? worldSpeed()*0.65 : 0}); }
+const worldSpeed = () => P.speed/Z;   // la vitesse se règle en px écran/s ; en px monde elle dépend de la caméra
 const PATTERNS = [
-  // l'argent en haut, les électeurs en bas : il faut choisir
-  x => { const b = newBlock(); coinLine(x, bandY('high'), 16, b); addCrowd(x + 190); return 16*P.coinGap + 40; },
-  x => { const b = newBlock(); coinWave(x, 210, 55, 20, b); return 20*P.coinGap + 40; },
-  x => { const b = newBlock(); coinDiag(x, WATER - 70, 90, 14, b); addBoat(x + 60); return 14*P.coinGap + 60; },
+  x => { const b = newBlock(); coinLine(x, bandY('high'), 16, b); addBoat(x + 190); return 16*P.coinGap + 40; },
+  x => { const b = newBlock(); coinWave(x, bandY('mid'), 55, 20, b); return 20*P.coinGap + 40; },
+  x => { const b = newBlock(); coinDiag(x, WATER - 70, bandY('high'), 14, b); addBoat(x + 60); return 14*P.coinGap + 60; },
   x => { const b = newBlock(); coinRect(x, bandY('mid') - 20, 8, 3, b); addGlider(x + 300, bandY('mid')); return 8*P.coinGap + 200; },
-  x => { const b = newBlock(); coinArc(x, 250, 110, 13, b); addHeli(x + 330, bandY('high'), true); return 260 + 120; },
-  x => { const b = newBlock(); coinLine(x, WATER - 60, 12, b); addGlider(x + 80, bandY('mid')); addCrowd(x + 12*P.coinGap + 90); return 12*P.coinGap + 260; },
+  x => { const b = newBlock(); coinArc(x, bandY('mid'), 110, 13, b); addHeli(x + 330, bandY('high'), true); return 260 + 120; },
+  x => { const b = newBlock(); coinLine(x, WATER - 60, 12, b); addGlider(x + 80, bandY('mid')); return 12*P.coinGap + 160; },
   x => { const b = newBlock(); coinRect(x, bandY('high'), 6, 2, b); const b2 = newBlock(); coinRect(x + 40, WATER - 86, 6, 2, b2); addBoat(x + 230); return 320; },
-  x => { const b = newBlock(); coinDiag(x, 90, WATER - 70, 14, b); addHeli(x + 120, bandY('high'), false); return 14*P.coinGap + 60; },
+  x => { const b = newBlock(); coinDiag(x, bandY('high'), WATER - 70, 14, b); addHeli(x + 120, bandY('high'), false); return 14*P.coinGap + 60; },
   x => { addBoat(x); addGlider(x + 140, bandY('mid')); const b = newBlock(); coinLine(x + 60, bandY('high'), 14, b); return 14*P.coinGap + 120; },
-  x => { const b = newBlock(); coinWave(x, 150, 40, 16, b); addCrowd(x + 100); addBoat(x + 300); return 16*P.coinGap + 80; },
+  // l'appât : une ligne de pièces juste sous la limite d'altitude
+  x => { const b = newBlock(); coinLine(x, bandY('bait'), 18, b); addBoat(x + 140); return 18*P.coinGap + 60; },
+  x => { const b = newBlock(); coinWave(x, lerp(P.ceil, WATER, 0.35), 40, 16, b); addBoat(x + 300); return 16*P.coinGap + 80; },
 ];
 function spawn(){
   const x = VWW + 60;
   const w = PATTERNS[(spawnI*7 + Math.floor(rnd()*3)) % PATTERNS.length](x);
   spawnI++;
-  nextSpawn = (w + 120 + rnd()*120)/P.speed;
+  nextSpawn = (w + 120 + rnd()*120)/worldSpeed();
 }
 
 // ---------- mise à jour ----------
 function pop(t, color, x, y, big){ pops.push({t, color, x, y, life: big ? 1.6 : 1.1, max: big ? 1.6 : 1.1, big}); }
 function addPoll(v){ poll = clamp(poll + v, 0, 100); }
 function update(dt){
-  realT += dt; if (state !== 'play' || paused) return;
+  realT += dt;
+  if (state === 'blown'){ blownT += dt; py -= 700*dt; scrollX += worldSpeed()*dt*0.5; if (blownT > 0.8){ state = 'recap'; musicStop(); } return; }
+  if (state !== 'play' || paused) return;
   tFlight += dt; lastDt = dt;
-  if (tFlight >= P.flight){ state = 'recap'; musicStop(); return; }
-  applyInput(dt);
-  const mx = PX(), my = py, dx = P.speed*dt;
+  if (tFlight >= P.flight){ state = 'recap'; endReason = 'done'; musicStop(); return; }
+  applyInput(dt); if (state !== 'play') return;
+  const mx = PX(), my = py, dx = worldSpeed()*dt;
   inv = Math.max(0, inv - dt);
-  multT += dt; if (multT >= P.multEvery && mult < P.multMax){ mult++; multT = 0; maxMult = Math.max(maxMult, mult); pop('×' + mult, '#f2b630', mx + 10, my - 70, true); sfxP3('mult'); }
+  addPoll(P.pollLevel/P.flight*dt);   // les sondages montent avec la distance
   nextSpawn -= dt; if (nextSpawn <= 0) spawn();
   // pièces
   for (const c of coinsList){ c.x -= dx; if (!c.got && Math.hypot(c.x - mx, c.y - my) < 30){ c.got = true; c.block.got++; coins++; stats.coins++;
       coinChain = (realT - coinChainT < 0.4) ? coinChain + 1 : 0; coinChainT = realT; sfxP3('coin', Math.min(coinChain, 10));
-      fx.push({kind: 'spark', x: c.x, y: c.y, t: 0});
-      if (c.block.got === c.block.n && !c.block.done){ c.block.done = true; stats.blocks++; addPoll(P.blockGain); pop('Bloc complet +0,3', '#2563eb', mx + 20, my - 50); sfxP3('cash'); } } }
+      fx.push({kind: 'spark', x: c.x, y: c.y, t: 0}); } }
   coinsList = coinsList.filter(c => !c.got && c.x > -40);
   // journalistes
   for (const j of journos){
@@ -477,19 +530,10 @@ function update(dt){
     if (j.track > 0){ j.track -= dt; j.y += clamp(my - j.y, -130*dt, 130*dt); }
     const cy = j.kind === 'boat' ? j.y - 30 : j.y;
     if (inv <= 0 && Math.abs(j.x - mx) < j.w/2 + 22 && Math.abs(cy - my) < j.h/2 + 28){
-      inv = P.hitInv; stats.hits++; addPoll(-P.hitPoll); mult = 1; multT = 0; pop('−1 pt', '#d63b3b', mx + 10, my - 60, true); sfxP3('hit'); fx.push({kind: 'flash', x: j.x, y: cy, t: 0});
+      inv = P.hitInv; stats.hits++; addPoll(-P.hitPoll); pop('−' + P.hitPoll.toFixed(1).replace('.', ',') + ' pt', '#d63b3b', mx + 10, my - 60, true); sfxP3('hit'); fx.push({kind: 'flash', x: j.x, y: cy, t: 0});
     }
   }
   journos = journos.filter(j => j.x > -160);
-  // électeurs : le bain de foule
-  for (const g of crowds){
-    g.x -= dx; if (g.cheer > 0) g.cheer -= dt;
-    if (g.done) continue;
-    const over = Math.abs(g.x - mx) < g.w/2 && my > WATER - 120;
-    if (over) g.gauge = Math.min(1, g.gauge + dt/P.crowdTime); else g.gauge = Math.max(0, g.gauge - dt*0.5);
-    if (g.gauge >= 1){ g.done = true; g.cheer = 1.2; stats.crowds++; const gain = P.crowdGain*mult; addPoll(gain); pop('+' + gain.toFixed(1).replace('.', ',') + ' pt' + (mult > 1 ? ' ×' + mult : ''), '#16a34a', mx + 10, my - 60, true); sfxP3('crowd'); }
-  }
-  crowds = crowds.filter(g => g.x > -120);
   for (const p of pops){ p.life -= dt; p.y -= 26*dt; } pops = pops.filter(p => p.life > 0);
   for (const f of fx) f.t += dt; fx = fx.filter(f => f.t < 0.5);
 }
@@ -602,40 +646,31 @@ function drawJourno(j){
   if (j.track > 0){ ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.arc(28, -2, 3 + 1.5*Math.sin(realT*20), 0, 7); ctx.fill(); }
   ctx.restore();
 }
-function drawCrowd(g){
-  const x = g.x, y = g.y, bob = Math.sin(realT*2 + x*0.01)*2;
-  ctx.save(); ctx.translate(x, y + bob);
-  ctx.fillStyle = '#8a5a2b'; rr(-g.w/2, -6, g.w, 12, 4); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#14213d'; ctx.stroke();   // le ponton
-  for (let i=0;i<g.n;i++){
-    const px = -g.w/2 + 18 + i*(g.w - 36)/(g.n - 1), jump = g.cheer > 0 ? Math.abs(Math.sin(realT*12 + i))*10 : 0, hue = (i*47) % 360;
-    ctx.fillStyle = 'hsl(' + hue + ',55%,45%)'; rr(px - 7, -30 - jump, 14, 24, 4); ctx.fill();
-    ctx.fillStyle = '#e8b796'; ctx.beginPath(); ctx.arc(px, -36 - jump, 7, 0, 7); ctx.fill();
-    if (g.cheer > 0 || g.gauge > 0.5){ ctx.strokeStyle = '#14213d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px - 7, -24 - jump); ctx.lineTo(px - 14, -40 - jump); ctx.moveTo(px + 7, -24 - jump); ctx.lineTo(px + 14, -40 - jump); ctx.stroke(); }
-  }
-  // drapeau
-  ctx.strokeStyle = '#14213d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(g.w/2 - 6, -6); ctx.lineTo(g.w/2 - 6, -66); ctx.stroke();
-  ctx.fillStyle = g.flag; ctx.beginPath(); ctx.moveTo(g.w/2 - 6, -66); ctx.lineTo(g.w/2 + 20, -58); ctx.lineTo(g.w/2 - 6, -50); ctx.closePath(); ctx.fill();
-  // jauge du bain de foule
-  if (!g.done && g.gauge > 0){
-    ctx.fillStyle = 'rgba(20,33,61,.55)'; rr(-40, -84, 80, 10, 5); ctx.fill();
-    ctx.fillStyle = '#16a34a'; rr(-38, -82, 76*g.gauge, 6, 3); ctx.fill();
-    outText('Bain de foule', 0, -94, 11, 800, '#fff');
-  }
-  if (g.done){ outText('Convaincus !', 0, -84, 12, 900, '#bdf5c9'); }
+function drawCeiling(){
+  // zone de turbulence sous la limite : nuages sombres qui filent, puis la ligne
+  const y = P.ceil, off = scrollX*2.2 + realT*120;
+  ctx.save();
+  const g = ctx.createLinearGradient(0, y - 30, 0, y + 46); g.addColorStop(0, 'rgba(40,50,80,.55)'); g.addColorStop(0.4, 'rgba(60,70,100,.25)'); g.addColorStop(1, 'rgba(60,70,100,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, y - 30, VWW, 76);
+  ctx.strokeStyle = 'rgba(230,236,245,.7)'; ctx.lineWidth = 2;
+  for (let i=0;i<14;i++){ const span = VWW + 200, x = ((i*173 + 40 - off*(0.8 + (i % 3)*0.2)) % span + span) % span - 100, yy = y + 4 + (i*29) % 36; ctx.beginPath(); ctx.moveTo(x, yy); ctx.lineTo(x + 50 + (i % 4)*18, yy - 3); ctx.stroke(); }
+  ctx.setLineDash([10, 8]); ctx.strokeStyle = 'rgba(214,59,59,.85)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(VWW, y); ctx.stroke(); ctx.setLineDash([]);
+  outText('Vent de haute altitude', VWW*0.72, y - 14, 13, 800, 'rgba(255,255,255,.75)', 'center', 'rgba(20,33,61,.5)');
   ctx.restore();
 }
 function kiteFrame(){ if (ctrl === 'tap' && holding) return Math.floor(realT*8) % 2 ? 'kite3' : 'kite1'; return vy < -60 ? 'kite1' : Math.sin(realT*0.9) > 0.75 ? 'kite2' : 'kite0'; }
 const RS = 0.69;
 function drawMarine(){
   const x = PX(), y = py, blink = inv > 0 && Math.floor(realT*18) % 2 === 0;
-  const onWater = py >= P.yMax - 1;
   // sillage quand Marine est posée sur l'eau
   if (onWater){ spr('wake' + (Math.floor(realT*10) % 4), x - 10, WATER + 2, 0.9); }
   if (blink) return;
+  const near = clamp(1 - (py - P.ceil)/50, 0, 1);   // proche de la limite : le kite tremble
+  const shake = state === 'blown' ? 6 : near*4;
   // direction : en mode appui, c'est la vitesse verticale ; en mode vent, c'est la girouette (le vent souffle, la voile le montre avant Marine)
-  const dir = ctrl === 'wind' ? aVane : clamp(-vy/P.vDownMax, -1, 1);
+  const dir = state === 'blown' ? 1 : ctrl === 'wind' ? aVane : clamp(-vy/P.vDown, -1, 1);
   const tilt = -dir*0.2;
-  const kn = kiteFrame(), ks = 0.69*0.56, kx = x + 90 + dir*30, ky = y - 96 - dir*30 + Math.sin(realT*1.7)*4;
+  const kn = kiteFrame(), ks = 0.69*0.56, kx = x + 90 + dir*30 + (shake ? (Math.random() - 0.5)*shake*2 : 0), ky = y - 96 - dir*30 + Math.sin(realT*1.7)*4 + (shake ? (Math.random() - 0.5)*shake*2 : 0);
   const le = LE2.airN, lx = x + le[0]*RS, ly = y + le[1]*RS;
   ctx.save(); ctx.translate(kx, ky); ctx.rotate(-dir*0.55); ctx.translate(-kx, -ky);
   ctx.strokeStyle = 'rgba(236,241,248,.9)'; ctx.lineWidth = 1; ctx.beginPath();
@@ -650,7 +685,7 @@ function drawMarine(){
 }
 function drawVane(){
   // demi-girouette sur le bord gauche : grande flèche = le vent (suit avec retard), petite flèche rouge = la commande
-  const cx = 0, cy = H/2 + 20, r = 64, A = P.windAngle*Math.PI/180;
+  const cx = 0, cy = H/2 + 20, r = 64, A = 60*Math.PI/180;
   ctx.save();
   ctx.fillStyle = 'rgba(255,250,240,.88)'; ctx.beginPath(); ctx.moveTo(cx, cy - r - 6); ctx.arc(cx, cy, r + 6, -Math.PI/2, Math.PI/2); ctx.closePath(); ctx.fill();
   ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke();
@@ -665,32 +700,31 @@ function drawVane(){
   ctx.restore();
 }
 function drawHud(){
-  // bandeau haut : sondages, pièces, multiplicateur ; barre du vol
+  // bandeau haut : sondages, pièces ; barre du vol
   const k = clamp(tFlight/P.flight, 0, 1);
   ctx.fillStyle = 'rgba(20,33,61,.35)'; ctx.fillRect(0, 0, VW, 6); ctx.fillStyle = '#f2b630'; ctx.fillRect(0, 0, VW*k, 6);
-  ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(10, 14, 312, 40, 10); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
+  ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(10, 14, 250, 40, 10); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
   if (!uiDraw('iPoll', 16, 18, 32)){ ctx.fillStyle = '#2563eb'; rr(20, 22, 24, 24, 4); ctx.fill(); }
   text(fmtPct(poll), 54, 34, 19, 900, '#14213d');
   if (!uiDraw('iCoin', 150, 18, 32)) drawCoin({x: 166, y: 34, r: 11, ph: 0});
   text(String(coins), 188, 34, 19, 900, '#14213d');
-  const mc = mult >= 4 ? '#d63b3b' : mult >= 2 ? '#16a34a' : '#5b6475';
-  text('×' + mult, 262, 34, 19, 900, mc);
-  ctx.fillStyle = 'rgba(20,33,61,.18)'; rr(262, 44, 46, 5, 2); ctx.fill(); ctx.fillStyle = mc; rr(262, 44, 46*clamp(multT/P.multEvery, 0, 1), 5, 2); ctx.fill();
   outText(ctrl === 'wind' ? 'Orienter le vent' : 'Appuyer pour monter', VW/2, 24, 12, 800, 'rgba(255,255,255,.85)', 'center', 'rgba(20,33,61,.6)');
 }
 function drawPops(){ for (const p of pops){ const a = clamp(p.life/0.4, 0, 1); ctx.globalAlpha = a; outText(p.t, p.x, p.y, p.big ? 22 : 16, 900, p.color); ctx.globalAlpha = 1; } }
 function drawFx(){
   for (const f of fx){ const k = f.t/0.5;
     if (f.kind === 'spark'){ ctx.strokeStyle = 'rgba(255,230,120,' + (1 - k) + ')'; ctx.lineWidth = 2; for (let i=0;i<5;i++){ const a = i/5*6.28 + k*2, l = 6 + 18*k; ctx.beginPath(); ctx.moveTo(f.x + Math.cos(a)*6, f.y + Math.sin(a)*6); ctx.lineTo(f.x + Math.cos(a)*l, f.y + Math.sin(a)*l); ctx.stroke(); } }
+    else if (f.kind === 'splash'){ const n = Math.min(3, Math.floor(k*8)); spr(f.big ? 'ring' + n : 'splL' + n, f.x, f.y + 6, f.big ? 1.2 : 0.8); }
     else { ctx.fillStyle = 'rgba(255,255,255,' + (0.8*(1 - k)) + ')'; ctx.beginPath(); ctx.arc(f.x, f.y, 10 + 40*k, 0, 7); ctx.fill(); } }
 }
 function drawRecap(){
   ctx.fillStyle = 'rgba(15,29,51,.45)'; ctx.fillRect(0, 0, VW, H);
-  const w = 420, h = 250, x = VW/2 - w/2, y = H/2 - h/2; uiPanel(x, y, w, h);
-  text('Fin du vol', VW/2, y + 44, 30, 900, '#14213d', 'center', UIT);
-  text('Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièces  ·  max ×' + maxMult, VW/2, y + 88, 16, 800, '#14213d', 'center');
-  text(stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + ' touché' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.crowds + ' bain' + (stats.crowds > 1 ? 's' : '') + ' de foule  ·  ' + stats.blocks + ' bloc' + (stats.blocks > 1 ? 's' : '') + ' complet' + (stats.blocks > 1 ? 's' : ''), VW/2, y + 116, 13, 700, '#5b6475', 'center');
-  btn(VW/2 - 190, y + 160, 180, 46, 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Changer de commande', '#fff', '#14213d', 'title');
+  const w = 440, h = 250, x = VW/2 - w/2, y = H/2 - h/2; uiPanel(x, y, w, h);
+  const blown = endReason === 'blown';
+  text(blown ? 'Emportée par le vent !' : 'Fin du vol', VW/2, y + 44, 30, 900, blown ? '#d63b3b' : '#14213d', 'center', UIT);
+  text(blown ? 'Trop haut : le vent de haute altitude a pris le kite. On recommence le niveau.' : 'Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièces', VW/2, y + 88, blown ? 13 : 16, 800, '#14213d', 'center');
+  if (!blown) text(stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + ' touché' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.lands + ' atterrissage' + (stats.lands > 1 ? 's' : '') + ' parfait' + (stats.lands > 1 ? 's' : ''), VW/2, y + 116, 13, 700, '#5b6475', 'center');
+  btn(VW/2 - 190, y + 160, 180, 46, blown ? 'Recommencer' : 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Menu', '#fff', '#14213d', 'title');
 }
 let btns = [];
 function btn(x, y, w, h, label, bg, fg, id){ ctx.fillStyle = '#14213d'; rr(x + 3, y + 3, w, h, 10); ctx.fill(); ctx.fillStyle = bg; rr(x, y, w, h, 10); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke(); text(label, x + w/2, y + h/2 + 1, 15, 900, fg, 'center'); btns.push({x, y, w, h, id}); }
@@ -701,8 +735,7 @@ function draw(){
   btns = [];
   if (state === 'title'){ ctx.fillStyle = '#4a90d9'; ctx.fillRect(0, 0, VW, H); return; }
   ctx.setTransform(dpr*scale*Z, 0, 0, dpr*scale*Z, 0, 0);   // le monde, caméra reculée
-  drawSky(); drawFar(); drawNear();
-  for (const g of crowds) drawCrowd(g);
+  drawSky(); drawCeiling(); drawFar(); drawNear();
   for (const j of journos) if (j.kind === 'boat') drawJourno(j);
   for (const c of coinsList) drawCoin(c);
   for (const j of journos) if (j.kind !== 'boat') drawJourno(j);
@@ -716,7 +749,7 @@ function draw(){
 let last = performance.now();
 function loop(now){
   const dt = Math.min(0.05, (now - last)/1000); last = now;
-  if (state === 'play' && !paused) scrollX += P.speed*dt;
+  if (state === 'play' && !paused) scrollX += worldSpeed()*dt;
   update(dt); draw(); musicSync();
   requestAnimationFrame(loop);
 }
@@ -735,14 +768,46 @@ setMuted(muted); setSfxMuted(sfxMuted);
 for (const id of ['musicBtn', 'musicTitle']) document.getElementById(id).addEventListener('click', () => setMuted(!muted));
 for (const id of ['soundBtn', 'soundTitle']) document.getElementById(id).addEventListener('click', () => { ensureAudio(); setSfxMuted(!sfxMuted); });
 document.getElementById('startBtn').addEventListener('click', start);
-document.querySelectorAll('#ctrlSel button').forEach(b => b.addEventListener('click', () => { ctrl = b.dataset.ctrl; document.querySelectorAll('#ctrlSel button').forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false')); }));
+document.querySelectorAll('#ctrlSel button').forEach(b => b.addEventListener('click', () => { ctrl = b.dataset.ctrl; syncCtrlButtons(); }));
+
+// ---------- menu de réglage ----------
+const dbg = document.getElementById('debug');
+function debugBuild(){
+  let h = '<h2>Réglages</h2><p>Les valeurs s’appliquent tout de suite. « Sauvegarder » les garde pour les prochaines parties.</p>';
+  h += '<div class="levels" id="dbgCtrl"><button type="button" data-ctrl="wind">Orienter le vent</button><button type="button" data-ctrl="tap">Appuyer pour monter</button></div>';
+  for (const g of ['Commun', 'Appui', 'Vent']){
+    h += '<h3>' + g + '</h3>';
+    for (const sp of PSPEC) if (sp.g === g){
+      h += '<label for="dbg_' + sp.k + '"><span><b>' + sp.l + '</b> <em>' + sp.u + '</em><br><small>' + sp.d + '</small></span><span class="val" id="dbgv_' + sp.k + '"></span></label>';
+      h += '<input type="range" id="dbg_' + sp.k + '" min="' + sp.min + '" max="' + sp.max + '" step="' + sp.step + '" data-k="' + sp.k + '">';
+    }
+  }
+  h += '<div class="row"><button type="button" id="dbgSave">Sauvegarder</button><button type="button" id="dbgReset">Réinitialiser</button><button type="button" id="dbgClose">Fermer</button></div><p id="dbgMsg"></p>';
+  dbg.innerHTML = h;
+  dbg.querySelectorAll('input[type=range]').forEach(inp => inp.addEventListener('input', () => { const k = inp.dataset.k; P[k] = parseFloat(inp.value); applyCam(); if (k === 'cam' && state === 'play') py = Math.min(py, P.yMax); debugRefresh(); }));
+  dbg.querySelectorAll('#dbgCtrl button').forEach(b => b.addEventListener('click', () => { ctrl = b.dataset.ctrl; syncCtrlButtons(); }));
+  dbg.querySelector('#dbgSave').addEventListener('click', async () => { const m = await saveSettings(); dbg.querySelector('#dbgMsg').textContent = m; });
+  dbg.querySelector('#dbgReset').addEventListener('click', () => { applySettings(PDEF); debugRefresh(); dbg.querySelector('#dbgMsg').textContent = 'Valeurs par défaut (non sauvegardées)'; });
+  dbg.querySelector('#dbgClose').addEventListener('click', () => { dbg.hidden = true; });
+  debugRefresh();
+}
+const fmtV = (sp, v) => (sp.step < 1 ? v.toFixed(sp.step < 0.1 ? 2 : 1) : String(Math.round(v))).replace('.', ',');
+function debugRefresh(){
+  for (const sp of PSPEC){ const inp = document.getElementById('dbg_' + sp.k), v = document.getElementById('dbgv_' + sp.k); if (inp){ inp.value = P[sp.k]; v.textContent = fmtV(sp, P[sp.k]); } }
+  syncCtrlButtons();
+  const m = dbg.querySelector('#dbgMsg'); if (m && !m.textContent) m.textContent = 'Réglages chargés : ' + settingsSrc;
+}
+function syncCtrlButtons(){ document.querySelectorAll('#dbgCtrl button, #ctrlSel button').forEach(b => b.setAttribute('aria-pressed', b.dataset.ctrl === ctrl ? 'true' : 'false')); }
+document.getElementById('gearBtn').addEventListener('click', () => { dbg.hidden = !dbg.hidden; if (!dbg.hidden) debugRefresh(); });
+loadLocal(); applyCam(); debugBuild(); loadShared();
 
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get mult(){ return mult; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; },
-  get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); }, get crowds(){ return crowds.map(g => ({x: g.x, gauge: g.gauge, done: g.done})); },
-  setCtrl(c){ ctrl = c; }, start, setT(v){ tFlight = v; }, P,
+  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get lastLandV(){ return lastLandV; }, get endReason(){ return endReason; },
+  get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
+  get world(){ return {Z, WH, WATER, HZ, VWW}; },
+  setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,
 };
 })();
 </script>
