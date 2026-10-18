@@ -143,7 +143,13 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
       <img src="start.jpg" alt="Marine Le Pen en kitesurf tend la main vers une actu ailée">
       <div class="scard s-start" style="left:24.16%;top:36.34%;width:69.5%;height:55.69%">
         <h1 id="tName">Marine la maline</h1>
-        <p id="tSub">Proto 3 · Appuie pour monter, relâche pour descendre. Attrape l'argent du parti, évite les journalistes, va voir les électeurs.</p>
+        <p id="tSub">Proto 3 · banc d'essai des commandes. Attrape l'argent du parti, évite les journalistes, va voir les électeurs.</p>
+        <div class="srow">
+          <div class="levels" id="ctrlSel">
+            <button type="button" data-ctrl="wind" aria-pressed="false">Orienter le vent</button>
+            <button type="button" data-ctrl="tap" aria-pressed="true">Appuyer pour monter</button>
+          </div>
+        </div>
         <div class="srow">
           <button class="sbtn go" id="startBtn" type="button">C'est parti !</button>
           <button class="sbtn ic" id="musicTitle" type="button"></button>
@@ -165,7 +171,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.2', BUILD = '18/10/2026 à 20h47';
+const VERSION = 'proto 3 · 0.3', BUILD = '18/10/2026 à 20h47';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -225,9 +231,10 @@ let seed = 1; function rnd(){ seed = (seed*1664525 + 1013904223) % 4294967296; r
 const pick = arr => arr[Math.floor(rnd()*arr.length)];
 
 // ---------- layout ----------
-const H = 450, HZ = 300, WATER = 392;
-let VW = 800, scale = 1, dpr = 1, rotated = false;
-const PX = () => Math.max(170, VW*0.22);   // Marine's screen x
+const H = 450, Z = 0.8, WH = H/Z;           // écran logique 450 px de haut ; le monde est vu à l'échelle Z (caméra reculée)
+const WATER = WH - 92, HZ = WATER - 112;    // ligne d'eau et horizon, en px monde
+let VW = 800, VWW = 1000, scale = 1, dpr = 1, rotated = false;
+const PX = () => Math.max(190, VWW*0.22);   // x de Marine, en px monde
 function layoutScreens(W, H2){
   const IW = 1672, IH = 941;
   document.querySelectorAll('.stage').forEach(st => {
@@ -248,7 +255,7 @@ function resize(){
   dpr = Math.min(window.devicePixelRatio || 1, 2);
   const w = wrap.clientWidth, h = wrap.clientHeight;
   cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
-  scale = h / H; VW = w / scale;
+  scale = h / H; VW = w / scale; VWW = VW/Z;
   layoutScreens(w, h);
 }
 window.addEventListener('resize', resize);
@@ -332,24 +339,24 @@ function sfxP3(k, n){
 
 // ---------- réglages ----------
 const P = {
-  speed: 260,            // défilement, px/s
-  yMin: 92, yMax: WATER - 26,
+  speed: 380,            // défilement, px monde/s (soit 304 px écran/s)
+  yMin: 140, yMax: WATER - 62,   // en bas, les pieds de Marine sont sur l'eau
   // vol en kite : appuyer pour monter, relâcher pour descendre (modèle progressif, voir le document de design §14)
-  vUpMax: 300, vDownMax: 380,            // vitesses verticales maximales, px/s
+  vUpMax: 300, vDownMax: 320,            // vitesses verticales maximales, px/s
   aUpMin: 500, aUpMax: 1400, rampUp: 0.6,     // accélération de montée : faible au premier contact, pleine après rampUp s d'appui
-  aDownMin: 250, aDownMax: 1000, rampDown: 0.8,  // gravité : douce à la relâche, pleine après rampDown s
-  glideTime: 0.25,                        // plané : temps suspendu une fois la montée annulée, avant que la gravité n'agisse
+  aDownMin: 180, aDownMax: 700, rampDown: 1.1,  // gravité : douce à la relâche, pleine après rampDown s
+  glideTime: 0.35,                        // plané : temps suspendu une fois la montée annulée, avant que la gravité n'agisse
   brake: 1600,                            // freinage quand on inverse le sens
   softZone: 20,                           // zone de ralentissement au plafond et au plancher, px
   // option 1 : le vent
-  windVmax: 380, windRate: 4.2, windDead: 0.07, windAngle: 60,
+  windVmax: 340, windRate: 2.6, windDead: 0.07, windAngle: 60,   // windRate : vitesse de la girouette (2,6 = environ 0,4 s pour un demi-tour)
   flight: 75,            // durée du vol, s
   pollStart: 25, hitPoll: 1, hitInv: 1.0, multEvery: 10, multMax: 5, crowdTime: 1.2, crowdGain: 0.5, blockGain: 0.3,
   coinGap: 26, coinR: 9,
 };
 
 // ---------- state ----------
-let state = 'title', paused = false, ctrl = 'tap';   // 'wind' reste accessible par __vdd.setCtrl pour mémoire
+let state = 'title', paused = false, ctrl = 'tap';
 let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, mult, multT, maxMult, stats;
 let coinsList, journos, crowds, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
 let keyUp = false, keyDown = false, pointerY = null, pointerDown = false;
@@ -382,7 +389,7 @@ function applyInput(dt){
   } else {
     if (pointerDown && pointerY !== null) aIn = inputFromPointer(pointerY);
     else if (keyUp || keyDown) aIn = clamp(aIn + ((keyUp ? 1 : 0) - (keyDown ? 1 : 0))*3*dt, -1, 1);
-    else aIn = 0;   // doigt levé : le vent revient à l'horizontale (Marine stationnaire)
+    // doigt levé : la direction donnée se maintient
     const d = aIn - aVane; aVane += clamp(d, -P.windRate*dt, P.windRate*dt);   // la girouette suit avec retard
     const a = Math.abs(aVane) < P.windDead ? 0 : aVane;
     vy = -a*P.windVmax;
@@ -419,7 +426,7 @@ function coinWave(x0, yc, amp, n, b){ for (let i=0;i<n;i++) addCoin(x0 + i*P.coi
 function coinDiag(x0, y0, y1, n, b){ for (let i=0;i<n;i++) addCoin(x0 + i*P.coinGap, lerp(y0, y1, i/(n - 1)), b); return x0 + n*P.coinGap; }
 function coinRect(x0, y0, cols, rows, b){ for (let i=0;i<cols;i++) for (let j=0;j<rows;j++) addCoin(x0 + i*P.coinGap, y0 + j*P.coinGap, b); return x0 + cols*P.coinGap; }
 function coinArc(x0, yc, rad, n, b){ for (let i=0;i<n;i++){ const a = Math.PI + i/(n - 1)*Math.PI; addCoin(x0 + rad + Math.cos(a)*rad, yc + Math.sin(a)*rad*0.6, b); } return x0 + 2*rad + P.coinGap; }
-const BAND = {low: [WATER - 100, WATER - 60], mid: [190, 270], high: [100, 165]};
+const BAND = {low: [WATER - 100, WATER - 60], mid: [240, 320], high: [150, 215]};
 const bandY = k => lerp(BAND[k][0], BAND[k][1], rnd());
 function addBoat(x){ journos.push({kind: 'boat', x, y: WATER - 2, w: 92, h: 50, fr: Math.floor(rnd()*6), bob: rnd()*6}); }
 function addGlider(x, y){ journos.push({kind: 'glider', x, y, w: 92, h: 44, bob: rnd()*6, col: pick(['#d63b3b', '#2563eb', '#f2b630'])}); }
@@ -439,7 +446,7 @@ const PATTERNS = [
   x => { const b = newBlock(); coinWave(x, 150, 40, 16, b); addCrowd(x + 100); addBoat(x + 300); return 16*P.coinGap + 80; },
 ];
 function spawn(){
-  const x = VW + 60;
+  const x = VWW + 60;
   const w = PATTERNS[(spawnI*7 + Math.floor(rnd()*3)) % PATTERNS.length](x);
   spawnI++;
   nextSpawn = (w + 120 + rnd()*120)/P.speed;
@@ -500,11 +507,13 @@ function tileRow(a, inset, x0, x1, y, tw, th, off){
 }
 function drawSky(){
   const a = ATLAS.sky, im = atlasImg(a);
-  if (im){ ctx.imageSmoothingEnabled = true; ctx.drawImage(im, a[0] + 2, a[1], a[2] - 4, a[3], 0, 0, VW, HZ + 6); }
-  else { const g = ctx.createLinearGradient(0, 0, 0, HZ); SKY.forEach((c, i) => g.addColorStop(i/(SKY.length - 1), c)); ctx.fillStyle = g; ctx.fillRect(0, 0, VW, HZ + 6); }
-  spr('sun', VW - 110, 62, 0.9);
-  const off = scrollX*0.08 + realT*5;
-  for (let i=0;i<8;i++){ const span = VW + 600, cx = ((i*233 - off) % span + span) % span - 300; spr('cloud' + i, cx, 40 + (i*41) % 120, 0.5 + 0.12*(i % 3)); }
+  if (im){ ctx.imageSmoothingEnabled = true; ctx.drawImage(im, a[0] + 2, a[1], a[2] - 4, a[3], 0, 0, VWW, HZ + 6); }
+  else { const g = ctx.createLinearGradient(0, 0, 0, HZ); SKY.forEach((c, i) => g.addColorStop(i/(SKY.length - 1), c)); ctx.fillStyle = g; ctx.fillRect(0, 0, VWW, HZ + 6); }
+  spr('sun', VWW - 130, 70, 1);
+  const off = scrollX*0.12 + realT*6;
+  for (let i=0;i<9;i++){ const span = VWW + 600, cx = ((i*233 - off) % span + span) % span - 300; spr('cloud' + (i % 8), cx, 40 + (i*47) % 170, 0.5 + 0.12*(i % 3)); }
+  const off2 = scrollX*0.45;   // nuages proches, plus rapides, pour la vitesse
+  ctx.save(); ctx.globalAlpha = 0.7; for (let i=0;i<4;i++){ const span = VWW + 800, cx = ((i*410 + 150 - off2) % span + span) % span - 400; spr('cloud' + (5 + i % 3), cx, 60 + (i*73) % 140, 0.95 + 0.15*(i % 2)); } ctx.restore();
 }
 let FARH = null;
 function farHouses(sc){
@@ -517,32 +526,35 @@ function farHouses(sc){
 function drawFar(){
   const sa = ATLAS.seaFar;
   const hg = WATER - HZ + 12, tw = sa[2]*hg/sa[3];
-  if (!tileRow(sa, 0, 0, VW, HZ, tw, hg, scrollX*0.3)){ ctx.fillStyle = '#4593d6'; ctx.fillRect(0, HZ, VW, hg); }
-  const hz = ctx.createLinearGradient(0, HZ, 0, HZ + 50); hz.addColorStop(0, 'rgba(210,235,252,.45)'); hz.addColorStop(1, 'rgba(210,235,252,0)'); ctx.fillStyle = hz; ctx.fillRect(0, HZ, VW, 50);
+  if (!tileRow(sa, 0, 0, VWW, HZ, tw, hg, scrollX*0.3)){ ctx.fillStyle = '#4593d6'; ctx.fillRect(0, HZ, VWW, hg); }
+  const hz = ctx.createLinearGradient(0, HZ, 0, HZ + 50); hz.addColorStop(0, 'rgba(210,235,252,.45)'); hz.addColorStop(1, 'rgba(210,235,252,0)'); ctx.fillStyle = hz; ctx.fillRect(0, HZ, VWW, 50);
   if (sea === 'cote'){
     const sc = 0.36, tw2 = SW('houses', sc), off = scrollX*0.2;
     ctx.save(); ctx.globalAlpha = 0.6;
-    ctx.fillStyle = '#6f9f78'; ctx.fillRect(0, HZ - 4, VW, 6); ctx.fillStyle = '#a3b1c6'; ctx.fillRect(0, HZ + 1, VW, 5);
-    const i0 = Math.floor(off/tw2) - 1, i1 = Math.ceil((VW + off)/tw2) + 1, hc = farHouses(sc);
+    ctx.fillStyle = '#6f9f78'; ctx.fillRect(0, HZ - 4, VWW, 6); ctx.fillStyle = '#a3b1c6'; ctx.fillRect(0, HZ + 1, VWW, 5);
+    const i0 = Math.floor(off/tw2) - 1, i1 = Math.ceil((VWW + off)/tw2) + 1, hc = farHouses(sc);
     for (let i=i0;i<=i1;i++){ const x = i*tw2 - off; if (!hc){ spr('houses', x + tw2/2, HZ + 2, sc, hash(i) < 0.5); continue; }
       ctx.save(); ctx.translate(x + tw2/2, 0); if (hash(i) < 0.5) ctx.scale(-1, 1); ctx.drawImage(hc, -hc.width/4, HZ + 2 - hc.height/2 + 4, hc.width/2, hc.height/2); ctx.restore(); }
     ctx.restore();
     const g2 = ctx.createLinearGradient(0, HZ - 70, 0, HZ + 8); g2.addColorStop(0, 'rgba(200,226,248,0)'); g2.addColorStop(0.45, 'rgba(200,226,248,.55)'); g2.addColorStop(1, 'rgba(200,226,248,.65)');
-    ctx.fillStyle = g2; ctx.fillRect(0, HZ - 70, VW, 78);
+    ctx.fillStyle = g2; ctx.fillRect(0, HZ - 70, VWW, 78);
     const off2 = scrollX*0.32, st = 260; ctx.save(); ctx.globalAlpha = 0.7;
-    for (let j = Math.floor(off2/st) - 1; j <= Math.ceil((VW + off2)/st) + 1; j++){ const h = hash(j*1.7); const n = h < 0.3 ? 'mFish' : h < 0.55 ? 'mSail' : h < 0.75 ? 'mBoats' : h < 0.9 ? 'mSail2' : 'mFish2'; spr(n, j*st - off2 + hash(j)*80, HZ + 26 + hash(j+4)*8, 0.65); }
+    for (let j = Math.floor(off2/st) - 1; j <= Math.ceil((VWW + off2)/st) + 1; j++){ const h = hash(j*1.7); const n = h < 0.3 ? 'mFish' : h < 0.55 ? 'mSail' : h < 0.75 ? 'mBoats' : h < 0.9 ? 'mSail2' : 'mFish2'; spr(n, j*st - off2 + hash(j)*80, HZ + 26 + hash(j+4)*8, 0.65); }
     ctx.restore();
   } else {
     const hs = 0.8, tw3 = SW('horizon', hs), off = scrollX*0.15;
-    for (let i = Math.floor(off/tw3) - 1; i*tw3 - off < VW; i++) spr('horizon', i*tw3 - off, HZ + 4, hs);
+    for (let i = Math.floor(off/tw3) - 1; i*tw3 - off < VWW; i++) spr('horizon', i*tw3 - off, HZ + 4, hs);
     const off2 = scrollX*0.4, st2 = 360;
-    for (let j = Math.floor(off2/st2) - 1; j <= Math.ceil((VW + off2)/st2) + 1; j++){ if (hash(j+1) > 0.6) continue; spr(hash(j+3) < 0.5 ? 'mSail' : 'mSail2', j*st2 - off2 + hash(j)*120, HZ + 30 + hash(j+5)*26, 0.7 + hash(j+9)*0.3); }
+    for (let j = Math.floor(off2/st2) - 1; j <= Math.ceil((VWW + off2)/st2) + 1; j++){ if (hash(j+1) > 0.6) continue; spr(hash(j+3) < 0.5 ? 'mSail' : 'mSail2', j*st2 - off2 + hash(j)*120, HZ + 30 + hash(j+5)*26, 0.7 + hash(j+9)*0.3); }
   }
 }
 function drawNear(){
-  const a = ATLAS.seaNear, h = H - WATER + 30, tw = a[2]*h/a[3];
-  if (!tileRow(a, 0, 0, VW, WATER - 24, tw, h, scrollX)){ ctx.fillStyle = '#2b70b8'; ctx.fillRect(0, WATER - 10, VW, H - WATER + 10); }
-  const fa = ATLAS.foam, fh = 16, ftw = fa[2]*fh/fa[3]; ctx.save(); ctx.globalAlpha = 0.8; tileRow(fa, 0, 0, VW, WATER - 20, ftw, fh, scrollX*1.1); ctx.restore();
+  const a = ATLAS.seaNear, h = WH - WATER + 30, tw = a[2]*h/a[3];
+  if (!tileRow(a, 0, 0, VWW, WATER - 24, tw, h, scrollX*1.15)){ ctx.fillStyle = '#2b70b8'; ctx.fillRect(0, WATER - 10, VWW, WH - WATER + 10); }
+  const fa = ATLAS.foam, fh = 18, ftw = fa[2]*fh/fa[3]; ctx.save(); ctx.globalAlpha = 0.85; tileRow(fa, 0, 0, VWW, WATER - 22, ftw, fh, scrollX*1.4); ctx.restore();
+  // traits de vitesse sur l'eau
+  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; const sp = scrollX*1.6;
+  for (let i=0;i<10;i++){ const span = VWW + 300, x = ((i*377 + 90 - sp) % span + span) % span - 150, y = WATER + 10 + (i*53) % 60; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 40 + (i % 3)*20, y); ctx.stroke(); }
 }
 function drawCoin(c){
   const k = Math.abs(Math.cos(realT*5 + c.ph)), r = c.r;
@@ -558,8 +570,8 @@ function drawJourno(j){
   const x = j.x, bob = Math.sin(realT*2.2 + j.bob)*3;
   if (j.alert > 0){ // avertissement sur le bord droit, à la hauteur de l'hélico
     const ay = j.y, k = 0.5 + 0.5*Math.sin(realT*14);
-    ctx.fillStyle = 'rgba(214,59,59,' + (0.5 + 0.5*k) + ')'; rr(VW - 46, ay - 22, 36, 44, 8); ctx.fill();
-    outText('!', VW - 28, ay + 1, 30, 900, '#fff'); return;
+    ctx.fillStyle = 'rgba(214,59,59,' + (0.5 + 0.5*k) + ')'; rr(VWW - 56, ay - 26, 44, 52, 8); ctx.fill();
+    outText('!', VWW - 34, ay + 1, 36, 900, '#fff'); return;
   }
   if (j.kind === 'boat'){
     spr('bs' + j.fr, x, j.y + bob, 0.62);
@@ -612,40 +624,29 @@ function drawCrowd(g){
   if (g.done){ outText('Convaincus !', 0, -84, 12, 900, '#bdf5c9'); }
   ctx.restore();
 }
-function kiteFrame(){ return vy < -80 ? 'kite1' : Math.sin(realT*0.9) > 0.75 ? 'kite2' : 'kite0'; }
+function kiteFrame(){ if (ctrl === 'tap' && holding) return Math.floor(realT*8) % 2 ? 'kite3' : 'kite1'; return vy < -60 ? 'kite1' : Math.sin(realT*0.9) > 0.75 ? 'kite2' : 'kite0'; }
 const RS = 0.69;
 function drawMarine(){
   const x = PX(), y = py, blink = inv > 0 && Math.floor(realT*18) % 2 === 0;
+  const onWater = py >= P.yMax - 1;
+  // sillage quand Marine est posée sur l'eau
+  if (onWater){ spr('wake' + (Math.floor(realT*10) % 4), x - 10, WATER + 2, 0.9); }
   if (blink) return;
-  const tilt = clamp(vy/P.vDownMax, -1, 1)*0.22;
-  if (ctrl === 'tap'){
-    // kitesurf : la voile au-dessus, Marine en vol
-    const kn = kiteFrame(), ks = 0.69*0.6, kx = x + 100, ky = y - 108 + Math.sin(realT*1.7)*4 - vy*0.04;
-    const le = LE2.airN, lx = x + le[0]*RS, ly = y + le[1]*RS;
-    ctx.strokeStyle = 'rgba(236,241,248,.9)'; ctx.lineWidth = 1; ctx.beginPath();
-    for (const p of KT2[kn]){ const tx = kx + p[0]*ks, ty = ky + p[1]*ks; ctx.moveTo(lx, ly); ctx.lineTo(tx, ty); ctx.moveTo(lx + 3, ly + 3); ctx.lineTo(tx + 3, ty); }
-    ctx.stroke();
-    spr(kn, kx, ky, ks);
-    spr('airN', x, y + 60, RS, false, tilt);
-  } else {
-    // planche à voile portée par le vent (cartoon) : planche et voile vectorielles, Marine en sprite
-    ctx.save(); ctx.translate(x, y + 60); ctx.rotate(tilt*0.7);
-    // voile : triangle derrière le mât
-    const mh = 150;
-    ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.beginPath(); ctx.moveTo(-6, -mh); ctx.quadraticCurveTo(-110, -mh*0.55, -100, -8); ctx.lineTo(-6, -8); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#2563eb'; ctx.beginPath(); ctx.moveTo(-6, -mh*0.62); ctx.quadraticCurveTo(-70, -mh*0.5, -84, -34); ctx.lineTo(-6, -34); ctx.closePath(); ctx.fill();
-    ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.beginPath(); ctx.moveTo(-6, -mh); ctx.quadraticCurveTo(-110, -mh*0.55, -100, -8); ctx.lineTo(-6, -8); ctx.closePath(); ctx.stroke();
-    ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-6, -mh); ctx.lineTo(-6, 0); ctx.stroke();   // mât
-    ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-6, -mh*0.6); ctx.lineTo(-62, -mh*0.52); ctx.stroke();   // wishbone
-    // planche
-    ctx.fillStyle = '#f2b630'; rr(-58, -2, 118, 14, 7); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
-    ctx.fillStyle = '#14213d'; rr(-48, 2, 50, 4, 2); ctx.fill();
-    ctx.restore();
-    spr('airN', x + 4, y + 60, RS, false, tilt*0.7);
-    // filets de vent derrière
-    ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 2;
-    for (let i=0;i<3;i++){ const yy = y - 40 + i*34 + Math.sin(realT*9 + i)*4, l = 30 + 20*Math.abs(aVane); ctx.beginPath(); ctx.moveTo(x - 70 - i*14, yy); ctx.lineTo(x - 70 - i*14 - l, yy + aVane*l*0.8); ctx.stroke(); }
-  }
+  // direction : en mode appui, c'est la vitesse verticale ; en mode vent, c'est la girouette (le vent souffle, la voile le montre avant Marine)
+  const dir = ctrl === 'wind' ? aVane : clamp(-vy/P.vDownMax, -1, 1);
+  const tilt = -dir*0.2;
+  const kn = kiteFrame(), ks = 0.69*0.56, kx = x + 90 + dir*30, ky = y - 96 - dir*30 + Math.sin(realT*1.7)*4;
+  const le = LE2.airN, lx = x + le[0]*RS, ly = y + le[1]*RS;
+  ctx.save(); ctx.translate(kx, ky); ctx.rotate(-dir*0.55); ctx.translate(-kx, -ky);
+  ctx.strokeStyle = 'rgba(236,241,248,.9)'; ctx.lineWidth = 1; ctx.beginPath();
+  for (const p of KT2[kn]){ const tx = kx + p[0]*ks, ty = ky + p[1]*ks; ctx.moveTo(lx, ly); ctx.lineTo(tx, ty); ctx.moveTo(lx + 3, ly + 3); ctx.lineTo(tx + 3, ty); }
+  ctx.stroke();
+  spr(kn, kx, ky, ks);
+  ctx.restore();
+  spr('airN', x, y + 60, RS, false, tilt);
+  // filets de vent derrière Marine : vitesse
+  ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 2;
+  for (let i=0;i<3;i++){ const yy = y - 20 + i*30 + Math.sin(realT*9 + i)*4, l = 36 + 24*Math.abs(dir); ctx.beginPath(); ctx.moveTo(x - 60 - i*14, yy); ctx.lineTo(x - 60 - i*14 - l, yy - dir*l*0.6); ctx.stroke(); }
 }
 function drawVane(){
   // demi-girouette sur le bord gauche : grande flèche = le vent (suit avec retard), petite flèche rouge = la commande
@@ -675,7 +676,7 @@ function drawHud(){
   const mc = mult >= 4 ? '#d63b3b' : mult >= 2 ? '#16a34a' : '#5b6475';
   text('×' + mult, 262, 34, 19, 900, mc);
   ctx.fillStyle = 'rgba(20,33,61,.18)'; rr(262, 44, 46, 5, 2); ctx.fill(); ctx.fillStyle = mc; rr(262, 44, 46*clamp(multT/P.multEvery, 0, 1), 5, 2); ctx.fill();
-  if (ctrl === 'wind') outText('Le vent · planche à voile', VW/2, 24, 12, 800, 'rgba(255,255,255,.85)', 'center', 'rgba(20,33,61,.6)');
+  outText(ctrl === 'wind' ? 'Orienter le vent' : 'Appuyer pour monter', VW/2, 24, 12, 800, 'rgba(255,255,255,.85)', 'center', 'rgba(20,33,61,.6)');
 }
 function drawPops(){ for (const p of pops){ const a = clamp(p.life/0.4, 0, 1); ctx.globalAlpha = a; outText(p.t, p.x, p.y, p.big ? 22 : 16, 900, p.color); ctx.globalAlpha = 1; } }
 function drawFx(){
@@ -689,7 +690,7 @@ function drawRecap(){
   text('Fin du vol', VW/2, y + 44, 30, 900, '#14213d', 'center', UIT);
   text('Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièces  ·  max ×' + maxMult, VW/2, y + 88, 16, 800, '#14213d', 'center');
   text(stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + ' touché' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.crowds + ' bain' + (stats.crowds > 1 ? 's' : '') + ' de foule  ·  ' + stats.blocks + ' bloc' + (stats.blocks > 1 ? 's' : '') + ' complet' + (stats.blocks > 1 ? 's' : ''), VW/2, y + 116, 13, 700, '#5b6475', 'center');
-  btn(VW/2 - 190, y + 160, 180, 46, 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Menu', '#fff', '#14213d', 'title');
+  btn(VW/2 - 190, y + 160, 180, 46, 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Changer de commande', '#fff', '#14213d', 'title');
 }
 let btns = [];
 function btn(x, y, w, h, label, bg, fg, id){ ctx.fillStyle = '#14213d'; rr(x + 3, y + 3, w, h, 10); ctx.fill(); ctx.fillStyle = bg; rr(x, y, w, h, 10); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke(); text(label, x + w/2, y + h/2 + 1, 15, 900, fg, 'center'); btns.push({x, y, w, h, id}); }
@@ -699,12 +700,14 @@ function draw(){
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);
   btns = [];
   if (state === 'title'){ ctx.fillStyle = '#4a90d9'; ctx.fillRect(0, 0, VW, H); return; }
+  ctx.setTransform(dpr*scale*Z, 0, 0, dpr*scale*Z, 0, 0);   // le monde, caméra reculée
   drawSky(); drawFar(); drawNear();
   for (const g of crowds) drawCrowd(g);
   for (const j of journos) if (j.kind === 'boat') drawJourno(j);
   for (const c of coinsList) drawCoin(c);
   for (const j of journos) if (j.kind !== 'boat') drawJourno(j);
   drawMarine(); drawFx(); drawPops();
+  ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);   // l'interface, à l'échelle de l'écran
   if (ctrl === 'wind') drawVane();
   drawHud();
   if (paused){ ctx.fillStyle = 'rgba(15,29,51,.4)'; ctx.fillRect(0, 0, VW, H); outText('Pause', VW/2, H/2, 40, 900, '#fff'); }
@@ -732,6 +735,7 @@ setMuted(muted); setSfxMuted(sfxMuted);
 for (const id of ['musicBtn', 'musicTitle']) document.getElementById(id).addEventListener('click', () => setMuted(!muted));
 for (const id of ['soundBtn', 'soundTitle']) document.getElementById(id).addEventListener('click', () => { ensureAudio(); setSfxMuted(!sfxMuted); });
 document.getElementById('startBtn').addEventListener('click', start);
+document.querySelectorAll('#ctrlSel button').forEach(b => b.addEventListener('click', () => { ctrl = b.dataset.ctrl; document.querySelectorAll('#ctrlSel button').forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false')); }));
 
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
