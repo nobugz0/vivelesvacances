@@ -131,4 +131,28 @@ with sync_playwright() as p:
     t0 = time.time()
     while time.time() - t0 < 25 and ev(pg, 'window.__vdd.state') == 'play': pg.wait_for_timeout(100)
     check(ev(pg, 'window.__vdd.endReason') == 'sunk', 'à cassMax casseroles, Marine coule -> on recommence le niveau'); pg.screenshot(path=D + 'p3_sunk.png'); b.close()
+    # D. la course : bouton de test, orbe et traîne, jauge qui se remplit dans la traîne, rattrapage progressif, fin par capture ou départ ; menu à onglets
+    b, pg, errs = boot(p, 'tap'); pg.click('#closeBtn'); pg.wait_for_timeout(200); pg.click('#chaseBtn'); pg.wait_for_timeout(600)
+    c = ev(pg, 'window.__vdd.chase'); check(ev(pg, 'window.__vdd.phase') == 'chase' and c and c['t'] < 1, '« Tester la course » lance la course directement (t=%.1f)' % c['t'])
+    d0 = c['dist']; check(abs(d0 - ev(pg, 'window.__vdd.P.chaseDist0')) < 1, 'distance de départ = chaseDist0 (%.0f)' % d0)
+    # bot qui suit la traîne à la frame : vise ty
+    ev(pg, '''() => new Promise(res => { const v = window.__vdd; const step = () => { const c = v.chase; if (v.state !== 'play' || !c || c.caught || c.leaving){ v.hold(false); res(); return; }
+      const ty = c.ty === undefined ? c.y : c.ty; const up = ty < v.y - 6 && (v.wind > 0.05 || v.onWater); v.hold(up); if (!window.__shot && c.gauge > 0.4){ window.__shot = true; } requestAnimationFrame(step); }; requestAnimationFrame(step); })''')
+    c = ev(pg, 'window.__vdd.chase'); print('   course (suivi) : t %.1f s, jauge %.2f, dist %.0f, attrapée %s' % (c['t'], c['gauge'], c['dist'], c['caught']))
+    check(c['caught'] and c['t'] < ev(pg, 'window.__vdd.P.chaseMax'), 'un bot qui suit la traîne remplit la jauge avant la fin (%.1f s)' % c['t'])
+    check(c['dist'] < d0 - 300, 'Marine a rattrapé l\'orbe à mesure (distance %.0f)' % c['dist'])
+    pg.screenshot(path=D + 'p3_chase.png'); pg.wait_for_timeout(1200)
+    check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.stats.gold'), 'actu d\'or attrapée -> récap avec volte-face')
+    # sans suivre : l'orbe s'en va à chaseMax, le niveau est réussi sans volte-face
+    ev(pg, 'window.__vdd.startTestChase()'); pg.wait_for_timeout(300); ev(pg, 'window.__vdd.P.chaseMax = 6'); t0 = time.time()
+    while time.time() - t0 < 12 and ev(pg, 'window.__vdd.state') == 'play': pg.wait_for_timeout(100)
+    check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.endReason') == 'done' and not ev(pg, 'window.__vdd.stats.gold'), 'sans suivre, l\'orbe s\'en va et le niveau est réussi sans volte-face')
+    # menu à onglets, largeur <= 25 %
+    pg.click('#gearBtn'); pg.wait_for_timeout(200)
+    w = ev(pg, 'document.getElementById("debug").getBoundingClientRect().width'); W = ev(pg, 'window.innerWidth'); check(w <= W*0.25 + 1, 'menu de réglage : %.0f px sur %d (%.0f %%)' % (w, W, 100*w/W))
+    tabs = ev(pg, 'Array.from(document.querySelectorAll("#debug .tabs button")).map(b => b.textContent)'); check(tabs == ['Commun', 'Appui', 'Tempête', 'Course'], 'onglets : ' + ', '.join(tabs))
+    pg.click('#debug .tabs button[data-tab=Course]'); vis = ev(pg, 'Array.from(document.querySelectorAll("#debug .tab")).filter(t => !t.hidden).map(t => t.dataset.tab)'); check(vis == ['Course'], 'un seul onglet visible à la fois (%s)' % vis)
+    pg.screenshot(path=D + 'p3_menu.png')
+    check(not errs, 'aucune erreur JS (course) ' + str(errs[:3]))
+    b.close()
 print('RESULT', 'PASS' if ok else 'FAIL')

@@ -114,11 +114,17 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
 .stiles:has(.hut){gap:calc(var(--u)*14)}
 #ver{position:absolute;top:8px;right:12px;z-index:6;font:600 11px/1.2 var(--ui);color:rgba(255,255,255,.78);text-shadow:0 1px 2px rgba(0,0,0,.7);pointer-events:none;letter-spacing:.02em}
 .scredit{position:absolute;left:0;right:0;bottom:6px;margin:0;text-align:center;font-size:11px;color:#fff;text-shadow:0 1px 3px #000;padding:0 16px}
-#debug{position:absolute;top:70px;right:12px;bottom:12px;width:min(360px,calc(100% - 24px));overflow-y:scroll;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(15,29,51,.35);padding:10px 14px 14px;z-index:6;font-size:13px;box-sizing:border-box;touch-action:pan-y}
-#debug h2{font-size:18px;margin:4px 0}
+#debug{position:absolute;top:70px;right:12px;bottom:12px;width:min(25%,360px);min-width:200px;overflow-y:scroll;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(15,29,51,.35);padding:10px 14px 14px;z-index:6;font-size:13px;box-sizing:border-box;touch-action:pan-y}
+#debug h2{font-size:15px;margin:2px 0 6px}
+#debug .tabs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px}
+#debug .tabs button{font:inherit;font-size:11px;font-weight:800;border:1px solid var(--line);background:#f1f4f8;color:var(--ink);border-radius:999px;padding:4px 9px;cursor:pointer}
+#debug .tabs button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+#debug .tab[hidden]{display:none}
+#debug p{font-size:11px}
 #debug label .val{font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
-#debug label small{color:var(--muted);font-size:11px;line-height:1.25;display:block}
-#debug input[type=range]{width:100%;margin:2px 0 10px}
+#debug label small{color:var(--muted);font-size:10px;line-height:1.2;display:block}
+#debug label b{font-size:12px}
+#debug input[type=range]{width:100%;margin:0 0 8px;height:18px}
 #debug .levels{margin:6px 0 4px}
 #debug h3{font-size:13px;margin:12px 0 2px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
 #debug label{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:2px 0;line-height:1.2}
@@ -153,6 +159,7 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
         <div class="srow">
           <button class="sbtn go" id="startBtn" type="button">C'est parti !</button>
           <button class="sbtn" id="stormBtn" type="button">Tester la tempête</button>
+          <button class="sbtn" id="chaseBtn" type="button">Tester la course</button>
           <button class="sbtn ic" id="musicTitle" type="button"></button>
           <button class="sbtn ic" id="soundTitle" type="button"></button>
         </div>
@@ -173,7 +180,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.11', BUILD = '18/10/2026 à 20h47';
+const VERSION = 'proto 3 · 0.12', BUILD = '18/10/2026 à 20h47';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -391,6 +398,16 @@ const PSPEC = [
   {k:'stormMax', g:'Tempête', l:'Durée maximale', u:'s', d:'Au bout de ce temps, l’émetteur s’en va de lui-même.', min:8, max:60, step:1},
   {k:'bubbleEvery', g:'Vent', l:'Fréquence des bulles', u:'s', d:'Temps entre deux éléments de langage à attraper.', min:1, max:8, step:0.5},
   {k:'cassMax', g:'Tempête', l:'Casseroles fatales', u:'', d:'Nombre de casseroles accrochées à partir duquel Marine coule (niveau perdu).', min:3, max:20, step:1},
+  {k:'chaseMax', g:'Course', l:'Durée de la course', u:'s', d:'Temps au bout duquel l’actu d’or s’en va si la jauge n’est pas pleine.', min:5, max:40, step:1},
+  {k:'chaseTime', g:'Course', l:'Temps dans la traîne', u:'s', d:'Temps cumulé passé dans la traîne pour remplir la jauge (si on la suit parfaitement, la course dure ce temps-là).', min:2, max:30, step:0.5},
+  {k:'chaseDrain', g:'Course', l:'Perte hors traîne', u:'%/s', d:'La jauge se vide à ce rythme quand Marine sort de la traîne (0 = jamais).', min:0, max:50, step:1},
+  {k:'chaseDist0', g:'Course', l:'Distance de départ', u:'px monde', d:'Distance entre Marine et l’orbe au début (jauge vide) : plus elle est grande, plus on a de temps pour lire la traîne.', min:300, max:1400, step:25},
+  {k:'chaseDist1', g:'Course', l:'Distance finale', u:'px monde', d:'Distance quand la jauge est presque pleine : Marine rattrape l’orbe à mesure qu’elle remplit la jauge.', min:80, max:800, step:10},
+  {k:'chaseW0', g:'Course', l:'Largeur à l’orbe', u:'px monde', d:'Largeur de la traîne juste derrière l’orbe (le plus fin).', min:10, max:200, step:5},
+  {k:'chaseGrow', g:'Course', l:'Élargissement', u:'px/s', d:'La traîne s’élargit de ce nombre de px par seconde d’âge : loin derrière l’orbe elle est large, près d’elle elle est fine.', min:0, max:400, step:10},
+  {k:'chaseAmp', g:'Course', l:'Amplitude de l’orbe', u:'px monde', d:'Hauteur des ondulations de l’orbe.', min:0, max:300, step:10},
+  {k:'chaseFreq', g:'Course', l:'Nervosité de l’orbe', u:'Hz', d:'Fréquence des ondulations : plus c’est haut, plus la trajectoire change souvent.', min:0.05, max:1, step:0.05},
+  {k:'chaseGain', g:'Course', l:'Gain de l’actu d’or', u:'pt', d:'Points de sondage si on attrape l’actu d’or (en attendant la volte-face).', min:0, max:10, step:0.5},
   {k:'blowT', g:'Commun', l:'Temps d’emportement', u:'s', d:'Au-dessus de la limite, la jauge se remplit en ce temps ; pleine = emportée par le vent (niveau perdu). Elle se vide dessous.', min:0.1, max:2, step:0.1},
   {k:'orbGain', g:'Commun', l:'Orbe d’argent', u:'pt', d:'Points de sondage par orbe d’argent attrapée au-dessus de la limite.', min:0, max:3, step:0.1},
   {k:'orbEvery', g:'Commun', l:'Fréquence des orbes', u:'s', d:'Temps moyen entre deux orbes d’argent.', min:5, max:40, step:1},
@@ -412,7 +429,7 @@ const PSPEC = [
   {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
 ];
 // valeurs par défaut = réglages sauvegardés par Pierre le 18/10 au soir (caméra loin, vol vif)
-const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
+const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, chaseMax: 15, chaseTime: 8, chaseDrain: 5, chaseDist0: 900, chaseDist1: 260, chaseW0: 40, chaseGrow: 130, chaseAmp: 130, chaseFreq: 0.2, chaseGain: 2, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
   vUp: 400, tUp: 0.25, vDown: 520, tDown: 0.5, glide: 0, tTurn: 0.05,
   windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
 const P = Object.assign({}, PDEF, {
@@ -442,22 +459,25 @@ async function saveSettings(){
 // ---------- state ----------
 let state = 'title', paused = false, ctrl = 'tap';
 let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, stats, onWater = false, blownT = 0, blowGauge = 0, endReason = '', orbs, nextOrb, wind = 1, windEmptyT = -9;
+let chase = null, trail = [];
 let phase = 'fly', stormT = 0, emitter = null, pans = [], bubbles = [], cass = 0, chain = [], nextSalvo = 0, nextBubble = 0, dark = 0, bannerT = 0, flash = 0, cassInv = 0;
 let coinsList, journos, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
 let keyUp = false, keyDown = false, pointerY = null, pointerDown = false;
 
 function start(){
   applyCam(); seed = 7; realT = 0; tFlight = 0; py = P.yMax; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0; onWater = true; blownT = 0; blowGauge = 0; endReason = ''; orbs = []; nextOrb = 6; wind = 1; windEmptyT = -9;
-  phase = 'fly'; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chain = []; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; cassInv = 0;
-  poll = P.pollStart; coins = 0; stats = {hits: 0, orbs: 0, coins: 0, cass: 0, bubbles: 0};
+  phase = 'fly'; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chain = []; chase = null; trail = []; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; cassInv = 0;
+  poll = P.pollStart; coins = 0; stats = {hits: 0, orbs: 0, coins: 0, cass: 0, bubbles: 0, gold: false};
   coinsList = []; journos = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0; patOrder = [];
   pointerY = null; pointerDown = false; keyUp = keyDown = false;
   state = 'play'; paused = false;
   document.getElementById('titleScreen').hidden = true;
   ensureAudio(); musicStart();
 }
-let testStorm = false;
-function startTest(){ testStorm = true; start(); startStorm(); }
+let testMode = '';
+function startTest(){ testMode = 'storm'; start(); startStorm(); }
+function startTestChase(){ testMode = 'chase'; start(); startChase(); }
+function replay(){ if (testMode === 'storm') startTest(); else if (testMode === 'chase') startTestChase(); else start(); }
 function toTitle(){ state = 'title'; musicStop(); document.getElementById('titleScreen').hidden = false; }
 
 // ---------- commandes ----------
@@ -480,8 +500,9 @@ function applyInput(dt){
   if (ctrl === 'tap'){
     const want = pointerDown || keyUp;
     // réserve de vent : l'appui consomme (sauf sur l'eau), la glisse sur l'eau recharge ; vide, l'appui ne répond plus
-    if (want && !onWater){ wind = Math.max(0, wind - dt/P.windCap); if (wind === 0 && windEmptyT < 0){ windEmptyT = realT; sfxP3('down'); } }
-    if (onWater) wind = Math.min(1, wind + dt/P.windRefill);
+    // pendant la course, le vent ne manque pas : l'actu d'or porte
+    if (want && !onWater && phase !== 'chase'){ wind = Math.max(0, wind - dt/P.windCap); if (wind === 0 && windEmptyT < 0){ windEmptyT = realT; sfxP3('down'); } }
+    if (onWater || phase === 'chase') wind = Math.min(1, wind + dt/P.windRefill);
     if (wind > 0) windEmptyT = -9;
     holding = want && (wind > 0 || onWater);
     const st = {vy, holdT, relT}; tapStep(st, holding, dt); vy = st.vy; holdT = st.holdT; relT = st.relT;
@@ -518,7 +539,7 @@ window.addEventListener('keydown', e => {
   if (e.code === 'ArrowDown' || e.code === 'KeyS') keyDown = true;
   if (e.code === 'Space'){ if (state === 'play' && phase !== 'intro') keyUp = true; e.preventDefault(); }
   if (e.code === 'Enter' && state === 'title') start();
-  if (e.code === 'Enter' && state === 'recap'){ if (testStorm) startTest(); else start(); }
+  if (e.code === 'Enter' && state === 'recap') replay();
   if ((e.code === 'Enter' || e.code === 'Space') && state === 'play' && phase === 'intro' && introT > 0.4) beginStormPlay();
   if (e.code === 'KeyP' && state === 'play') togglePause();
 });
@@ -607,6 +628,7 @@ function update(dt){
   inv = Math.max(0, inv - dt);
   if (phase === 'fly'){ addPoll(P.pollLevel/P.flight*dt); nextSpawn -= dt; if (nextSpawn <= 0) spawn(); nextOrb -= dt; }   // les sondages montent avec la distance, pendant le vol
   else if (phase === 'storm') updateStorm(dt);
+  else if (phase === 'chase') updateChase(dt);
   updateChain(dt);
   if (phase === 'fly' && nextOrb <= 0){ addOrb(VWW + 40); const b = newBlock(); coinLine(VWW + 40 + sec(0.3), P.yMax, 20, b); coinLine(VWW + 40 + sec(0.3), P.yMax - coinGap(), 20, b); nextOrb = P.orbEvery*(0.8 + rnd()*0.4); }
   for (const o of orbs){ if (o.alert > 0){ o.alert -= dt; continue; } o.x -= dx; if (!o.got && Math.hypot(o.x - mx, o.y - my) < 46){ o.got = true; stats.orbs++; addPoll(P.orbGain); pop('Actu d’argent +' + P.orbGain.toFixed(1).replace('.', ',') + ' pt', '#e8edf5', mx + 10, my - 60, true); sfxP3('catch'); fx.push({kind: 'flash', x: o.x, y: o.y, t: 0}); } }
@@ -647,7 +669,7 @@ function updateStorm(dt){
   if (bannerT > 0) bannerT -= dt;
   cassInv = Math.max(0, cassInv - dt);
   // l'émetteur entre, recule aux touches, fuit à la fin
-  if (e.fled){ e.x += 700*dt; if (e.x > VWW + 400){ endLevel('done'); return; } }
+  if (e.fled){ e.x += 700*dt; if (e.x > VWW + 400){ startChase(); return; } }
   else { e.x += clamp(e.tx + e.recoil - e.x, -500*dt, 500*dt); e.recoil = Math.max(0, e.recoil - 80*dt); e.pause = Math.max(0, e.pause - dt); }
   e.frT += dt; if (e.frT > 0.5){ e.frT = 0; e.fr = (e.fr + 1) % e.E.frames.length; }
   if (e.kind === 'bard') e.y += clamp(lerp(P.ceil, WATER, 0.45) + Math.sin(realT*0.8)*60 - e.y, -120*dt, 120*dt);   // Bardella se balade
@@ -700,6 +722,59 @@ function updateChain(dt){
     l.rot = Math.atan2(l.y - pyy, l.x - px) + Math.PI/2;
     px = l.x; pyy = l.y;
   }
+}
+// ---------- la course : l'actu d'or et sa traîne ----------
+function startChase(){
+  phase = 'chase'; emitter = null; pans = []; bubbles = []; trail = [];
+  chase = {t: 0, gauge: 0, y: lerp(P.ceil + 80, P.yMax - 40, 0.5), ph: rnd()*100, ph2: rnd()*100, hist: [], done: false, leaving: false, caught: false, catchT: 0, inside: false};
+  sfxP3('orb');
+}
+const chaseDist = () => chase ? lerp(P.chaseDist0, P.chaseDist1, clamp(chase.gauge, 0, 1)) : 0;
+const trailWidth = age => P.chaseW0 + P.chaseGrow*age;   // largeur de la traîne selon l'âge des particules (s)
+function updateChase(dt){
+  const c = chase, mx = PX(), my = py, vs = worldSpeed();
+  c.t += dt; dark = Math.max(0, dark - dt/1.5);
+  if (c.caught){ c.catchT += dt; if (c.catchT > 0.9) endLevel('done'); return; }
+  if (c.leaving){ c.catchT += dt; if (c.catchT > 1.0) endLevel('done'); return; }
+  // l'orbe ondule : somme de deux sinus, bornée au ciel jouable
+  const f = P.chaseFreq, a = P.chaseAmp, mid = lerp(P.ceil + 80, P.yMax - 40, 0.5);
+  c.y = clamp(mid + a*(0.65*Math.sin(2*Math.PI*f*c.t + c.ph) + 0.35*Math.sin(2*Math.PI*f*2.3*c.t + c.ph2)), P.ceil + 60, P.yMax - 30);
+  // historique des positions (pour savoir où passait la traîne à la colonne de Marine)
+  c.hist.push({t: c.t, y: c.y}); while (c.hist.length > 400) c.hist.shift();
+  // particules : nées à l'orbe, elles s'écartent latéralement de chaseGrow/2 px/s de chaque côté
+  const ox = mx + chaseDist();
+  for (let i=0;i<4;i++) trail.push({x: ox - rnd()*10, y: c.y + (rnd() - 0.5)*P.chaseW0, vy: (rnd() - 0.5)*P.chaseGrow, age: 0, r: 2 + rnd()*3, ph: rnd()*6.3});
+  for (const q of trail){ q.age += dt; q.x -= vs*dt; q.y += q.vy*dt; }
+  trail = trail.filter(q => q.x > -40 && q.age < 4);
+  // Marine est-elle dans la traîne ? La traîne à sa colonne a l'âge dist/vitesse ; sa hauteur est celle de l'orbe à cet instant-là
+  const age = chaseDist()/vs, tt = c.t - age; let ty = c.y;
+  for (let i = c.hist.length - 1; i >= 0; i--){ if (c.hist[i].t <= tt){ ty = c.hist[i].y; break; } }
+  c.inside = c.t > age && Math.abs(my - ty) < trailWidth(age)/2;
+  c.ty = ty; c.tw = trailWidth(age);
+  if (c.inside) c.gauge = Math.min(1, c.gauge + dt/P.chaseTime); else c.gauge = Math.max(0, c.gauge - dt*P.chaseDrain/100);
+  if (c.gauge >= 1){ c.caught = true; c.catchT = 0; stats.gold = true; addPoll(P.chaseGain); pop('Actu en or ! +' + P.chaseGain.toFixed(1).replace('.', ',') + ' pt', '#f2b630', mx + 10, my - 70, true); sfxP3('fanfare'); return; }
+  if (c.t >= P.chaseMax){ c.leaving = true; c.catchT = 0; pop('L’actu s’envole…', '#fde68a', ox - 40, c.y - 60, true); sfxP3('miss'); }
+}
+function drawChase(){
+  const c = chase, mx = PX();
+  // la traîne
+  for (const q of trail){ const k = clamp(1 - q.age/4, 0, 1), tw = 0.6 + 0.4*Math.sin(realT*8 + q.ph); ctx.fillStyle = 'rgba(255,215,90,' + (0.75*k*tw) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, q.r*(1 + q.age*0.4), 0, 7); ctx.fill(); }
+  // l'orbe d'or
+  let ox = mx + chaseDist(), oy = c.y;
+  if (c.caught){ const k = clamp(c.catchT/0.5, 0, 1); ox = lerp(ox, mx + 20, k); oy = lerp(oy, py, k); }
+  if (c.leaving){ ox += c.catchT*c.catchT*1400; oy -= c.catchT*c.catchT*500; }
+  const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, 70); g.addColorStop(0, 'rgba(255,226,120,.6)'); g.addColorStop(1, 'rgba(255,200,80,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ox, oy, 70, 0, 7); ctx.fill();
+  spr('orbg' + (Math.floor(realT*8) % 4), ox, oy + 18, 1.1);
+  // repère de debug léger : la fenêtre de la traîne à la colonne de Marine
+  if (!c.caught && !c.leaving && c.ty !== undefined){ ctx.strokeStyle = c.inside ? 'rgba(22,163,74,.7)' : 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; ctx.setLineDash([6, 6]); ctx.beginPath(); ctx.moveTo(mx + 40, c.ty - c.tw/2); ctx.lineTo(mx + 40, c.ty + c.tw/2); ctx.stroke(); ctx.setLineDash([]); }
+}
+function drawChaseHud(){
+  const c = chase, w = 300, x = VW/2 - w/2, y = 14;
+  ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(x, y, w, 34, 10); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
+  text('Actu d’or', x + 12, y + 17, 12, 900, '#14213d');
+  ctx.fillStyle = 'rgba(20,33,61,.15)'; rr(x + 84, y + 10, 160, 14, 5); ctx.fill(); ctx.fillStyle = c.inside ? '#f2b630' : '#c8961e'; rr(x + 84, y + 10, 160*c.gauge, 14, 5); ctx.fill();
+  const left = Math.max(0, P.chaseMax - c.t); text(left.toFixed(0) + ' s', x + w - 14, y + 17, 13, 900, left < 5 ? '#d63b3b' : '#14213d', 'right');
+  outText(c.inside ? 'Dans la traîne' : 'Reste dans la traîne !', VW/2, y + 50, 13, 900, c.inside ? '#bdf5c9' : '#fff', 'center', 'rgba(20,33,61,.6)');
 }
 function endLevel(reason){ endReason = reason; state = 'recap'; musicStop(); if (reason === 'sunk') sfxP3('sink'); }
 
@@ -984,12 +1059,12 @@ function drawRecap(){
   const lost = endReason === 'blown' || endReason === 'sunk', L = curLevel();
   text(endReason === 'blown' ? 'Emportée par le vent !' : endReason === 'sunk' ? 'Coulée sous les casseroles !' : 'Niveau ' + L.n + ' traversé', VW/2, y + 44, 28, 900, lost ? '#d63b3b' : '#14213d', 'center', UIT);
   text(endReason === 'blown' ? 'Trop haut : le vent de haute altitude a pris le kite. On recommence le niveau.' : endReason === 'sunk' ? P.cassMax + ' casseroles accrochées, Marine coule. On recommence le niveau.' : 'Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièces  ·  ' + cass + ' casserole' + (cass > 1 ? 's' : ''), VW/2, y + 88, lost ? 13 : 16, 800, '#14213d', 'center');
-  if (!lost) text(L.scandal.title + ' : ' + stats.bubbles + ' élément' + (stats.bubbles > 1 ? 's' : '') + ' de langage renvoyé' + (stats.bubbles > 1 ? 's' : '') + '  ·  ' + stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.orbs + ' actu' + (stats.orbs > 1 ? 's' : '') + ' d’argent', VW/2, y + 116, 12, 700, '#5b6475', 'center');
+  if (!lost) text((stats.gold ? 'Actu d’or attrapée : Marine change de position !' : 'L’actu d’or s’est envolée : pas de volte-face.') + '  ·  ' + stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.orbs + ' actu' + (stats.orbs > 1 ? 's' : '') + ' d’argent', VW/2, y + 116, 12, 700, '#5b6475', 'center');
   btn(VW/2 - 190, y + 160, 180, 46, lost ? 'Recommencer' : 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Menu', '#fff', '#14213d', 'title');
 }
 let btns = [];
 function btn(x, y, w, h, label, bg, fg, id){ ctx.fillStyle = '#14213d'; rr(x + 3, y + 3, w, h, 10); ctx.fill(); ctx.fillStyle = bg; rr(x, y, w, h, 10); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke(); text(label, x + w/2, y + h/2 + 1, 15, 900, fg, 'center'); btns.push({x, y, w, h, id}); }
-cv.addEventListener('pointerdown', e => { if (state === 'play' && phase === 'intro'){ if (introT > 0.4) beginStormPlay(); return; } if (state !== 'recap') return; const l = toLocal(e); for (const b of btns) if (l.x >= b.x && l.x <= b.x + b.w && l.y >= b.y && l.y <= b.y + b.h){ sfxP3('click'); if (b.id === 'again'){ if (testStorm) startTest(); else start(); } else toTitle(); } });
+cv.addEventListener('pointerdown', e => { if (state === 'play' && phase === 'intro'){ if (introT > 0.4) beginStormPlay(); return; } if (state !== 'recap') return; const l = toLocal(e); for (const b of btns) if (l.x >= b.x && l.x <= b.x + b.w && l.y >= b.y && l.y <= b.y + b.h){ sfxP3('click'); if (b.id === 'again') replay(); else toTitle(); } });
 
 function draw(){
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);
@@ -999,6 +1074,7 @@ function draw(){
   drawSky(); drawCeiling(); drawFar(); drawNear();
   if (dark > 0) drawStormSky();
   if (emitter) drawEmitter();
+  if (phase === 'chase' && chase) drawChase();
   for (const c of pans) if (c.delay > 0) drawPan(c);   // les préavis passent devant l'émetteur
   for (const j of journos) if (j.kind === 'boat') drawJourno(j);
   for (const c of coinsList) drawCoin(c);
@@ -1008,7 +1084,7 @@ function draw(){
   drawMarine(); drawCass(); for (const c of pans) if (!(c.delay > 0)) drawPan(c); drawFx(); drawPops();
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);   // l'interface, à l'échelle de l'écran
   if (ctrl === 'wind') drawVane();
-  drawHud(); if (bannerT > 0) drawBanner(); if (phase === 'intro' && state === 'play') drawIntro();
+  drawHud(); if (phase === 'chase' && chase) drawChaseHud(); if (bannerT > 0) drawBanner(); if (phase === 'intro' && state === 'play') drawIntro();
   if (paused){ ctx.fillStyle = 'rgba(15,29,51,.4)'; ctx.fillRect(0, 0, VW, H); outText('Pause', VW/2, H/2, 40, 900, '#fff'); }
   if (state === 'recap') drawRecap();
 }
@@ -1033,25 +1109,29 @@ function setSfxMuted(v){ sfxMuted = v; try { localStorage.setItem('vdd-sfx-mute'
 setMuted(muted); setSfxMuted(sfxMuted);
 for (const id of ['musicBtn', 'musicTitle']) document.getElementById(id).addEventListener('click', () => setMuted(!muted));
 for (const id of ['soundBtn', 'soundTitle']) document.getElementById(id).addEventListener('click', () => { ensureAudio(); setSfxMuted(!sfxMuted); });
-document.getElementById('startBtn').addEventListener('click', () => { testStorm = false; start(); });
+document.getElementById('startBtn').addEventListener('click', () => { testMode = ''; start(); });
+document.getElementById('chaseBtn').addEventListener('click', startTestChase);
 document.getElementById('stormBtn').addEventListener('click', startTest);
 document.querySelectorAll('#ctrlSel button').forEach(b => b.addEventListener('click', () => { ctrl = b.dataset.ctrl; syncCtrlButtons(); }));
 
 // ---------- menu de réglage ----------
 const dbg = document.getElementById('debug');
+let dbgTab = 'Appui';
 function debugBuild(){
-  let h = '<h2>Réglages</h2><p>Les valeurs s’appliquent tout de suite. « Sauvegarder » les garde pour les prochaines parties.</p>';
-  for (const g of ['Commun', 'Appui', 'Tempête']){   // la commande « vent » est mise de côté : ses réglages restent dans le code, pas dans le menu
-    h += '<h3>' + g + '</h3>';
+  const groups = ['Commun', 'Appui', 'Tempête', 'Course'];   // la commande « vent » est mise de côté : ses réglages restent dans le code, pas dans le menu
+  let h = '<h2>Réglages</h2><div class="tabs">' + groups.map(g => '<button type="button" data-tab="' + g + '" aria-pressed="' + (g === dbgTab ? 'true' : 'false') + '">' + g + '</button>').join('') + '</div>';
+  for (const g of groups){
+    h += '<div class="tab" data-tab="' + g + '"' + (g === dbgTab ? '' : ' hidden') + '>';
     for (const sp of PSPEC) if (sp.g === g){
       h += '<label for="dbg_' + sp.k + '"><span><b>' + sp.l + '</b> <em>' + sp.u + '</em><br><small>' + sp.d + '</small></span><span class="val" id="dbgv_' + sp.k + '"></span></label>';
       h += '<input type="range" id="dbg_' + sp.k + '" min="' + sp.min + '" max="' + sp.max + '" step="' + sp.step + '" data-k="' + sp.k + '">';
     }
+    h += '</div>';
   }
   h += '<div class="row"><button type="button" id="dbgSave">Sauvegarder</button><button type="button" id="dbgReset">Réinitialiser</button><button type="button" id="dbgClose">Fermer</button></div><p id="dbgMsg"></p>';
   dbg.innerHTML = h;
   dbg.querySelectorAll('input[type=range]').forEach(inp => inp.addEventListener('input', () => { const k = inp.dataset.k; P[k] = parseFloat(inp.value); applyCam(); if (k === 'cam' && state === 'play') py = Math.min(py, P.yMax); debugRefresh(); }));
-  dbg.querySelectorAll('#dbgCtrl button').forEach(b => b.addEventListener('click', () => { ctrl = b.dataset.ctrl; syncCtrlButtons(); }));
+  dbg.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => { dbgTab = b.dataset.tab; dbg.querySelectorAll('.tabs button').forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false')); dbg.querySelectorAll('.tab').forEach(t => { t.hidden = t.dataset.tab !== dbgTab; }); }));
   dbg.querySelector('#dbgSave').addEventListener('click', async () => { const m = await saveSettings(); dbg.querySelector('#dbgMsg').textContent = m; });
   dbg.querySelector('#dbgReset').addEventListener('click', () => { applySettings(PDEF); debugRefresh(); dbg.querySelector('#dbgMsg').textContent = 'Valeurs par défaut (non sauvegardées)'; });
   dbg.querySelector('#dbgClose').addEventListener('click', () => { dbg.hidden = true; });
@@ -1070,7 +1150,7 @@ loadLocal(); applyCam(); debugBuild(); loadShared();
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
+  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, gauge: chase.gauge, y: chase.y, ty: chase.ty, tw: chase.tw, inside: chase.inside, caught: chase.caught, leaving: chase.leaving, dist: chaseDist()}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
   get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
   get world(){ return {Z, WH, WATER, HZ, VWW}; },
   setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,
