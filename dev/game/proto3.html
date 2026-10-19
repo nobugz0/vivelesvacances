@@ -172,7 +172,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.7', BUILD = '18/10/2026 à 20h47';
+const VERSION = 'proto 3 · 0.8', BUILD = '18/10/2026 à 20h47';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -342,6 +342,34 @@ function sfxP3(k, n){
   sfx(k, n);
 }
 
+// ---------- données satiriques (reprises du proto v2 : VOLTES et VSHORT, sourcées dans le corpus du Project) ----------
+const VOLTES = [{"sujet": "Russie", "titre": "Russie : 13 jours pour changer d’ami", "per": "11 → 24 février 2022", "old": "Négocier une entente avec la Russie de Vladimir Poutine.", "neu": "Exiger « la cessation immédiate des opérations russes ».", "d": "Le 11 février 2022 à Toulon, Marine Le Pen propose de quitter le commandement intégré de l’OTAN et de négocier une entente avec la Russie. Le 24 février, jour de l’invasion de l’Ukraine, Marine Le Pen réclame « la cessation immédiate des opérations russes ». Le lendemain, sur BFMTV et RMC, Marine Le Pen condamne « sans ambiguïté » la violation de la souveraineté ukrainienne, tout en mettant en garde contre l’effet des sanctions sur le pouvoir d’achat.", "src": ["Europe 1, Victor Chabert, 12/02/2022", "Le Petit Journal/AFP, 24/02/2022", "Europe 1 avec AFP, 25/02/2022"]},
+  {"sujet": "OTAN", "titre": "OTAN : une promesse vite suspendue", "per": "mars 2022", "old": "Quitter le commandement intégré de l’OTAN dès 2022.", "neu": "Rester dans le commandement intégré tant que dure la guerre en Ukraine.", "d": "Le programme présidentiel de Marine Le Pen, publié fin mars 2022, promet de sortir la France du commandement intégré de l’OTAN dès 2022, comme le général de Gaulle en 1966. La guerre en Ukraine a alors commencé depuis un mois. Le lendemain, sur CNews, Marine Le Pen précise qu’elle ne quittera pas le commandement intégré tant que dure la guerre, mais le fera une fois le conflit terminé. En mai 2026, sur BFMTV, Marine Le Pen répète : « Nous devons sortir du commandement intégré de l’OTAN ».", "src": ["Europe 1, Gauthier Delomez, 23/03/2022", "Public Sénat, Pierre-Louis Boucé, 25/03/2022", "Reuters, Sabine Siebold et John Irish, 23/05/2026"]},
+  {"sujet": "Voile", "titre": "Voile islamique : « nous y arriverons »… ou pas", "per": "avril 2022", "serie": "voile", "rang": 1, "old": "Interdire le voile islamique dans l’espace public, sous peine d’amende.", "neu": "Confier ce « problème complexe » au Parlement.", "d": "En avril 2022, Marine Le Pen annonce une amende pour sanctionner le port du voile dans l’espace public et assure sur BFMTV : « Ne vous inquiétez pas, nous y arriverons ». Dans l’entre-deux-tours, Marine Le Pen se dit « pas obtuse » et renvoie ce « problème complexe » à la discussion parlementaire. Au débat du 20 avril, Marine Le Pen maintient que « le voile est un uniforme imposé par les islamistes ».", "src": ["Europe 1, Laura Laplaud, 21/04/2022", "Public Sénat, Simon Barbarit, 19/04/2022", "Europe 1 avec AFP, 20/04/2022"]},
+  {"sujet": "Voile (bis)", "titre": "Voile islamique : le retour, par référendum", "per": "avril 2022 → août 2026", "serie": "voile", "rang": 2, "old": "Confier l’interdiction du voile islamique au Parlement.", "neu": "Pénaliser le voile islamiste dans l’espace public par référendum.", "d": "En avril 2022, Marine Le Pen renvoie l’interdiction du voile dans l’espace public au Parlement, qu’elle qualifie de « problème complexe ». Le 31 août 2026, Marine Le Pen promet de soumettre par référendum « une grande loi de lutte contre les idéologies islamistes », qui inclut la pénalisation du voile islamiste dans l’espace public. Le même jour, Jordan Bardella assure qu’il n’y aura pas de « police du vêtement ».", "src": ["Public Sénat, Simon Barbarit, 19/04/2022", "TelQuel/AFP, 01/09/2026", "Sud Radio avec AFP, 31/08/2026"]},
+  {"sujet": "Loi immigration", "titre": "Loi immigration : contre, puis pour", "per": "11 → 19 décembre 2023", "old": "Rejeter le projet de loi immigration.", "neu": "Voter le texte final, une « victoire idéologique ».", "d": "Le 11 décembre 2023, les 87 députés RN présents votent la motion de rejet du projet de loi immigration, qui est adoptée. Marine Le Pen se félicite d’avoir « protégé les Français d’un appel d’air migratoire ». Le 19 décembre, après la commission mixte paritaire, le groupe RN vote le texte final par 88 voix sur 88, et Marine Le Pen parle de « victoire idéologique ».", "src": ["Assemblée nationale, scrutins n° 3203 (11/12/2023) et n° 3213 (19/12/2023)", "Les Nouvelles Calédoniennes/AFP, 12/12/2023", "Le Petit Journal, Christophe Verger, 20/12/2023"]},
+  {"sujet": "Retraites", "titre": "Retraites : « Nous verrons », puis à l’automne", "per": "12 → 17 juin 2024", "old": "Ne pas s’engager sur l’abrogation de la réforme de 2023 : « Nous verrons ».", "neu": "Abroger la réforme « à partir de l’automne ».", "d": "Pendant la campagne des législatives de 2024, Jordan Bardella répond « Nous verrons » sur RTL le 12 juin, quand on lui demande s’il abrogera la réforme des retraites de 2023. Le 14 juin, Jordan Bardella juge que ce n’est pas une priorité avant un audit des comptes. Le 17 juin, dans Le Parisien, Jordan Bardella annonce l’abrogation « à partir de l’automne ».", "src": ["Public Sénat, Guillaume Jacquot, 18/06/2024", "LCP, Maxence Kagni, 18/06/2024"]},
+  {"sujet": "Âge légal", "titre": "Âge de départ : intouchable, puis à l’étude", "per": "juin 2024 → mai 2026", "old": "Ne pas relever l’âge légal de départ à la retraite.", "neu": "Étudier un relèvement de l’âge légal de départ.", "d": "Le 20 juin 2024, devant les organisations patronales, Jordan Bardella affirme qu’il ne décalera pas l’âge légal de départ à la retraite. En mai 2026, dans un entretien au Frankfurter Allgemeine Zeitung, Jordan Bardella indique que le RN « examine » un possible relèvement de l’âge légal.", "src": ["Public Sénat, Guillaume Jacquot, 20/06/2024", "Public Sénat, Stéphane Duguet, 12/06/2026"]},
+  {"sujet": "TVA sur 100 produits", "titre": "TVA sur 100 produits : sous conditions", "per": "mars 2022 → juin 2024", "serie": "tva", "rang": 1, "old": "Supprimer la TVA sur 100 produits de première nécessité.", "neu": "Ne la supprimer qu’en cas de forte inflation.", "d": "Le 14 mars 2022, Marine Le Pen propose de supprimer la TVA sur un panier de produits de première nécessité, financée par une taxe sur les rachats d’actions. Dans le programme des législatives de juin 2024, présenté par Jordan Bardella, la suppression de la TVA sur 100 produits de première nécessité ne s’appliquerait plus qu’en cas de forte inflation.", "src": ["Public Sénat, François Vignal, 14/03/2022", "Public Sénat, Romain David, 27/06/2024"]},
+  {"sujet": "TVA (bis)", "titre": "TVA sur 100 produits : le retour", "per": "juin 2024 → octobre 2025", "serie": "tva", "rang": 2, "old": "Ne supprimer la TVA sur 100 produits qu’en cas de forte inflation.", "neu": "Inscrire une TVA nulle sur 100 produits dans le contre-budget du RN.", "d": "Dans le programme des législatives de juin 2024, la suppression de la TVA sur 100 produits de première nécessité ne s’applique plus qu’en cas de forte inflation. En octobre 2024, le contre-budget 2025 du groupe RN, présidé par Marine Le Pen, prévoit la suppression de la TVA sur les produits de première nécessité. En octobre 2025, le contre-budget du RN pour 2026 inscrit une TVA nulle sur 100 produits.", "src": ["Public Sénat, Romain David, 27/06/2024", "LCP, Maxence Kagni, 16/10/2024", "Public Sénat, Romain David, 24/10/2025"]},
+  {"sujet": "Électricité", "titre": "Électricité : sortir du marché, ou juste négocier", "per": "mars 2022 → juin 2024", "old": "Sortir du marché européen de l’électricité.", "neu": "Négocier une dérogation au marché européen pour un prix français.", "d": "Le 14 mars 2022, Marine Le Pen propose de sortir du marché européen libéralisé de l’énergie et de rétablir des prix régulés. Le 14 juin 2024 sur BFMTV-RMC, Jordan Bardella propose plutôt de négocier une dérogation au marché européen de l’électricité pour obtenir un prix français.", "src": ["Public Sénat, François Vignal, 14/03/2022", "LCP, Soizic Bonvarlet, 17/06/2024"]},
+  {"sujet": "Inéligibilité", "titre": "L’inéligibilité à vie… pour les autres", "per": "2013 → 31 mars 2025", "old": "Rendre inéligibles à vie tous les élus condamnés.", "neu": "Dénoncer sa propre inéligibilité comme une « décision politique ».", "d": "En 2013, Marine Le Pen réclamait « l’inéligibilité à vie pour tous ceux qui ont été condamnés ». Le 31 mars 2025, condamnée en première instance à 5 ans d’inéligibilité avec exécution provisoire dans l’affaire des assistants parlementaires européens, Marine Le Pen dénonce sur TF1 une « décision politique » : « Soyons bien clairs, je suis éliminée ».", "src": ["Public Sénat, vidéo de 2013", "Public Sénat, François Vignal, 31/03/2025"]},
+  {"sujet": "Nucléaire", "titre": "Sûreté nucléaire : contre, puis pour", "per": "19 mars → 9 avril 2024", "old": "Voter contre la réforme de la sûreté nucléaire.", "neu": "Voter pour le texte final de la même réforme.", "d": "Le 19 mars 2024, les 84 députés RN présents votent contre le projet de loi sur la gouvernance de la sûreté nucléaire, qui fusionne l’ASN et l’IRSN. Marine Le Pen vote contre. Le 9 avril 2024, après la commission mixte paritaire, les 82 députés RN présents votent pour le texte final. Marine Le Pen vote pour.", "src": ["Assemblée nationale, scrutins n° 3546 (19/03/2024) et n° 3662 (09/04/2024)"]}];
+const VSHORT = [['Entente avec Poutine', 'Stop aux opérations russes'], ['Quitter l’OTAN intégrée', 'Rester dans l’OTAN intégrée'], ['Interdire le voile', 'Le Parlement décidera'], ['Le Parlement décidera', 'Référendum sur le voile'], ['Rejeter la loi immigration', 'Voter la loi immigration'], ['Abroger ? Nous verrons', 'Abroger à l’automne'], ['Âge légal intouchable', 'Âge légal à l’étude'], ['Zéro TVA sur 100 produits', 'Seulement si forte inflation'], ['Seulement si forte inflation', 'Zéro TVA au contre-budget'], ['Sortir du marché européen', 'Négocier une dérogation'], ['Inéligibilité à vie', '« Une décision politique »'], ['Contre la sûreté nucléaire', 'Pour la même réforme']];
+// Les 5 niveaux : thème (volte-face) et scandale (tempête), liste validée par Pierre le 18/10. Les textes restent courts ; les sources sont dans le corpus du Project.
+const LEVELS = [
+  {n: 1, theme: 'Europe', old: 'Frexit et référendum (2016)', neu: '« Le Frexit n’est nullement notre projet » (avril 2019)', scandal: {title: 'Kits de campagne', sub: 'Législatives 2012 · condamnation définitive du RN', date: '19 juin 2024', emitter: 'justice'}},
+  {n: 2, theme: 'Retraites', old: '60 ans pour tous (2012, 2017)', neu: 'Âge selon l’entrée dans la vie active (février 2022)', scandal: {title: 'Les tracts Poutine', sub: 'Poignée de main mise au rebut', date: '1er mars 2022', emitter: 'rn'}},
+  {n: 3, theme: 'Énergie', old: 'Sortie du nucléaire souhaitable (2011-2012)', neu: 'Une vingtaine de réacteurs (avril 2022)', scandal: {title: '« Brebis galeuses »', sub: 'Candidats RN des législatives', date: 'juin-juillet 2024', emitter: 'bard'}},
+  {n: 4, theme: 'IVG', old: 'Constitutionnalisation refusée (2022)', neu: 'Votée (30 janvier 2024)', scandal: {title: 'Assistants parlementaires', sub: '1re instance, appel, pourvoi en cassation', date: '31 mars 2025 · 7 juillet 2026', emitter: 'justice'}},
+  {n: 5, theme: 'Budget', old: 'Règle d’or « chape de plomb » (2012)', neu: 'Règle d’or constitutionnelle (août 2026)', scandal: {title: 'Écrits attribués à Bardella', sub: 'Révélations Mediapart · attribués, contestés, non jugés', date: '28 septembre 2026', emitter: 'bard'}},
+];
+// Éléments de langage : ce que Marine renvoie à l'émetteur pendant la tempête (formules déjà documentées dans VSHORT, plus deux répliques du jeu)
+const BUBBLES = ['Nous verrons', 'Une décision politique', 'Le Parlement décidera', 'Pas de commentaire !', 'Négocier une dérogation', 'Seulement si forte inflation', 'Cabale !'];
+const EMITTERS = {rn: {name: 'Le bateau RN', frames: ['rn0', 'rn1', 'rn2'], s: 0.9, y: () => WATER - 6, w: 150, h: 170, sfx: 'throw'},
+  justice: {name: 'Le palais de justice', frames: ['jus0', 'jus1', 'jus2', 'jus3'], s: 1.3, y: () => WATER + 4, w: 150, h: 230, sfx: 'gavel'},
+  bard: {name: 'Jordan Bardella', frames: ['bk0', 'bk1', 'bk2'], s: 0.5, y: () => lerp(P.ceil, WATER, 0.5), w: 90, h: 90, sfx: 'throw'}};
+
 // ---------- réglages ----------
 // PSPEC décrit chaque paramètre réglable (menu debug) ; P porte les valeurs courantes.
 const PSPEC = [
@@ -349,6 +377,13 @@ const PSPEC = [
   {k:'speed', g:'Commun', l:'Vitesse de vol', u:'px écran/s', d:'Défilement à l’œil, constant quelle que soit la distance de caméra.', min:150, max:500, step:10},
   {k:'flight', g:'Commun', l:'Durée du vol', u:'s', d:'Longueur de la phase de vol d’un niveau.', min:30, max:120, step:5},
   {k:'ceil', g:'Commun', l:'Limite d’altitude', u:'px monde', d:'Marge sous le bord haut du monde : au-dessus, le vent emporte Marine (niveau perdu).', min:20, max:200, step:5},
+  {k:'level', g:'Commun', l:'Niveau', u:'1 à 5', d:'Choisit le thème et le scandale de la tempête (liste du document de design §7).', min:1, max:5, step:1},
+  {k:'stormRate', g:'Tempête', l:'Cadence des salves', u:'s', d:'Temps entre deux salves de casseroles.', min:0.4, max:3, step:0.1},
+  {k:'stormN', g:'Tempête', l:'Casseroles par salve', u:'', d:'Nombre de casseroles lancées à chaque salve, à des hauteurs étalées autour de Marine.', min:1, max:6, step:1},
+  {k:'stormHits', g:'Tempête', l:'Touches pour faire fuir', u:'', d:'Nombre d’éléments de langage à renvoyer sur l’émetteur pour qu’il s’en aille.', min:1, max:6, step:1},
+  {k:'stormMax', g:'Tempête', l:'Durée maximale', u:'s', d:'Au bout de ce temps, l’émetteur s’en va de lui-même.', min:8, max:60, step:1},
+  {k:'bubbleEvery', g:'Tempête', l:'Fréquence des bulles', u:'s', d:'Temps entre deux éléments de langage à attraper.', min:1, max:8, step:0.5},
+  {k:'cassMax', g:'Tempête', l:'Casseroles fatales', u:'', d:'Nombre de casseroles accrochées à partir duquel Marine coule (niveau perdu).', min:3, max:20, step:1},
   {k:'blowT', g:'Commun', l:'Temps d’emportement', u:'s', d:'Au-dessus de la limite, la jauge se remplit en ce temps ; pleine = emportée par le vent (niveau perdu). Elle se vide dessous.', min:0.1, max:2, step:0.1},
   {k:'orbGain', g:'Commun', l:'Orbe d’argent', u:'pt', d:'Points de sondage par orbe d’argent attrapée au-dessus de la limite.', min:0, max:3, step:0.1},
   {k:'orbEvery', g:'Commun', l:'Fréquence des orbes', u:'s', d:'Temps moyen entre deux orbes d’argent.', min:5, max:40, step:1},
@@ -370,7 +405,7 @@ const PSPEC = [
   {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
 ];
 // valeurs par défaut = réglages sauvegardés par Pierre le 18/10 au soir (caméra loin, vol vif)
-const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
+const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 1.1, stormN: 3, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
   vUp: 400, tUp: 0.25, vDown: 520, tDown: 0.5, glide: 0, tTurn: 0.05,
   windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
 const P = Object.assign({}, PDEF, {
@@ -400,12 +435,14 @@ async function saveSettings(){
 // ---------- state ----------
 let state = 'title', paused = false, ctrl = 'tap';
 let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, stats, onWater = false, blownT = 0, blowGauge = 0, endReason = '', orbs, nextOrb, wind = 1, windEmptyT = -9;
+let phase = 'fly', stormT = 0, emitter = null, pans = [], bubbles = [], cass = 0, nextSalvo = 0, nextBubble = 0, dark = 0, bannerT = 0, flash = 0, cassInv = 0;
 let coinsList, journos, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
 let keyUp = false, keyDown = false, pointerY = null, pointerDown = false;
 
 function start(){
   applyCam(); seed = 7; realT = 0; tFlight = 0; py = P.yMax; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0; onWater = true; blownT = 0; blowGauge = 0; endReason = ''; orbs = []; nextOrb = 6; wind = 1; windEmptyT = -9;
-  poll = P.pollStart; coins = 0; stats = {hits: 0, orbs: 0, coins: 0};
+  phase = 'fly'; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; cassInv = 0;
+  poll = P.pollStart; coins = 0; stats = {hits: 0, orbs: 0, coins: 0, cass: 0, bubbles: 0};
   coinsList = []; journos = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0; patOrder = [];
   pointerY = null; pointerDown = false; keyUp = keyDown = false;
   state = 'play'; paused = false;
@@ -553,13 +590,13 @@ function update(dt){
   if (state === 'blown'){ blownT += dt; py -= 900*dt; scrollX += worldSpeed()*dt*0.5; if (blownT > 0.8){ state = 'recap'; musicStop(); } return; }
   if (state !== 'play' || paused) return;
   tFlight += dt; lastDt = dt;
-  if (tFlight >= P.flight){ state = 'recap'; endReason = 'done'; musicStop(); return; }
+  if (phase === 'fly' && tFlight >= P.flight) startStorm();
   applyInput(dt); if (state !== 'play') return;
   const mx = PX(), my = py, dx = worldSpeed()*dt;
   inv = Math.max(0, inv - dt);
-  addPoll(P.pollLevel/P.flight*dt);   // les sondages montent avec la distance
-  nextSpawn -= dt; if (nextSpawn <= 0) spawn();
-  nextOrb -= dt; if (nextOrb <= 0){ addOrb(VWW + 40); const b = newBlock(); coinLine(VWW + 40 + sec(0.3), P.yMax, 20, b); coinLine(VWW + 40 + sec(0.3), P.yMax - coinGap(), 20, b); nextOrb = P.orbEvery*(0.8 + rnd()*0.4); }
+  if (phase === 'fly'){ addPoll(P.pollLevel/P.flight*dt); nextSpawn -= dt; if (nextSpawn <= 0) spawn(); nextOrb -= dt; }   // les sondages montent avec la distance, pendant le vol
+  else updateStorm(dt);
+  if (phase === 'fly' && false) nextOrb -= dt; if (nextOrb <= 0){ addOrb(VWW + 40); const b = newBlock(); coinLine(VWW + 40 + sec(0.3), P.yMax, 20, b); coinLine(VWW + 40 + sec(0.3), P.yMax - coinGap(), 20, b); nextOrb = P.orbEvery*(0.8 + rnd()*0.4); }
   for (const o of orbs){ if (o.alert > 0){ o.alert -= dt; continue; } o.x -= dx; if (!o.got && Math.hypot(o.x - mx, o.y - my) < 46){ o.got = true; stats.orbs++; addPoll(P.orbGain); pop('Actu d’argent +' + P.orbGain.toFixed(1).replace('.', ',') + ' pt', '#e8edf5', mx + 10, my - 60, true); sfxP3('catch'); fx.push({kind: 'flash', x: o.x, y: o.y, t: 0}); } }
   orbs = orbs.filter(o => !o.got && o.x > -80);
   // pièces
@@ -581,6 +618,46 @@ function update(dt){
   for (const p of pops){ p.life -= dt; p.y -= 26*dt; } pops = pops.filter(p => p.life > 0);
   for (const f of fx) f.t += dt; fx = fx.filter(f => f.t < 0.5);
 }
+
+// ---------- la tempête : le scandale du niveau ----------
+const curLevel = () => LEVELS[clamp(Math.round(P.level), 1, 5) - 1];
+function startStorm(){
+  const L = curLevel(), E = EMITTERS[L.scandal.emitter];
+  phase = 'storm'; stormT = 0; bannerT = 3.2; nextSalvo = 1.6; nextBubble = 2.2; pans = []; bubbles = [];
+  emitter = {kind: L.scandal.emitter, E, x: VWW + 200, tx: VWW - 230, y: E.y(), hits: 0, recoil: 0, pause: 0, fled: false, fr: 0, frT: 0};
+  sfxP3('wall');
+}
+function updateStorm(dt){
+  stormT += dt; const mx = PX(), my = py, e = emitter;
+  dark = Math.min(1, dark + dt/2); flash = Math.max(0, flash - dt*3); if (rnd() < dt*0.12) flash = 1;
+  if (bannerT > 0) bannerT -= dt;
+  cassInv = Math.max(0, cassInv - dt);
+  // l'émetteur entre, recule aux touches, fuit à la fin
+  if (e.fled){ e.x += 700*dt; if (e.x > VWW + 400){ endLevel('done'); return; } }
+  else { e.x += clamp(e.tx + e.recoil - e.x, -500*dt, 500*dt); e.recoil = Math.max(0, e.recoil - 80*dt); e.pause = Math.max(0, e.pause - dt); }
+  e.frT += dt; if (e.frT > 0.5){ e.frT = 0; e.fr = (e.fr + 1) % e.E.frames.length; }
+  if (e.kind === 'bard') e.y += clamp(lerp(P.ceil, WATER, 0.45) + Math.sin(realT*0.8)*60 - e.y, -120*dt, 120*dt);   // Bardella se balade
+  if (!e.fled && stormT >= P.stormMax){ e.fled = true; pop('Il s’en va…', '#e8edf5', e.x - 60, e.y - 120, true); }
+  // les salves : des casseroles en arc vers Marine, étalées en hauteur
+  if (!e.fled && e.pause <= 0){ nextSalvo -= dt; if (nextSalvo <= 0){ nextSalvo = P.stormRate; sfxP3(e.E.sfx);
+    const n = Math.round(P.stormN), ox = e.x - 60, oy = e.y - e.E.h*0.6;
+    for (let i=0;i<n;i++){ const ty = clamp(my + (i - (n - 1)/2)*90 + (rnd() - 0.5)*40, P.ceil + 20, P.yMax), t = 1.1 + rnd()*0.3, g = 300;
+      const vx = (mx - ox)/t, vy0 = (ty - oy)/t - 0.5*g*t; pans.push({x: ox, y: oy, vx, vy: vy0, g, rot: rnd()*6.3, w: rnd() < 0.3 ? 'coc' + Math.floor(rnd()*4) : 'pan' + Math.floor(rnd()*16), s: 0.7 + rnd()*0.3}); } } }
+  for (const c of pans){ c.vy += c.g*dt; c.x += c.vx*dt; c.y += c.vy*dt; c.rot += 3*dt;
+    if (!c.hit && cassInv <= 0 && Math.hypot(c.x - mx, c.y - my) < 42){ c.hit = true; cass++; stats.cass++; cassInv = 0.5; sfxP3('clank'); pop('Casserole !', '#d63b3b', mx + 10, my - 60, true); fx.push({kind: 'flash', x: c.x, y: c.y, t: 0});
+      if (cass >= P.cassMax){ endLevel('sunk'); return; } } }
+  pans = pans.filter(c => !c.hit && c.x > -100 && c.y < WATER + 60);
+  // les éléments de langage : on les attrape, ils partent sur l'émetteur
+  if (!e.fled){ nextBubble -= dt; if (nextBubble <= 0){ nextBubble = P.bubbleEvery; bubbles.push({x: VWW + 80, y: lerp(P.ceil + 50, P.yMax - 40, rnd()), t: pick(BUBBLES), ph: rnd()*6.3, thrown: false}); } }
+  for (const b of bubbles){
+    if (b.thrown){ b.x += 1100*dt; if (!b.done && Math.abs(b.x - (e.x - 30)) < 60 && !e.fled){ b.done = true; e.hits++; stats.bubbles++; e.recoil = 70; e.pause = 1.5; sfxP3('bonk'); fx.push({kind: 'flash', x: b.x, y: b.y, t: 0}); pop(b.t + ' !', '#fff', e.x - 80, e.y - e.E.h - 20, true);
+        if (e.hits >= P.stormHits){ e.fled = true; pop('Il s’en va !', '#bdf5c9', e.x - 60, e.y - e.E.h - 60, true); sfxP3('fanfare'); } } }
+    else { b.x -= worldSpeed()*0.45*dt; if (Math.hypot(b.x - mx, b.y - my) < 52){ b.thrown = true; sfxP3('whoosh'); } }
+  }
+  bubbles = bubbles.filter(b => !b.done && b.x > -200 && b.x < VWW + 600);
+}
+function endLevel(reason){ endReason = reason; state = 'recap'; musicStop(); if (reason === 'sunk') sfxP3('sink'); }
+
 
 // ---------- dessin ----------
 const SKY = ['#2f6fd0','#3d82dc','#5296e6','#6aaaee','#86c0f4','#a7d4f8'];
@@ -690,6 +767,46 @@ function drawJourno(j){
   if (j.track > 0){ ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.arc(28, -2, 3 + 1.5*Math.sin(realT*20), 0, 7); ctx.fill(); }
   ctx.restore();
 }
+function drawStormSky(){
+  const a = 0.5*dark + (flash > 0 ? -0.35*flash : 0);
+  ctx.fillStyle = a >= 0 ? 'rgba(15,20,40,' + a + ')' : 'rgba(255,255,255,' + (-a) + ')'; ctx.fillRect(0, 0, VWW, WH);
+  // pluie oblique
+  ctx.strokeStyle = 'rgba(200,215,240,' + (0.35*dark) + ')'; ctx.lineWidth = 1.5; const off = realT*900;
+  for (let i=0;i<40;i++){ const x = ((i*137 + off*0.6) % (VWW + 200)) - 100, y = ((i*271 + off) % (WH + 100)) - 50; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 14, y + 26); ctx.stroke(); }
+}
+function drawEmitter(){
+  const e = emitter, E = e.E, bob = Math.sin(realT*1.3)*3;
+  if (e.kind === 'bard'){ spr('bkite0', e.x + 40, e.y - 110 + bob, 0.32); spr(E.frames[e.fr], e.x, e.y + 40 + bob, E.s); }
+  else spr(E.frames[e.fr], e.x, e.y + bob, E.s);
+  // les touches restantes
+  const n = Math.round(P.stormHits); for (let i=0;i<n;i++){ ctx.fillStyle = i < e.hits ? '#16a34a' : 'rgba(255,255,255,.35)'; ctx.beginPath(); ctx.arc(e.x - (n - 1)*9 + i*18, e.y - E.h - 16, 6, 0, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#14213d'; ctx.stroke(); }
+  outText(E.name, e.x, e.y - E.h - 34, 13, 900, '#fff', 'center', 'rgba(20,33,61,.7)');
+}
+function drawPan(c){ spr(c.w, c.x, c.y, c.s, false, c.rot); }
+function drawBubble(b){
+  font(14, 900); const w = ctx.measureText(b.t).width + 28, h = 34, bob = b.thrown ? 0 : Math.sin(realT*3 + b.ph)*5, x = b.x - w/2, y = b.y - h/2 + bob;
+  ctx.fillStyle = '#14213d'; rr(x + 3, y + 3, w, h, 12); ctx.fill(); ctx.fillStyle = '#fff'; rr(x, y, w, h, 12); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x + 14, y + h - 1); ctx.lineTo(x + 8, y + h + 10); ctx.lineTo(x + 26, y + h - 1); ctx.fill();
+  text(b.t, b.x, b.y + bob + 1, 14, 900, '#14213d', 'center');
+  if (b.thrown){ ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2; for (let i=0;i<3;i++){ ctx.beginPath(); ctx.moveTo(x - 10 - i*12, b.y - 8 + i*8); ctx.lineTo(x - 40 - i*12, b.y - 8 + i*8); ctx.stroke(); } }
+}
+function drawCass(){
+  // les casseroles accrochées pendent sous la planche, en grappe
+  // sur l'eau, la grappe traîne derrière la planche au lieu de pendre dessous
+  const x = PX(), y = py + 72, blink = cassInv > 0 && Math.floor(realT*20) % 2 === 0, w = onWater;
+  for (let i=0;i<cass;i++){ const col = i % 4, row = Math.floor(i/4), cx = w ? x - 70 - i*16 : x - 24 + col*18 + (row % 2)*8, cy = w ? y - 14 + Math.sin(realT*5 + i)*3 : y + 10 + row*16;
+    ctx.strokeStyle = '#3a3a3a'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y - 4); ctx.lineTo(cx, cy - 8); ctx.stroke();
+    spr('pan' + (i % 16), cx, cy + Math.sin(realT*4 + i)*2, 0.42, false, Math.sin(realT*2 + i)*0.2, blink ? 0.5 : 1); }
+}
+function drawBanner(){
+  const L = curLevel(), S = L.scandal, k = clamp(bannerT > 2.7 ? (3.2 - bannerT)/0.5 : bannerT < 0.5 ? bannerT/0.5 : 1, 0, 1);
+  ctx.save(); ctx.globalAlpha = k; const w = 560, h = 74, x = VW/2 - w/2, y = 18 + (1 - k)*-20;
+  ctx.fillStyle = '#14213d'; rr(x + 4, y + 4, w, h, 12); ctx.fill(); ctx.fillStyle = '#fffaf0'; rr(x, y, w, h, 12); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#d63b3b'; ctx.stroke();
+  text('SCANDALE · ' + S.date, VW/2, y + 18, 11, 900, '#d63b3b', 'center');
+  text(S.title, VW/2, y + 40, 22, 900, '#14213d', 'center', UIT);
+  text(S.sub, VW/2, y + 61, 12, 700, '#5b6475', 'center');
+  ctx.restore();
+}
 function drawOrb(o){
   if (o.alert > 0){ const k = 0.5 + 0.5*Math.sin(realT*12); ctx.save(); ctx.globalAlpha = 0.5 + 0.5*k; spr('orbs0', VWW - 50, o.y, 0.7); outText('Actu', VWW - 50, o.y - 34, 12, 800, '#e8edf5', 'center', 'rgba(20,33,61,.6)'); ctx.restore(); return; }
   const f = Math.floor(realT*8 + o.ph) % 4, bob = Math.sin(realT*3 + o.ph)*4;
@@ -751,6 +868,16 @@ function drawVane(){
   ctx.fillStyle = '#14213d'; ctx.beginPath(); ctx.arc(cx, cy, 6, 0, 7); ctx.fill();
   ctx.restore();
 }
+function drawCashbox(x, y){
+  // la caisse noire du parti : une caisse noire fermée, fente dorée, une pièce qui dépasse
+  ctx.save(); ctx.translate(x, y);
+  ctx.fillStyle = '#f7c948'; ctx.beginPath(); ctx.arc(22, 4, 7, 0, 7); ctx.fill(); ctx.fillStyle = '#c8961e'; ctx.beginPath(); ctx.arc(22, 4, 3.5, 0, 7); ctx.fill();
+  ctx.fillStyle = '#14213d'; rr(2, 8, 30, 22, 4); ctx.fill(); ctx.fillStyle = '#1f2a44'; rr(2, 8, 30, 7, 3); ctx.fill();
+  ctx.fillStyle = '#f7c948'; rr(13, 10, 12, 2.5, 1); ctx.fill();   // la fente
+  ctx.fillStyle = '#f7c948'; ctx.beginPath(); ctx.arc(17, 22, 3.5, 0, 7); ctx.fill(); ctx.fillStyle = '#14213d'; ctx.fillRect(16, 22, 2, 4);   // le cadenas
+  ctx.lineWidth = 1.5; ctx.strokeStyle = '#000'; rr(2, 8, 30, 22, 4); ctx.stroke();
+  ctx.restore();
+}
 function drawHud(){
   // bandeau haut : sondages, pièces ; barre du vol
   const k = clamp(tFlight/P.flight, 0, 1);
@@ -760,8 +887,12 @@ function drawHud(){
   ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(10, hy, 250, 40, 10); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
   if (!uiDraw('iPoll', 16, hy + 4, 32)){ ctx.fillStyle = '#2563eb'; rr(20, hy + 8, 24, 24, 4); ctx.fill(); }
   text(fmtPct(poll), 54, hy + 20, 19, 900, '#14213d');
-  if (!uiDraw('iCoin', 150, hy + 4, 32)) drawCoin({x: 166, y: hy + 20, r: 11, ph: 0});
-  text(String(coins), 188, hy + 20, 19, 900, '#14213d');
+  drawCashbox(150, hy + 6); text(String(coins), 188, hy + 20, 19, 900, '#14213d');
+  // jauge de casseroles : 10 crans, alerte à partir de 8
+  const n = Math.round(P.cassMax), cw = Math.min(14, 160/n), alert = cass >= n - 2;
+  ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(400, hy + 8, 44 + n*cw, 24, 8); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = alert && Math.floor(realT*4) % 2 ? '#d63b3b' : '#14213d'; ctx.stroke();
+  if (!uiDraw('iCass', 404, hy + 10, 20)){ ctx.fillStyle = '#d63b3b'; rr(406, hy + 12, 16, 16, 3); ctx.fill(); }
+  for (let i=0;i<n;i++){ ctx.fillStyle = i < cass ? (alert ? '#d63b3b' : '#f97316') : 'rgba(20,33,61,.15)'; rr(432 + i*cw, hy + 14, cw - 3, 12, 3); ctx.fill(); }
   // jauge de vent : sous le bandeau, rouge sous 20 %, clignote vide
   const wc = wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.2 ? '#d63b3b' : wind < 0.5 ? '#f2b630' : '#2563eb';
   ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(270, hy + 8, 120, 24, 8); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
@@ -778,12 +909,12 @@ function drawFx(){
 }
 function drawRecap(){
   ctx.fillStyle = 'rgba(15,29,51,.45)'; ctx.fillRect(0, 0, VW, H);
-  const w = 440, h = 250, x = VW/2 - w/2, y = H/2 - h/2; uiPanel(x, y, w, h);
-  const blown = endReason === 'blown';
-  text(blown ? 'Emportée par le vent !' : 'Fin du vol', VW/2, y + 44, 30, 900, blown ? '#d63b3b' : '#14213d', 'center', UIT);
-  text(blown ? 'Trop haut : le vent de haute altitude a pris le kite. On recommence le niveau.' : 'Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièces', VW/2, y + 88, blown ? 13 : 16, 800, '#14213d', 'center');
-  if (!blown) text(stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + ' touché' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.orbs + ' actu' + (stats.orbs > 1 ? 's' : '') + ' d’argent', VW/2, y + 116, 13, 700, '#5b6475', 'center');
-  btn(VW/2 - 190, y + 160, 180, 46, blown ? 'Recommencer' : 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Menu', '#fff', '#14213d', 'title');
+  const w = 560, h = 250, x = VW/2 - w/2, y = H/2 - h/2; uiPanel(x, y, w, h);
+  const lost = endReason === 'blown' || endReason === 'sunk', L = curLevel();
+  text(endReason === 'blown' ? 'Emportée par le vent !' : endReason === 'sunk' ? 'Coulée sous les casseroles !' : 'Niveau ' + L.n + ' traversé', VW/2, y + 44, 28, 900, lost ? '#d63b3b' : '#14213d', 'center', UIT);
+  text(endReason === 'blown' ? 'Trop haut : le vent de haute altitude a pris le kite. On recommence le niveau.' : endReason === 'sunk' ? P.cassMax + ' casseroles accrochées, Marine coule. On recommence le niveau.' : 'Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièces  ·  ' + cass + ' casserole' + (cass > 1 ? 's' : ''), VW/2, y + 88, lost ? 13 : 16, 800, '#14213d', 'center');
+  if (!lost) text(L.scandal.title + ' : ' + stats.bubbles + ' élément' + (stats.bubbles > 1 ? 's' : '') + ' de langage renvoyé' + (stats.bubbles > 1 ? 's' : '') + '  ·  ' + stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.orbs + ' actu' + (stats.orbs > 1 ? 's' : '') + ' d’argent', VW/2, y + 116, 12, 700, '#5b6475', 'center');
+  btn(VW/2 - 190, y + 160, 180, 46, lost ? 'Recommencer' : 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Menu', '#fff', '#14213d', 'title');
 }
 let btns = [];
 function btn(x, y, w, h, label, bg, fg, id){ ctx.fillStyle = '#14213d'; rr(x + 3, y + 3, w, h, 10); ctx.fill(); ctx.fillStyle = bg; rr(x, y, w, h, 10); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke(); text(label, x + w/2, y + h/2 + 1, 15, 900, fg, 'center'); btns.push({x, y, w, h, id}); }
@@ -795,14 +926,17 @@ function draw(){
   if (state === 'title'){ ctx.fillStyle = '#4a90d9'; ctx.fillRect(0, 0, VW, H); return; }
   ctx.setTransform(dpr*scale*Z, 0, 0, dpr*scale*Z, 0, 0);   // le monde, caméra reculée
   drawSky(); drawCeiling(); drawFar(); drawNear();
+  if (dark > 0) drawStormSky();
+  if (emitter) drawEmitter();
   for (const j of journos) if (j.kind === 'boat') drawJourno(j);
   for (const c of coinsList) drawCoin(c);
   for (const j of journos) if (j.kind !== 'boat') drawJourno(j);
   for (const o of orbs) drawOrb(o);
-  drawMarine(); drawFx(); drawPops();
+  for (const b of bubbles) drawBubble(b);
+  drawMarine(); drawCass(); for (const c of pans) drawPan(c); drawFx(); drawPops();
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);   // l'interface, à l'échelle de l'écran
   if (ctrl === 'wind') drawVane();
-  drawHud();
+  drawHud(); if (bannerT > 0) drawBanner();
   if (paused){ ctx.fillStyle = 'rgba(15,29,51,.4)'; ctx.fillRect(0, 0, VW, H); outText('Pause', VW/2, H/2, 40, 900, '#fff'); }
   if (state === 'recap') drawRecap();
 }
@@ -834,7 +968,7 @@ document.querySelectorAll('#ctrlSel button').forEach(b => b.addEventListener('cl
 const dbg = document.getElementById('debug');
 function debugBuild(){
   let h = '<h2>Réglages</h2><p>Les valeurs s’appliquent tout de suite. « Sauvegarder » les garde pour les prochaines parties.</p>';
-  for (const g of ['Commun', 'Appui']){   // la commande « vent » est mise de côté : ses réglages restent dans le code, pas dans le menu
+  for (const g of ['Commun', 'Appui', 'Tempête']){   // la commande « vent » est mise de côté : ses réglages restent dans le code, pas dans le menu
     h += '<h3>' + g + '</h3>';
     for (const sp of PSPEC) if (sp.g === g){
       h += '<label for="dbg_' + sp.k + '"><span><b>' + sp.l + '</b> <em>' + sp.u + '</em><br><small>' + sp.d + '</small></span><span class="val" id="dbgv_' + sp.k + '"></span></label>';
@@ -863,7 +997,7 @@ loadLocal(); applyCam(); debugBuild(); loadShared();
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
+  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
   get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding, wasHolding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
   get world(){ return {Z, WH, WATER, HZ, VWW}; },
   setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,
