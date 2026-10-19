@@ -2,7 +2,7 @@
 import os as _os
 GAME = _os.environ.get('VDD_GAME', _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'game')) + '/'
 from playwright.sync_api import sync_playwright
-import time, sys
+import time, sys, os
 D = GAME
 FILE = sys.argv[1] if len(sys.argv) > 1 else 'proto3.html'
 def ev(pg, s): return pg.evaluate(s)
@@ -70,7 +70,7 @@ with sync_playwright() as p:
     st = ev(pg, 'window.__vdd.stats'); expect = 25 + 10*ev(pg, 'window.__vdd.t')/75 - st['hits'] + st['orbs']
     check(abs(ev(pg, 'window.__vdd.poll') - expect) < 0.3, 'sondages = 25 + distance - contacts + orbes (%.2f, attendu %.2f)' % (ev(pg, 'window.__vdd.poll'), expect))
     pg.screenshot(path=D + 'p3_tap_bot.png')
-    ev(pg, 'window.__vdd.setT(74.5)'); pg.wait_for_timeout(900); check(ev(pg, 'window.__vdd.phase') == 'storm', 'fin du vol à 75 s -> la tempête commence'); pg.screenshot(path=D + 'p3_recap.png')
+    ev(pg, 'window.__vdd.setT(74.5)'); pg.wait_for_timeout(900); check(ev(pg, 'window.__vdd.phase') == 'intro', 'fin du vol à 75 s -> la carte du scandale (jeu en pause)'); pg.screenshot(path=D + 'p3_recap.png')
     # menu de réglage
     pg.click('#gearBtn'); pg.wait_for_timeout(200)
     check(not ev(pg, 'document.getElementById("debug").hidden'), 'la roue crantée ouvre le menu de réglage')
@@ -100,28 +100,31 @@ with sync_playwright() as p:
     check(ev(pg, 'document.getElementById("ctrlSel")') is None and ev(pg, 'document.querySelectorAll("#debug input[type=range]").length') == len([1 for sp in ev(pg, 'window.__vdd.PSPEC') if sp['g'] != 'Vent']), 'la commande vent n\'est plus proposée (menu titre ni réglages)')
     check(not errs, 'aucune erreur JS (vent) ' + str(errs[:3]))
     b.close()
-    # C. la tempête : bandeau, émetteur incarné, salves, bulles renvoyées, fuite ; puis coulée sous les casseroles
+    # C. la tempête : carte de pause, émetteur incarné, lancers un par un, chaîne de casseroles, fin par délai ou coulée
     for lvl, kind in [(1, 'justice'), (2, 'rn'), (3, 'bard')]:
-        b, pg, errs = boot(p, 'tap'); ev(pg, 'window.__vdd.P.level = %d' % lvl); ev(pg, 'window.__vdd.setT(74.9)'); pg.wait_for_timeout(2500)
-        e = ev(pg, 'window.__vdd.emitter'); check(ev(pg, 'window.__vdd.phase') == 'storm' and e and e['kind'] == kind, 'niveau %d : tempête, émetteur %s' % (lvl, e and e['kind']))
-        pg.wait_for_timeout(2500); check(ev(pg, 'window.__vdd.pans') > 0, 'des casseroles volent (%d)' % ev(pg, 'window.__vdd.pans'))
-        if lvl == 1: pg.screenshot(path=D + 'p3_storm.png')
-        # bot : va chercher chaque bulle, sinon reste à mi-hauteur
-        t0 = time.time(); hits = 0
+        b, pg, errs = boot(p, 'tap'); ev(pg, 'window.__vdd.P.level = %d' % lvl); ev(pg, 'window.__vdd.setT(74.9)'); pg.wait_for_timeout(800)
+        e = ev(pg, 'window.__vdd.emitter'); check(ev(pg, 'window.__vdd.phase') == 'intro' and e and e['kind'] == kind, 'niveau %d : carte de pause, émetteur %s' % (lvl, e and e['kind']))
+        y0 = ev(pg, 'window.__vdd.y'); pg.wait_for_timeout(600); ph1 = ev(pg, 'window.__vdd.phase')
+        if lvl == 1: pg.screenshot(path=D + 'p3_intro.png')
+        pg.mouse.move(640, 200); pg.mouse.down(); pg.wait_for_timeout(100); pg.mouse.up(); pg.wait_for_timeout(100)
+        check(ph1 == 'intro' and ev(pg, 'window.__vdd.phase') == 'storm' and abs(ev(pg, 'window.__vdd.y') - y0) < 1, 'le tap sur la carte reprend le jeu ; le jeu était bien en pause (y %.0f)' % y0)
+        pg.wait_for_timeout(2500); check(ev(pg, 'window.__vdd.pans') > 0, 'des casseroles volent, une par une (%d en l\'air)' % ev(pg, 'window.__vdd.pans'))
+        # bot : reste à mi-hauteur et recharge ; il va prendre des casseroles
+        t0 = time.time()
         while time.time() - t0 < 30 and ev(pg, 'window.__vdd.state') == 'play':
-            bs = [x for x in ev(pg, 'window.__vdd.bubbles') if not x['thrown'] and x['x'] > ev(pg, 'window.__vdd.px')]; y = ev(pg, 'window.__vdd.y')
-            ty = min(bs, key=lambda x: x['x'])['y'] if bs else 350
+            y = ev(pg, 'window.__vdd.y'); ty = 300 + 100*((int(time.time()*0.7)) % 2)
             if ev(pg, 'window.__vdd.wind') < 0.1 and not ev(pg, 'window.__vdd.onWater'): pg.mouse.up()
             elif ty < y - 8: pg.mouse.down()
             else: pg.mouse.up()
-            ev(pg, 'window.__vdd.setWind(1)'); pg.wait_for_timeout(40)
-        pg.mouse.up(); e = ev(pg, 'window.__vdd.emitter'); print('   tempête niveau %d : touches %s, casseroles %d, état %s, raison %s' % (lvl, e and e['hits'], ev(pg, 'window.__vdd.cass'), ev(pg, 'window.__vdd.state'), ev(pg, 'window.__vdd.endReason')))
-        check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.endReason') in ('done', 'sunk'), 'la tempête se termine (fuite, délai ou coulée)')
-        if lvl == 1: check(ev(pg, 'window.__vdd.stats.bubbles') >= 1, 'au moins un élément de langage renvoyé (%d)' % ev(pg, 'window.__vdd.stats.bubbles')); pg.screenshot(path=D + 'p3_storm_end.png')
+            if lvl == 1 and ev(pg, 'window.__vdd.cass') >= 3 and not ev(pg, 'window.__vdd.onWater') and not os.path.exists(D + 'p3_chain.png'): pg.screenshot(path=D + 'p3_chain.png')
+            pg.wait_for_timeout(40)
+        pg.mouse.up(); print('   tempête niveau %d : casseroles %d, chaîne %d, état %s, raison %s' % (lvl, ev(pg, 'window.__vdd.cass'), len(ev(pg, 'window.__vdd.chain')), ev(pg, 'window.__vdd.state'), ev(pg, 'window.__vdd.endReason')))
+        check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.endReason') in ('done', 'sunk'), 'la tempête se termine (délai ou coulée)')
+        check(len(ev(pg, 'window.__vdd.chain')) == min(ev(pg, 'window.__vdd.cass'), ev(pg, 'window.__vdd.P.cassMax')), 'la chaîne compte une casserole par touche')
         check(not errs, 'aucune erreur JS (tempête %d) ' % lvl + str(errs[:3]))
         b.close()
-    b, pg, errs = boot(p, 'tap'); ev(pg, 'window.__vdd.setT(74.9)'); pg.wait_for_timeout(1500); ev(pg, 'window.__vdd.setCass(9)')
+    b, pg, errs = boot(p, 'tap'); ev(pg, 'window.__vdd.setT(74.9)'); pg.wait_for_timeout(800); ev(pg, 'window.__vdd.beginStormPlay(); window.__vdd.setCass(9)')
     t0 = time.time()
-    while time.time() - t0 < 20 and ev(pg, 'window.__vdd.state') == 'play': pg.wait_for_timeout(100)
+    while time.time() - t0 < 25 and ev(pg, 'window.__vdd.state') == 'play': pg.wait_for_timeout(100)
     check(ev(pg, 'window.__vdd.endReason') == 'sunk', 'à cassMax casseroles, Marine coule -> on recommence le niveau'); pg.screenshot(path=D + 'p3_sunk.png'); b.close()
 print('RESULT', 'PASS' if ok else 'FAIL')

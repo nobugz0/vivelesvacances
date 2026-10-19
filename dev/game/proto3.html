@@ -172,7 +172,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.8', BUILD = '18/10/2026 à 20h47';
+const VERSION = 'proto 3 · 0.9', BUILD = '18/10/2026 à 20h47';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -378,11 +378,11 @@ const PSPEC = [
   {k:'flight', g:'Commun', l:'Durée du vol', u:'s', d:'Longueur de la phase de vol d’un niveau.', min:30, max:120, step:5},
   {k:'ceil', g:'Commun', l:'Limite d’altitude', u:'px monde', d:'Marge sous le bord haut du monde : au-dessus, le vent emporte Marine (niveau perdu).', min:20, max:200, step:5},
   {k:'level', g:'Commun', l:'Niveau', u:'1 à 5', d:'Choisit le thème et le scandale de la tempête (liste du document de design §7).', min:1, max:5, step:1},
-  {k:'stormRate', g:'Tempête', l:'Cadence des salves', u:'s', d:'Temps entre deux salves de casseroles.', min:0.4, max:3, step:0.1},
-  {k:'stormN', g:'Tempête', l:'Casseroles par salve', u:'', d:'Nombre de casseroles lancées à chaque salve, à des hauteurs étalées autour de Marine.', min:1, max:6, step:1},
-  {k:'stormHits', g:'Tempête', l:'Touches pour faire fuir', u:'', d:'Nombre d’éléments de langage à renvoyer sur l’émetteur pour qu’il s’en aille.', min:1, max:6, step:1},
+  {k:'stormRate', g:'Tempête', l:'Cadence des lancers', u:'s', d:'Temps moyen entre deux casseroles (±30 %).', min:0.2, max:3, step:0.1},
+  {k:'stormSpread', g:'Tempête', l:'Dispersion des lancers', u:'px', d:'Écart maximal en hauteur entre la cible du lancer et Marine.', min:0, max:300, step:10},
+  {k:'stormHits', g:'Vent', l:'Touches pour faire fuir', u:'', d:'(éléments de langage, mis de côté)', min:1, max:6, step:1},
   {k:'stormMax', g:'Tempête', l:'Durée maximale', u:'s', d:'Au bout de ce temps, l’émetteur s’en va de lui-même.', min:8, max:60, step:1},
-  {k:'bubbleEvery', g:'Tempête', l:'Fréquence des bulles', u:'s', d:'Temps entre deux éléments de langage à attraper.', min:1, max:8, step:0.5},
+  {k:'bubbleEvery', g:'Vent', l:'Fréquence des bulles', u:'s', d:'Temps entre deux éléments de langage à attraper.', min:1, max:8, step:0.5},
   {k:'cassMax', g:'Tempête', l:'Casseroles fatales', u:'', d:'Nombre de casseroles accrochées à partir duquel Marine coule (niveau perdu).', min:3, max:20, step:1},
   {k:'blowT', g:'Commun', l:'Temps d’emportement', u:'s', d:'Au-dessus de la limite, la jauge se remplit en ce temps ; pleine = emportée par le vent (niveau perdu). Elle se vide dessous.', min:0.1, max:2, step:0.1},
   {k:'orbGain', g:'Commun', l:'Orbe d’argent', u:'pt', d:'Points de sondage par orbe d’argent attrapée au-dessus de la limite.', min:0, max:3, step:0.1},
@@ -405,7 +405,7 @@ const PSPEC = [
   {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
 ];
 // valeurs par défaut = réglages sauvegardés par Pierre le 18/10 au soir (caméra loin, vol vif)
-const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 1.1, stormN: 3, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
+const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.7, stormSpread: 120, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
   vUp: 400, tUp: 0.25, vDown: 520, tDown: 0.5, glide: 0, tTurn: 0.05,
   windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
 const P = Object.assign({}, PDEF, {
@@ -435,13 +435,13 @@ async function saveSettings(){
 // ---------- state ----------
 let state = 'title', paused = false, ctrl = 'tap';
 let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, stats, onWater = false, blownT = 0, blowGauge = 0, endReason = '', orbs, nextOrb, wind = 1, windEmptyT = -9;
-let phase = 'fly', stormT = 0, emitter = null, pans = [], bubbles = [], cass = 0, nextSalvo = 0, nextBubble = 0, dark = 0, bannerT = 0, flash = 0, cassInv = 0;
+let phase = 'fly', stormT = 0, emitter = null, pans = [], bubbles = [], cass = 0, chain = [], nextSalvo = 0, nextBubble = 0, dark = 0, bannerT = 0, flash = 0, cassInv = 0;
 let coinsList, journos, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
 let keyUp = false, keyDown = false, pointerY = null, pointerDown = false;
 
 function start(){
   applyCam(); seed = 7; realT = 0; tFlight = 0; py = P.yMax; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0; onWater = true; blownT = 0; blowGauge = 0; endReason = ''; orbs = []; nextOrb = 6; wind = 1; windEmptyT = -9;
-  phase = 'fly'; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; cassInv = 0;
+  phase = 'fly'; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chain = []; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; cassInv = 0;
   poll = P.pollStart; coins = 0; stats = {hits: 0, orbs: 0, coins: 0, cass: 0, bubbles: 0};
   coinsList = []; journos = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0; patOrder = [];
   pointerY = null; pointerDown = false; keyUp = keyDown = false;
@@ -499,7 +499,7 @@ function applyInput(dt){
 // orbes d'argent : au-dessus de la limite, annoncées 1 s avant d'entrer, toujours en concurrence avec un bloc de pièces en bas
 function addOrb(x){ orbs.push({x, y: P.ceil - 22, alert: 1.0, ph: rnd()*6.3}); }
 
-cv.addEventListener('pointerdown', e => { ensureAudio(); if (state !== 'play') return; e.preventDefault(); const l = toLocal(e); pointerDown = true; pointerY = l.y; });
+cv.addEventListener('pointerdown', e => { ensureAudio(); if (state !== 'play' || phase === 'intro') return; e.preventDefault(); const l = toLocal(e); pointerDown = true; pointerY = l.y; });
 cv.addEventListener('pointermove', e => { if (!pointerDown) return; const l = toLocal(e); pointerY = l.y; });
 const up = () => { pointerDown = false; };
 cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up); window.addEventListener('blur', up);
@@ -507,9 +507,10 @@ window.addEventListener('keydown', e => {
   if (e.repeat) return;
   if (e.code === 'ArrowUp' || e.code === 'KeyW') keyUp = true;
   if (e.code === 'ArrowDown' || e.code === 'KeyS') keyDown = true;
-  if (e.code === 'Space'){ if (state === 'play') keyUp = true; e.preventDefault(); }
+  if (e.code === 'Space'){ if (state === 'play' && phase !== 'intro') keyUp = true; e.preventDefault(); }
   if (e.code === 'Enter' && state === 'title') start();
   if (e.code === 'Enter' && state === 'recap') start();
+  if ((e.code === 'Enter' || e.code === 'Space') && state === 'play' && phase === 'intro' && introT > 0.4) beginStormPlay();
   if (e.code === 'KeyP' && state === 'play') togglePause();
 });
 window.addEventListener('keyup', e => { if (e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') keyUp = false; if (e.code === 'ArrowDown' || e.code === 'KeyS') keyDown = false; });
@@ -591,12 +592,14 @@ function update(dt){
   if (state !== 'play' || paused) return;
   tFlight += dt; lastDt = dt;
   if (phase === 'fly' && tFlight >= P.flight) startStorm();
+  if (phase === 'intro'){ introT += dt; if (emitter){ emitter.frT += dt; if (emitter.frT > 0.5){ emitter.frT = 0; emitter.fr = (emitter.fr + 1) % emitter.E.frames.length; } } return; }
   applyInput(dt); if (state !== 'play') return;
   const mx = PX(), my = py, dx = worldSpeed()*dt;
   inv = Math.max(0, inv - dt);
   if (phase === 'fly'){ addPoll(P.pollLevel/P.flight*dt); nextSpawn -= dt; if (nextSpawn <= 0) spawn(); nextOrb -= dt; }   // les sondages montent avec la distance, pendant le vol
-  else updateStorm(dt);
-  if (phase === 'fly' && false) nextOrb -= dt; if (nextOrb <= 0){ addOrb(VWW + 40); const b = newBlock(); coinLine(VWW + 40 + sec(0.3), P.yMax, 20, b); coinLine(VWW + 40 + sec(0.3), P.yMax - coinGap(), 20, b); nextOrb = P.orbEvery*(0.8 + rnd()*0.4); }
+  else if (phase === 'storm') updateStorm(dt);
+  updateChain(dt);
+  if (phase === 'fly' && nextOrb <= 0){ addOrb(VWW + 40); const b = newBlock(); coinLine(VWW + 40 + sec(0.3), P.yMax, 20, b); coinLine(VWW + 40 + sec(0.3), P.yMax - coinGap(), 20, b); nextOrb = P.orbEvery*(0.8 + rnd()*0.4); }
   for (const o of orbs){ if (o.alert > 0){ o.alert -= dt; continue; } o.x -= dx; if (!o.got && Math.hypot(o.x - mx, o.y - my) < 46){ o.got = true; stats.orbs++; addPoll(P.orbGain); pop('Actu d’argent +' + P.orbGain.toFixed(1).replace('.', ',') + ' pt', '#e8edf5', mx + 10, my - 60, true); sfxP3('catch'); fx.push({kind: 'flash', x: o.x, y: o.y, t: 0}); } }
   orbs = orbs.filter(o => !o.got && o.x > -80);
   // pièces
@@ -623,10 +626,12 @@ function update(dt){
 const curLevel = () => LEVELS[clamp(Math.round(P.level), 1, 5) - 1];
 function startStorm(){
   const L = curLevel(), E = EMITTERS[L.scandal.emitter];
-  phase = 'storm'; stormT = 0; bannerT = 3.2; nextSalvo = 1.6; nextBubble = 2.2; pans = []; bubbles = [];
-  emitter = {kind: L.scandal.emitter, E, x: VWW + 200, tx: VWW - 230, y: E.y(), hits: 0, recoil: 0, pause: 0, fled: false, fr: 0, frT: 0};
-  sfxP3('wall');
+  phase = 'intro'; stormT = 0; bannerT = 0; nextSalvo = 1.2; nextBubble = 2.2; pans = []; bubbles = []; dark = 1; introT = 0;
+  emitter = {kind: L.scandal.emitter, E, x: VWW - 230, tx: VWW - 230, y: E.y(), hits: 0, recoil: 0, pause: 0, fled: false, fr: 0, frT: 0};
+  pointerDown = false; keyUp = false; sfxP3('wall');
 }
+let introT = 0;
+function beginStormPlay(){ if (phase !== 'intro') return; phase = 'storm'; sfxP3('click'); }
 function updateStorm(dt){
   stormT += dt; const mx = PX(), my = py, e = emitter;
   dark = Math.min(1, dark + dt/2); flash = Math.max(0, flash - dt*3); if (rnd() < dt*0.12) flash = 1;
@@ -639,22 +644,46 @@ function updateStorm(dt){
   if (e.kind === 'bard') e.y += clamp(lerp(P.ceil, WATER, 0.45) + Math.sin(realT*0.8)*60 - e.y, -120*dt, 120*dt);   // Bardella se balade
   if (!e.fled && stormT >= P.stormMax){ e.fled = true; pop('Il s’en va…', '#e8edf5', e.x - 60, e.y - 120, true); }
   // les salves : des casseroles en arc vers Marine, étalées en hauteur
-  if (!e.fled && e.pause <= 0){ nextSalvo -= dt; if (nextSalvo <= 0){ nextSalvo = P.stormRate; sfxP3(e.E.sfx);
-    const n = Math.round(P.stormN), ox = e.x - 60, oy = e.y - e.E.h*0.6;
-    for (let i=0;i<n;i++){ const ty = clamp(my + (i - (n - 1)/2)*90 + (rnd() - 0.5)*40, P.ceil + 20, P.yMax), t = 1.1 + rnd()*0.3, g = 300;
-      const vx = (mx - ox)/t, vy0 = (ty - oy)/t - 0.5*g*t; pans.push({x: ox, y: oy, vx, vy: vy0, g, rot: rnd()*6.3, w: rnd() < 0.3 ? 'coc' + Math.floor(rnd()*4) : 'pan' + Math.floor(rnd()*16), s: 0.7 + rnd()*0.3}); } } }
-  for (const c of pans){ c.vy += c.g*dt; c.x += c.vx*dt; c.y += c.vy*dt; c.rot += 3*dt;
-    if (!c.hit && cassInv <= 0 && Math.hypot(c.x - mx, c.y - my) < 42){ c.hit = true; cass++; stats.cass++; cassInv = 0.5; sfxP3('clank'); pop('Casserole !', '#d63b3b', mx + 10, my - 60, true); fx.push({kind: 'flash', x: c.x, y: c.y, t: 0});
+  // les lancers, un par un, avec quatre trajectoires : la cloche (haute et lente), le tir tendu, la retombée (part très haut, tombe à pic) et le ras de l'eau
+  if (!e.fled && e.pause <= 0){ nextSalvo -= dt; if (nextSalvo <= 0){ nextSalvo = P.stormRate*(0.7 + rnd()*0.6); sfxP3(e.E.sfx);
+    const ox = e.x - 60, oy = e.y - e.E.h*0.6, kind = pick(['lob', 'lob', 'direct', 'direct', 'drop', 'skim']);
+    let ty = clamp(my + (rnd() - 0.5)*2*P.stormSpread, P.ceil + 20, P.yMax), t, g, tx = mx;
+    if (kind === 'lob'){ t = 1.3 + rnd()*0.5; g = 520; }
+    else if (kind === 'direct'){ t = 0.55 + rnd()*0.25; g = 90; }
+    else if (kind === 'drop'){ t = 1.5 + rnd()*0.3; g = 1100; tx = mx + (rnd() - 0.5)*120; }
+    else { t = 0.9 + rnd()*0.3; g = 0; ty = P.yMax - 6; }
+    const vx = (tx - ox)/t, vy0 = (ty - oy)/t - 0.5*g*t;
+    pans.push({x: ox, y: oy, vx, vy: vy0, g, rot: rnd()*6.3, spin: 2 + rnd()*4, w: rnd() < 0.3 ? 'coc' + Math.floor(rnd()*4) : 'pan' + Math.floor(rnd()*16), s: 0.7 + rnd()*0.3, kind}); } }
+  for (const c of pans){ c.vy += c.g*dt; c.x += c.vx*dt; c.y += c.vy*dt; c.rot += c.spin*dt;
+    if (!c.hit && cassInv <= 0 && Math.hypot(c.x - mx, c.y - my) < 42){ c.hit = true; cass++; stats.cass++; cassInv = 0.5; sfxP3('clank'); attachPan(c); pop('Casserole !', '#d63b3b', mx + 10, my - 60, true); fx.push({kind: 'flash', x: c.x, y: c.y, t: 0});
       if (cass >= P.cassMax){ endLevel('sunk'); return; } } }
   pans = pans.filter(c => !c.hit && c.x > -100 && c.y < WATER + 60);
   // les éléments de langage : on les attrape, ils partent sur l'émetteur
-  if (!e.fled){ nextBubble -= dt; if (nextBubble <= 0){ nextBubble = P.bubbleEvery; bubbles.push({x: VWW + 80, y: lerp(P.ceil + 50, P.yMax - 40, rnd()), t: pick(BUBBLES), ph: rnd()*6.3, thrown: false}); } }
+  if (!e.fled && P.useBubbles){ nextBubble -= dt; if (nextBubble <= 0){ nextBubble = P.bubbleEvery; bubbles.push({x: VWW + 80, y: lerp(P.ceil + 50, P.yMax - 40, rnd()), t: pick(BUBBLES), ph: rnd()*6.3, thrown: false}); } }
   for (const b of bubbles){
     if (b.thrown){ b.x += 1100*dt; if (!b.done && Math.abs(b.x - (e.x - 30)) < 60 && !e.fled){ b.done = true; e.hits++; stats.bubbles++; e.recoil = 70; e.pause = 1.5; sfxP3('bonk'); fx.push({kind: 'flash', x: b.x, y: b.y, t: 0}); pop(b.t + ' !', '#fff', e.x - 80, e.y - e.E.h - 20, true);
         if (e.hits >= P.stormHits){ e.fled = true; pop('Il s’en va !', '#bdf5c9', e.x - 60, e.y - e.E.h - 60, true); sfxP3('fanfare'); } } }
     else { b.x -= worldSpeed()*0.45*dt; if (Math.hypot(b.x - mx, b.y - my) < 52){ b.thrown = true; sfxP3('whoosh'); } }
   }
   bubbles = bubbles.filter(b => !b.done && b.x > -200 && b.x < VWW + 600);
+}
+// La chaîne : chaque casserole est un maillon qui suit le précédent à distance fixe, avec gravité et traînée (pas de vraie simulation, juste des contraintes)
+const LINK = 28;
+function attachPan(c){ const last = chain.length ? chain[chain.length - 1] : {x: PX() - 34, y: py + 68}; chain.push({x: last.x - LINK, y: last.y + 4, ox: last.x - LINK, oy: last.y + 4, w: c.w, s: Math.min(c.s, 0.85), rot: 0}); }
+function updateChain(dt){
+  if (!chain.length) return;
+  const ax = PX() - 34, ay = py + 68 + (onWater ? -8 : 0);   // point d'attache : l'arrière de la planche
+  let px = ax, pyy = ay;
+  for (let i=0;i<chain.length;i++){ const l = chain[i];
+    // Verlet : la casserole garde son élan (amorti), tombe, et le vent relatif la pousse vers l'arrière
+    const vx = (l.x - l.ox)*0.92, vy = (l.y - l.oy)*0.92; l.ox = l.x; l.oy = l.y;
+    l.x += vx - 320*dt*dt; l.y += vy + 1400*dt*dt;
+    // contrainte : exactement à LINK du maillon précédent
+    const dx = l.x - px, dy = l.y - pyy, d = Math.hypot(dx, dy) || 1; l.x = px + dx/d*LINK; l.y = pyy + dy/d*LINK;
+    if (l.y > WATER + 6){ l.y = WATER + 6; }   // elles flottent
+    l.rot = Math.atan2(l.y - pyy, l.x - px) + Math.PI/2;
+    px = l.x; pyy = l.y;
+  }
 }
 function endLevel(reason){ endReason = reason; state = 'recap'; musicStop(); if (reason === 'sunk') sfxP3('sink'); }
 
@@ -791,12 +820,29 @@ function drawBubble(b){
   if (b.thrown){ ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2; for (let i=0;i<3;i++){ ctx.beginPath(); ctx.moveTo(x - 10 - i*12, b.y - 8 + i*8); ctx.lineTo(x - 40 - i*12, b.y - 8 + i*8); ctx.stroke(); } }
 }
 function drawCass(){
-  // les casseroles accrochées pendent sous la planche, en grappe
-  // sur l'eau, la grappe traîne derrière la planche au lieu de pendre dessous
-  const x = PX(), y = py + 72, blink = cassInv > 0 && Math.floor(realT*20) % 2 === 0, w = onWater;
-  for (let i=0;i<cass;i++){ const col = i % 4, row = Math.floor(i/4), cx = w ? x - 70 - i*16 : x - 24 + col*18 + (row % 2)*8, cy = w ? y - 14 + Math.sin(realT*5 + i)*3 : y + 10 + row*16;
-    ctx.strokeStyle = '#3a3a3a'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y - 4); ctx.lineTo(cx, cy - 8); ctx.stroke();
-    spr('pan' + (i % 16), cx, cy + Math.sin(realT*4 + i)*2, 0.42, false, Math.sin(realT*2 + i)*0.2, blink ? 0.5 : 1); }
+  if (!chain.length) return;
+  const blink = cassInv > 0 && Math.floor(realT*20) % 2 === 0;
+  ctx.strokeStyle = '#2b2b2b'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(PX() - 34, py + 68 + (onWater ? -8 : 0));
+  for (const l of chain) ctx.lineTo(l.x, l.y); ctx.stroke();
+  for (let i=0;i<chain.length;i++){ const l = chain[i]; spr(l.w, l.x, l.y + 10, l.s*0.8, false, l.rot*0.5, blink && i === chain.length - 1 ? 0.4 : 1); }
+}
+function drawIntro(){
+  // carte de pause : le scandale et son émetteur, le jeu reprend au tap
+  const L = curLevel(), S = L.scandal, E = emitter.E, k = clamp(introT/0.4, 0, 1);
+  ctx.fillStyle = 'rgba(15,20,40,' + (0.45*k) + ')'; ctx.fillRect(0, 0, VW, H);
+  const w = 640, h = 230, x = VW/2 - w/2, y = H/2 - h/2 + (1 - k)*30; ctx.save(); ctx.globalAlpha = k; uiPanel(x, y, w, h);
+  // portrait de l'émetteur à gauche
+  ctx.save(); ctx.beginPath(); rr(x + 28, y + 30, 150, 150, 12); ctx.clip(); ctx.fillStyle = '#9bbfe6'; ctx.fillRect(x + 28, y + 30, 150, 150);
+  const fr = E.frames[emitter.fr], a = ATLAS[fr], ps = Math.min(140/a[2], 140/a[3]); spr(fr, x + 103, y + 30 + 75 + a[5]*ps - a[3]*ps/2, ps); ctx.restore();
+  ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; rr(x + 28, y + 30, 150, 150, 12); ctx.stroke();
+  const tx = x + 205;
+  text('SCANDALE · ' + S.date, tx, y + 42, 12, 900, '#d63b3b');
+  text(S.title, tx, y + 70, 26, 900, '#14213d', 'left', UIT);
+  text(S.sub, tx, y + 98, 13, 700, '#5b6475');
+  text(E.name + ' sort les casseroles.', tx, y + 126, 14, 800, '#14213d');
+  text('Évite-les : chacune s’accroche à la planche. À ' + Math.round(P.cassMax) + ', Marine coule.', tx, y + 148, 12, 700, '#5b6475');
+  btn(x + w - 230, y + h - 62, 200, 44, 'Affronter la tempête', '#22a447', '#fff', 'storm');
+  ctx.restore();
 }
 function drawBanner(){
   const L = curLevel(), S = L.scandal, k = clamp(bannerT > 2.7 ? (3.2 - bannerT)/0.5 : bannerT < 0.5 ? bannerT/0.5 : 1, 0, 1);
@@ -918,7 +964,7 @@ function drawRecap(){
 }
 let btns = [];
 function btn(x, y, w, h, label, bg, fg, id){ ctx.fillStyle = '#14213d'; rr(x + 3, y + 3, w, h, 10); ctx.fill(); ctx.fillStyle = bg; rr(x, y, w, h, 10); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke(); text(label, x + w/2, y + h/2 + 1, 15, 900, fg, 'center'); btns.push({x, y, w, h, id}); }
-cv.addEventListener('pointerdown', e => { if (state !== 'recap') return; const l = toLocal(e); for (const b of btns) if (l.x >= b.x && l.x <= b.x + b.w && l.y >= b.y && l.y <= b.y + b.h){ sfxP3('click'); if (b.id === 'again') start(); else toTitle(); } });
+cv.addEventListener('pointerdown', e => { if (state === 'play' && phase === 'intro'){ if (introT > 0.4) beginStormPlay(); return; } if (state !== 'recap') return; const l = toLocal(e); for (const b of btns) if (l.x >= b.x && l.x <= b.x + b.w && l.y >= b.y && l.y <= b.y + b.h){ sfxP3('click'); if (b.id === 'again') start(); else toTitle(); } });
 
 function draw(){
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);
@@ -936,14 +982,14 @@ function draw(){
   drawMarine(); drawCass(); for (const c of pans) drawPan(c); drawFx(); drawPops();
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);   // l'interface, à l'échelle de l'écran
   if (ctrl === 'wind') drawVane();
-  drawHud(); if (bannerT > 0) drawBanner();
+  drawHud(); if (bannerT > 0) drawBanner(); if (phase === 'intro' && state === 'play') drawIntro();
   if (paused){ ctx.fillStyle = 'rgba(15,29,51,.4)'; ctx.fillRect(0, 0, VW, H); outText('Pause', VW/2, H/2, 40, 900, '#fff'); }
   if (state === 'recap') drawRecap();
 }
 let last = performance.now();
 function loop(now){
   const dt = Math.min(0.05, (now - last)/1000); last = now;
-  if (state === 'play' && !paused) scrollX += worldSpeed()*dt;
+  if (state === 'play' && !paused && phase !== 'intro') scrollX += worldSpeed()*dt;
   update(dt); draw(); musicSync();
   requestAnimationFrame(loop);
 }
@@ -997,8 +1043,8 @@ loadLocal(); applyCam(); debugBuild(); loadShared();
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
-  get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding, wasHolding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
+  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
+  get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
   get world(){ return {Z, WH, WATER, HZ, VWW}; },
   setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,
 };
