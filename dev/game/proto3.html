@@ -24,7 +24,7 @@ body{background:#0f1d33;color:var(--ink);font-family:var(--ui);overflow:hidden;u
 body{background:#0b1526}
 #wrap{position:absolute;left:0;top:0;width:845px;height:390px;overflow:hidden;transform-origin:0 0;background:#4a90d9}
 canvas{display:block;width:100%;height:100%;touch-action:none}
-.corner{position:absolute;top:30px;right:12px;display:flex;gap:8px;z-index:5}
+.corner{position:absolute;top:30px;right:12px;display:flex;gap:8px;z-index:6}
 .ib{width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(15,29,51,.25);cursor:pointer;display:grid;place-items:center;color:var(--ink);padding:0}
 .ib:hover{background:#fff}
 .ib:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
@@ -114,7 +114,7 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
 .stiles:has(.hut){gap:calc(var(--u)*14)}
 #ver{position:absolute;top:8px;right:12px;z-index:6;font:600 11px/1.2 var(--ui);color:rgba(255,255,255,.78);text-shadow:0 1px 2px rgba(0,0,0,.7);pointer-events:none;letter-spacing:.02em}
 .scredit{position:absolute;left:0;right:0;bottom:6px;margin:0;text-align:center;font-size:11px;color:#fff;text-shadow:0 1px 3px #000;padding:0 16px}
-#debug{position:absolute;top:70px;right:12px;bottom:12px;width:min(25%,360px);min-width:200px;overflow-y:scroll;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(15,29,51,.35);padding:10px 14px 14px;z-index:6;font-size:13px;box-sizing:border-box;touch-action:pan-y}
+#debug{position:fixed;top:70px;right:12px;bottom:12px;width:min(25%,360px);min-width:200px;overflow-y:scroll;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(15,29,51,.35);padding:10px 14px 14px;z-index:6;font-size:13px;box-sizing:border-box;touch-action:pan-y}
 #debug h2{font-size:15px;margin:2px 0 6px}
 #debug .tabs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px}
 #debug .tabs button{font:inherit;font-size:11px;font-weight:800;border:1px solid var(--line);background:#f1f4f8;color:var(--ink);border-radius:999px;padding:4px 9px;cursor:pointer}
@@ -180,7 +180,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.12', BUILD = '18/10/2026 à 20h47';
+const VERSION = 'proto 3 · 0.13', BUILD = '18/10/2026 à 20h47';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -243,7 +243,7 @@ const pick = arr => arr[Math.floor(rnd()*arr.length)];
 // Cadre fixe 845 x 390 px CSS (19,5:9, la taille d'un iPhone en paysage), affiché entre 100 et 150 % selon la fenêtre, lettreboxé. Le monde est vu à l'échelle Z (distance de la caméra).
 const H = 390, VW = 845, VIEW_MAX = 1.5;
 let Z = 0.8, WH = H/Z, WATER = WH - 115, HZ = WATER - 140;   // hauteur du monde, ligne d'eau et horizon, en px monde (recalculés par applyCam)
-let VWW = 1000, scale = 1, dpr = 1, rotated = false, ox = 0, oy = 0;
+let VWW = 1000, scale = 1, dpr = 1, rotated = false, ox = 0, oy = 0, dbgReady = false;
 const PX = () => Math.max(190, VWW*0.22);   // x de Marine, en px monde
 function applyCam(){ Z = P.cam; WH = H/Z; WATER = WH - 92/Z; HZ = WATER - 140; VWW = VW/Z; P.yMax = WATER - 62; }
 function layoutScreens(W, H2){
@@ -269,7 +269,7 @@ function resize(){
   dpr = Math.min(window.devicePixelRatio || 1, 3);
   cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
   VWW = VW/Z;
-  layoutScreens(w, h);
+  layoutScreens(w, h); if (dbgReady) placeDebug();
 }
 window.addEventListener('resize', resize);
 window.addEventListener('orientationchange', () => setTimeout(resize, 200));
@@ -401,12 +401,16 @@ const PSPEC = [
   {k:'chaseMax', g:'Course', l:'Durée de la course', u:'s', d:'Temps au bout duquel l’actu d’or s’en va si la jauge n’est pas pleine.', min:5, max:40, step:1},
   {k:'chaseTime', g:'Course', l:'Temps dans la traîne', u:'s', d:'Temps cumulé passé dans la traîne pour remplir la jauge (si on la suit parfaitement, la course dure ce temps-là).', min:2, max:30, step:0.5},
   {k:'chaseDrain', g:'Course', l:'Perte hors traîne', u:'%/s', d:'La jauge se vide à ce rythme quand Marine sort de la traîne (0 = jamais).', min:0, max:50, step:1},
-  {k:'chaseDist0', g:'Course', l:'Distance de départ', u:'px monde', d:'Distance entre Marine et l’orbe au début (jauge vide) : plus elle est grande, plus on a de temps pour lire la traîne.', min:300, max:1400, step:25},
-  {k:'chaseDist1', g:'Course', l:'Distance finale', u:'px monde', d:'Distance quand la jauge est presque pleine : Marine rattrape l’orbe à mesure qu’elle remplit la jauge.', min:80, max:800, step:10},
+  {k:'chaseDist0', g:'Course', l:'Distance de départ', u:'px monde', d:'Distance entre Marine et l’orbe au début de la course.', min:150, max:1400, step:25},
+  {k:'chaseDist1', g:'Course', l:'Distance à la fin', u:'px monde', d:'Distance quand le temps est écoulé : l’orbe s’éloigne à mesure que le temps passe, et finit par s’envoler.', min:150, max:1600, step:25},
+  {k:'chaseThin', g:'Course', l:'Amincissement final', u:'%', d:'Largeur de la traîne quand la jauge est pleine, en part de la largeur de départ : il faut être plus précis à mesure qu’on remplit.', min:10, max:100, step:5},
   {k:'chaseW0', g:'Course', l:'Largeur à l’orbe', u:'px monde', d:'Largeur de la traîne juste derrière l’orbe (le plus fin).', min:10, max:200, step:5},
   {k:'chaseGrow', g:'Course', l:'Élargissement', u:'px/s', d:'La traîne s’élargit de ce nombre de px par seconde d’âge : loin derrière l’orbe elle est large, près d’elle elle est fine.', min:0, max:400, step:10},
-  {k:'chaseAmp', g:'Course', l:'Amplitude de l’orbe', u:'px monde', d:'Hauteur des ondulations de l’orbe.', min:0, max:300, step:10},
-  {k:'chaseFreq', g:'Course', l:'Nervosité de l’orbe', u:'Hz', d:'Fréquence des ondulations : plus c’est haut, plus la trajectoire change souvent.', min:0.05, max:1, step:0.05},
+  {k:'chaseAgil', g:'Course', l:'Agilité de l’orbe', u:'% de Marine', d:'Vitesse verticale de l’orbe en part de celle de Marine (montée et chute) : sous 100 %, la trajectoire reste suivable.', min:20, max:150, step:5},
+  {k:'chaseStep0', g:'Course', l:'Changements de cap (début)', u:'s', d:'Temps entre deux changements de direction de l’orbe quand la jauge est vide.', min:0.3, max:4, step:0.1},
+  {k:'chaseStep1', g:'Course', l:'Changements de cap (fin)', u:'s', d:'Idem quand la jauge est pleine : plus court = plus nerveux à mesure que la jauge se remplit.', min:0.2, max:4, step:0.1},
+  {k:'chaseWaterEvery', g:'Course', l:'Passage à l’eau', u:'s', d:'L’orbe descend au ras de l’eau à cet intervalle, pour que Marine puisse se poser et recharger son vent.', min:2, max:12, step:0.5},
+  {k:'chaseWaterHold', g:'Course', l:'Durée à l’eau', u:'s', d:'Temps que l’orbe passe au ras de l’eau à chaque passage (la recharge complète prend windRefill).', min:0.5, max:5, step:0.1},
   {k:'chaseGain', g:'Course', l:'Gain de l’actu d’or', u:'pt', d:'Points de sondage si on attrape l’actu d’or (en attendant la volte-face).', min:0, max:10, step:0.5},
   {k:'blowT', g:'Commun', l:'Temps d’emportement', u:'s', d:'Au-dessus de la limite, la jauge se remplit en ce temps ; pleine = emportée par le vent (niveau perdu). Elle se vide dessous.', min:0.1, max:2, step:0.1},
   {k:'orbGain', g:'Commun', l:'Orbe d’argent', u:'pt', d:'Points de sondage par orbe d’argent attrapée au-dessus de la limite.', min:0, max:3, step:0.1},
@@ -429,7 +433,7 @@ const PSPEC = [
   {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
 ];
 // valeurs par défaut = réglages sauvegardés par Pierre le 18/10 au soir (caméra loin, vol vif)
-const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, chaseMax: 15, chaseTime: 8, chaseDrain: 5, chaseDist0: 900, chaseDist1: 260, chaseW0: 40, chaseGrow: 130, chaseAmp: 130, chaseFreq: 0.2, chaseGain: 2, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
+const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, chaseMax: 15, chaseTime: 8, chaseDrain: 5, chaseDist0: 450, chaseDist1: 1000, chaseThin: 45, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseWaterEvery: 4, chaseWaterHold: 1.8, chaseGain: 2, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
   vUp: 400, tUp: 0.25, vDown: 520, tDown: 0.5, glide: 0, tTurn: 0.05,
   windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
 const P = Object.assign({}, PDEF, {
@@ -501,8 +505,8 @@ function applyInput(dt){
     const want = pointerDown || keyUp;
     // réserve de vent : l'appui consomme (sauf sur l'eau), la glisse sur l'eau recharge ; vide, l'appui ne répond plus
     // pendant la course, le vent ne manque pas : l'actu d'or porte
-    if (want && !onWater && phase !== 'chase'){ wind = Math.max(0, wind - dt/P.windCap); if (wind === 0 && windEmptyT < 0){ windEmptyT = realT; sfxP3('down'); } }
-    if (onWater || phase === 'chase') wind = Math.min(1, wind + dt/P.windRefill);
+    if (want && !onWater){ wind = Math.max(0, wind - dt/P.windCap); if (wind === 0 && windEmptyT < 0){ windEmptyT = realT; sfxP3('down'); } }
+    if (onWater) wind = Math.min(1, wind + dt/P.windRefill);
     if (wind > 0) windEmptyT = -9;
     holding = want && (wind > 0 || onWater);
     const st = {vy, holdT, relT}; tapStep(st, holding, dt); vy = st.vy; holdT = st.holdT; relT = st.relT;
@@ -726,27 +730,30 @@ function updateChain(dt){
 // ---------- la course : l'actu d'or et sa traîne ----------
 function startChase(){
   phase = 'chase'; emitter = null; pans = []; bubbles = []; trail = [];
-  chase = {t: 0, gauge: 0, y: lerp(P.ceil + 80, P.yMax - 40, 0.5), ph: rnd()*100, ph2: rnd()*100, hist: [], done: false, leaving: false, caught: false, catchT: 0, inside: false};
-  sfxP3('orb');
+  chase = {t: 0, gauge: 0, y: lerp(P.ceil + 80, P.yMax - 40, 0.5), vy: 0, target: 0, nextTurn: 0.8, waterT: P.chaseWaterEvery, waterHold: 0, hist: [], caught: false, leaving: false, catchT: 0, inside: false};
+  chase.target = chase.y; sfxP3('orb');
 }
-const chaseDist = () => chase ? lerp(P.chaseDist0, P.chaseDist1, clamp(chase.gauge, 0, 1)) : 0;
-const trailWidth = age => P.chaseW0 + P.chaseGrow*age;   // largeur de la traîne selon l'âge des particules (s)
+const chaseDist = () => chase ? lerp(P.chaseDist0, P.chaseDist1, clamp(chase.t/P.chaseMax, 0, 1)) : 0;   // l'orbe s'éloigne avec le temps
+const thinK = () => chase ? lerp(1, P.chaseThin/100, clamp(chase.gauge, 0, 1)) : 1;   // la traîne s'amincit avec la jauge
+const trailWidth = age => (P.chaseW0 + P.chaseGrow*age)*thinK();
 function updateChase(dt){
   const c = chase, mx = PX(), my = py, vs = worldSpeed();
   c.t += dt; dark = Math.max(0, dark - dt/1.5);
   if (c.caught){ c.catchT += dt; if (c.catchT > 0.9) endLevel('done'); return; }
   if (c.leaving){ c.catchT += dt; if (c.catchT > 1.0) endLevel('done'); return; }
-  // l'orbe ondule : somme de deux sinus, bornée au ciel jouable
-  const f = P.chaseFreq, a = P.chaseAmp, mid = lerp(P.ceil + 80, P.yMax - 40, 0.5);
-  c.y = clamp(mid + a*(0.65*Math.sin(2*Math.PI*f*c.t + c.ph) + 0.35*Math.sin(2*Math.PI*f*2.3*c.t + c.ph2)), P.ceil + 60, P.yMax - 30);
-  // historique des positions (pour savoir où passait la traîne à la colonne de Marine)
-  c.hist.push({t: c.t, y: c.y}); while (c.hist.length > 400) c.hist.shift();
-  // particules : nées à l'orbe, elles s'écartent latéralement de chaseGrow/2 px/s de chaque côté
-  const ox = mx + chaseDist();
-  for (let i=0;i<4;i++) trail.push({x: ox - rnd()*10, y: c.y + (rnd() - 0.5)*P.chaseW0, vy: (rnd() - 0.5)*P.chaseGrow, age: 0, r: 2 + rnd()*3, ph: rnd()*6.3});
+  // l'orbe : un cap qui change à intervalles (plus courts à mesure que la jauge se remplit), et un passage à l'eau régulier ; vitesse et accélération bornées par celles de Marine
+  const top = P.ceil + 70, bot = P.yMax, vmax = Math.min(P.vUp, P.vDown)*P.chaseAgil/100;
+  if (c.waterHold > 0){ c.waterHold -= dt; c.target = bot; }
+  else { c.waterT -= dt; if (c.waterT <= 0){ c.waterT = P.chaseWaterEvery; c.waterHold = P.chaseWaterHold + (bot - c.y)/vmax; c.target = bot; }
+    else { c.nextTurn -= dt; if (c.nextTurn <= 0){ c.nextTurn = lerp(P.chaseStep0, P.chaseStep1, c.gauge)*(0.8 + rnd()*0.4); const span = (bot - top)*lerp(0.45, 0.8, c.gauge); c.target = clamp(c.y + (rnd() - 0.5)*2*span, top, bot - 20); } } }
+  const want = clamp((c.target - c.y)*4, -vmax, vmax), acc = vmax/0.3; c.vy += clamp(want - c.vy, -acc*dt, acc*dt); c.y = clamp(c.y + c.vy*dt, top, bot);
+  c.hist.push({t: c.t, y: c.y}); while (c.hist.length > 600) c.hist.shift();
+  // particules : nées à l'orbe, elles s'écartent latéralement de chaseGrow/2 px/s de chaque côté (× l'amincissement courant)
+  const ox = mx + chaseDist(), k = thinK();
+  for (let i=0;i<4;i++) trail.push({x: ox - rnd()*10, y: c.y + (rnd() - 0.5)*P.chaseW0*k, vy: (rnd() - 0.5)*P.chaseGrow*k, age: 0, r: 2.5 + rnd()*3, ph: rnd()*6.3});
   for (const q of trail){ q.age += dt; q.x -= vs*dt; q.y += q.vy*dt; }
   trail = trail.filter(q => q.x > -40 && q.age < 4);
-  // Marine est-elle dans la traîne ? La traîne à sa colonne a l'âge dist/vitesse ; sa hauteur est celle de l'orbe à cet instant-là
+  // Marine est-elle dans la traîne ? À sa colonne, la traîne a l'âge dist/vitesse ; sa hauteur est celle de l'orbe à cet instant-là
   const age = chaseDist()/vs, tt = c.t - age; let ty = c.y;
   for (let i = c.hist.length - 1; i >= 0; i--){ if (c.hist[i].t <= tt){ ty = c.hist[i].y; break; } }
   c.inside = c.t > age && Math.abs(my - ty) < trailWidth(age)/2;
@@ -758,7 +765,7 @@ function updateChase(dt){
 function drawChase(){
   const c = chase, mx = PX();
   // la traîne
-  for (const q of trail){ const k = clamp(1 - q.age/4, 0, 1), tw = 0.6 + 0.4*Math.sin(realT*8 + q.ph); ctx.fillStyle = 'rgba(255,215,90,' + (0.75*k*tw) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, q.r*(1 + q.age*0.4), 0, 7); ctx.fill(); }
+  for (const q of trail){ const k = clamp(1 - q.age/4, 0, 1), tw = 0.7 + 0.3*Math.sin(realT*8 + q.ph), r = q.r*(1 + q.age*0.35); ctx.fillStyle = 'rgba(255,45,149,' + (0.85*k*tw) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, r, 0, 7); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,' + (0.9*k*tw) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, r*0.45, 0, 7); ctx.fill(); }
   // l'orbe d'or
   let ox = mx + chaseDist(), oy = c.y;
   if (c.caught){ const k = clamp(c.catchT/0.5, 0, 1); ox = lerp(ox, mx + 20, k); oy = lerp(oy, py, k); }
@@ -1115,7 +1122,9 @@ document.getElementById('stormBtn').addEventListener('click', startTest);
 document.querySelectorAll('#ctrlSel button').forEach(b => b.addEventListener('click', () => { ctrl = b.dataset.ctrl; syncCtrlButtons(); }));
 
 // ---------- menu de réglage ----------
-const dbg = document.getElementById('debug');
+const dbg = document.getElementById('debug'); document.body.appendChild(dbg);   // hors du cadre tourné : le défilement natif marche sur mobile
+dbgReady = true;
+function placeDebug(){ const r = wrap.getBoundingClientRect(); if (rotated){ dbg.style.left = '0'; dbg.style.right = 'auto'; dbg.style.top = '0'; dbg.style.bottom = 'auto'; dbg.style.width = window.innerWidth + 'px'; dbg.style.height = window.innerHeight + 'px'; dbg.style.borderRadius = '0'; } else { dbg.style.left = ''; dbg.style.height = ''; dbg.style.right = Math.max(0, window.innerWidth - r.right) + 12 + 'px'; dbg.style.top = Math.max(0, r.top) + 70*scale/1 + 'px'; dbg.style.bottom = Math.max(0, window.innerHeight - r.bottom) + 12 + 'px'; dbg.style.width = ''; dbg.style.borderRadius = ''; } }
 let dbgTab = 'Appui';
 function debugBuild(){
   const groups = ['Commun', 'Appui', 'Tempête', 'Course'];   // la commande « vent » est mise de côté : ses réglages restent dans le code, pas dans le menu
@@ -1144,13 +1153,14 @@ function debugRefresh(){
   const m = dbg.querySelector('#dbgMsg'); if (m && !m.textContent) m.textContent = 'Réglages chargés : ' + settingsSrc;
 }
 function syncCtrlButtons(){ document.querySelectorAll('#dbgCtrl button, #ctrlSel button').forEach(b => b.setAttribute('aria-pressed', b.dataset.ctrl === ctrl ? 'true' : 'false')); }
-document.getElementById('gearBtn').addEventListener('click', () => { dbg.hidden = !dbg.hidden; if (!dbg.hidden) debugRefresh(); });
+document.getElementById('gearBtn').addEventListener('click', () => { dbg.hidden = !dbg.hidden; if (!dbg.hidden){ placeDebug(); debugRefresh(); } });
+placeDebug();
 loadLocal(); applyCam(); debugBuild(); loadShared();
 
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, gauge: chase.gauge, y: chase.y, ty: chase.ty, tw: chase.tw, inside: chase.inside, caught: chase.caught, leaving: chase.leaving, dist: chaseDist()}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
+  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, gauge: chase.gauge, y: chase.y, ty: chase.ty, tw: chase.tw, inside: chase.inside, caught: chase.caught, leaving: chase.leaving, dist: chaseDist(), waterHold: chase.waterHold}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
   get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
   get world(){ return {Z, WH, WATER, HZ, VWW}; },
   setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,

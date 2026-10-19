@@ -134,13 +134,14 @@ with sync_playwright() as p:
     # D. la course : bouton de test, orbe et traîne, jauge qui se remplit dans la traîne, rattrapage progressif, fin par capture ou départ ; menu à onglets
     b, pg, errs = boot(p, 'tap'); pg.click('#closeBtn'); pg.wait_for_timeout(200); pg.click('#chaseBtn'); pg.wait_for_timeout(600)
     c = ev(pg, 'window.__vdd.chase'); check(ev(pg, 'window.__vdd.phase') == 'chase' and c and c['t'] < 1, '« Tester la course » lance la course directement (t=%.1f)' % c['t'])
-    d0 = c['dist']; check(abs(d0 - ev(pg, 'window.__vdd.P.chaseDist0')) < 1, 'distance de départ = chaseDist0 (%.0f)' % d0)
+    d0 = c['dist']; check(abs(d0 - ev(pg, 'window.__vdd.P.chaseDist0')) < 40, 'distance de départ = chaseDist0 (%.0f)' % d0)
     # bot qui suit la traîne à la frame : vise ty
     ev(pg, '''() => new Promise(res => { const v = window.__vdd; const step = () => { const c = v.chase; if (v.state !== 'play' || !c || c.caught || c.leaving){ v.hold(false); res(); return; }
-      const ty = c.ty === undefined ? c.y : c.ty; const up = ty < v.y - 6 && (v.wind > 0.05 || v.onWater); v.hold(up); if (!window.__shot && c.gauge > 0.4){ window.__shot = true; } requestAnimationFrame(step); }; requestAnimationFrame(step); })''')
+      const ty = c.ty === undefined ? c.y : c.ty; const up = ty < v.y - 6 && (v.wind > 0.05 || v.onWater); v.hold(up); if (!window.__dmax || c.dist > window.__dmax) window.__dmax = c.dist; if (v.onWater && v.wind > 0.9) window.__refilled = true; requestAnimationFrame(step); }; requestAnimationFrame(step); })''')
     c = ev(pg, 'window.__vdd.chase'); print('   course (suivi) : t %.1f s, jauge %.2f, dist %.0f, attrapée %s' % (c['t'], c['gauge'], c['dist'], c['caught']))
     check(c['caught'] and c['t'] < ev(pg, 'window.__vdd.P.chaseMax'), 'un bot qui suit la traîne remplit la jauge avant la fin (%.1f s)' % c['t'])
-    check(c['dist'] < d0 - 300, 'Marine a rattrapé l\'orbe à mesure (distance %.0f)' % c['dist'])
+    check(c['dist'] > d0 + 100, 'l\'orbe s\'est éloignée avec le temps (distance %.0f -> %.0f)' % (d0, c['dist']))
+    check(ev(pg, 'window.__refilled') is True, 'la traîne passe à l\'eau : le bot a pu recharger son vent en route')
     pg.screenshot(path=D + 'p3_chase.png'); pg.wait_for_timeout(1200)
     check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.stats.gold'), 'actu d\'or attrapée -> récap avec volte-face')
     # sans suivre : l'orbe s'en va à chaseMax, le niveau est réussi sans volte-face
