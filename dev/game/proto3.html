@@ -84,6 +84,8 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
 .sbtn input{width:calc(var(--u)*40);height:calc(var(--u)*40);accent-color:#22a447;margin:0}
 .s-start .sbtn{font-family:var(--ui);font-size:calc(var(--u)*44);height:calc(var(--u)*116);font-weight:800}
 .s-start .sbtn.go{font-size:calc(var(--u)*56);min-width:calc(var(--u)*390);font-weight:700}
+.s-start .srow.tests{gap:calc(var(--u)*14)}
+.s-start .sbtn.sm{font-size:calc(var(--u)*26);height:calc(var(--u)*64);padding:0 calc(var(--u)*18);box-shadow:calc(var(--u)*4) calc(var(--u)*4) 0 #14213d}
 .s-end .srow{gap:calc(var(--u)*16)}
 .s-end .sbtn{font-size:calc(var(--u)*30);height:calc(var(--u)*86);padding:0 calc(var(--u)*18);gap:calc(var(--u)*10)}
 .s-end .sbtn svg{width:calc(var(--u)*38);height:calc(var(--u)*38)}
@@ -155,13 +157,16 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
       <img src="start.jpg" alt="Marine Le Pen en kitesurf tend la main vers une actu ailée">
       <div class="scard s-start" style="left:24.16%;top:36.34%;width:69.5%;height:55.69%">
         <h1 id="tName">Marine la maline</h1>
-        <p id="tSub">Proto 3 · Appuie pour monter, relâche pour descendre. Chaque appui consomme du vent : pose-toi sur l'eau pour en reprendre.</p>
+        <p id="tSub">Proto 3 · Six chapitres, de 2023 à la présidentielle de mai 2027. Appuie pour monter, relâche pour descendre.</p>
         <div class="srow">
-          <button class="sbtn go" id="startBtn" type="button">C'est parti !</button>
-          <button class="sbtn" id="stormBtn" type="button">Tester la tempête</button>
-          <button class="sbtn" id="chaseBtn" type="button">Tester la course</button>
+          <button class="sbtn go" id="startBtn" type="button">Lancer la campagne</button>
           <button class="sbtn ic" id="musicTitle" type="button"></button>
           <button class="sbtn ic" id="soundTitle" type="button"></button>
+        </div>
+        <div class="srow tests">
+          <button class="sbtn sm" id="flyBtn" type="button">Tester le vol</button>
+          <button class="sbtn sm" id="stormBtn" type="button">Tester la tempête</button>
+          <button class="sbtn sm" id="chaseBtn" type="button">Tester la course</button>
         </div>
         <p class="srec" id="bestLine"></p>
       </div>
@@ -180,7 +185,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.14', BUILD = '18/10/2026 à 20h47';
+const VERSION = 'proto 3 · 0.15', BUILD = '20/10/2026 à 00h59';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -244,7 +249,7 @@ const pick = arr => arr[Math.floor(rnd()*arr.length)];
 const H = 390, VW = 845, VIEW_MAX = 1.5;
 let Z = 0.8, WH = H/Z, WATER = WH - 115, HZ = WATER - 140;   // hauteur du monde, ligne d'eau et horizon, en px monde (recalculés par applyCam)
 let VWW = 1000, scale = 1, dpr = 1, rotated = false, ox = 0, oy = 0, dbgReady = false, camFx = 1;
-const PX = () => Math.max(190, VWW*0.22);   // x de Marine, en px monde
+const PX = () => marineX !== null ? marineX : Math.max(190, VWW*0.22);   // x de Marine, en px monde (imposée pendant la course)
 function applyCam(){ Z = P.cam; WH = H/Z; WATER = WH - 92/Z; HZ = WATER - 140; VWW = VW/Z; P.yMax = WATER - 62; }
 function layoutScreens(W, H2){
   const IW = 1672, IH = 941;
@@ -365,14 +370,62 @@ const VOLTES = [{"sujet": "Russie", "titre": "Russie : 13 jours pour changer d�
   {"sujet": "Inéligibilité", "titre": "L’inéligibilité à vie… pour les autres", "per": "2013 → 31 mars 2025", "old": "Rendre inéligibles à vie tous les élus condamnés.", "neu": "Dénoncer sa propre inéligibilité comme une « décision politique ».", "d": "En 2013, Marine Le Pen réclamait « l’inéligibilité à vie pour tous ceux qui ont été condamnés ». Le 31 mars 2025, condamnée en première instance à 5 ans d’inéligibilité avec exécution provisoire dans l’affaire des assistants parlementaires européens, Marine Le Pen dénonce sur TF1 une « décision politique » : « Soyons bien clairs, je suis éliminée ».", "src": ["Public Sénat, vidéo de 2013", "Public Sénat, François Vignal, 31/03/2025"]},
   {"sujet": "Nucléaire", "titre": "Sûreté nucléaire : contre, puis pour", "per": "19 mars → 9 avril 2024", "old": "Voter contre la réforme de la sûreté nucléaire.", "neu": "Voter pour le texte final de la même réforme.", "d": "Le 19 mars 2024, les 84 députés RN présents votent contre le projet de loi sur la gouvernance de la sûreté nucléaire, qui fusionne l’ASN et l’IRSN. Marine Le Pen vote contre. Le 9 avril 2024, après la commission mixte paritaire, les 82 députés RN présents votent pour le texte final. Marine Le Pen vote pour.", "src": ["Assemblée nationale, scrutins n° 3546 (19/03/2024) et n° 3662 (09/04/2024)"]}];
 const VSHORT = [['Entente avec Poutine', 'Stop aux opérations russes'], ['Quitter l’OTAN intégrée', 'Rester dans l’OTAN intégrée'], ['Interdire le voile', 'Le Parlement décidera'], ['Le Parlement décidera', 'Référendum sur le voile'], ['Rejeter la loi immigration', 'Voter la loi immigration'], ['Abroger ? Nous verrons', 'Abroger à l’automne'], ['Âge légal intouchable', 'Âge légal à l’étude'], ['Zéro TVA sur 100 produits', 'Seulement si forte inflation'], ['Seulement si forte inflation', 'Zéro TVA au contre-budget'], ['Sortir du marché européen', 'Négocier une dérogation'], ['Inéligibilité à vie', '« Une décision politique »'], ['Contre la sûreté nucléaire', 'Pour la même réforme']];
-// Les 5 niveaux : thème (volte-face) et scandale (tempête), liste validée par Pierre le 18/10. Les textes restent courts ; les sources sont dans le corpus du Project.
+// Les 6 chapitres : tuto + 5 niveaux. Titres choisis par Pierre le 20/10 (ancienne position, courte et directe). `per` = dates documentées dans le corpus du Project.
+// Les positions courtes (old/neu) servent aux cartes et au bilan final ; les fiches détaillées et sourcées sont dans INFO.
 const LEVELS = [
-  {n: 1, theme: 'Europe', old: 'Frexit et référendum (2016)', neu: '« Le Frexit n’est nullement notre projet » (avril 2019)', scandal: {title: 'Kits de campagne', sub: 'Législatives 2012 · condamnation définitive du RN', date: '19 juin 2024', emitter: 'justice'}},
-  {n: 2, theme: 'Retraites', old: '60 ans pour tous (2012, 2017)', neu: 'Âge selon l’entrée dans la vie active (février 2022)', scandal: {title: 'Les tracts Poutine', sub: 'Poignée de main mise au rebut', date: '1er mars 2022', emitter: 'rn'}},
-  {n: 3, theme: 'Énergie', old: 'Sortie du nucléaire souhaitable (2011-2012)', neu: 'Une vingtaine de réacteurs (avril 2022)', scandal: {title: '« Brebis galeuses »', sub: 'Candidats RN des législatives', date: 'juin-juillet 2024', emitter: 'bard'}},
-  {n: 4, theme: 'IVG', old: 'Constitutionnalisation refusée (2022)', neu: 'Votée (30 janvier 2024)', scandal: {title: 'Assistants parlementaires', sub: '1re instance, appel, pourvoi en cassation', date: '31 mars 2025 · 7 juillet 2026', emitter: 'justice'}},
-  {n: 5, theme: 'Budget', old: 'Règle d’or « chape de plomb » (2012)', neu: 'Règle d’or constitutionnelle (août 2026)', scandal: {title: 'Écrits attribués à Bardella', sub: 'Révélations Mediapart · attribués, contestés, non jugés', date: '28 septembre 2026', emitter: 'bard'}},
+  {n: 0, title: 'Retour au franc', theme: 'Monnaie', old: 'Retour au franc', neu: 'L’euro n’est « plus une priorité » (janvier 2019)', per: '2012 → janvier 2019', scandal: null},
+  {n: 1, title: 'On sort de l’Europe', theme: 'Europe', old: 'On sort de l’Europe', neu: '« Le Frexit n’est nullement notre projet » (avril 2022)', per: '2016 → avril 2022', scandal: {title: 'Kits de campagne', sub: 'Législatives 2012 · condamnation définitive du RN', date: '19 juin 2024', emitter: 'justice'}},
+  {n: 2, title: 'La retraite à 60 ans', theme: 'Retraites', old: 'La retraite à 60 ans', neu: '60 ans pour les carrières longues, 62 pour les autres (février 2022)', per: '2017 → février 2022', scandal: {title: 'Les tracts Poutine', sub: 'Poignée de main mise au rebut', date: '1er mars 2022', emitter: 'rn'}},
+  {n: 3, title: 'Le nucléaire, on arrête', theme: 'Énergie', old: 'Le nucléaire, on arrête', neu: 'Une vingtaine de réacteurs (avril 2022)', per: '2011-2012 → avril 2022', scandal: {title: '« Brebis galeuses »', sub: 'Candidats RN des législatives', date: 'juin-juillet 2024', emitter: 'bard'}},
+  {n: 4, title: 'Non à l’IVG dans la Constitution', theme: 'IVG', old: 'Non à l’IVG dans la Constitution', neu: 'Votée le 30 janvier 2024', per: 'novembre 2022 → janvier 2024', scandal: {title: 'Assistants parlementaires', sub: '1re instance, appel, pourvoi en cassation', date: '31 mars 2025 · 7 juillet 2026', emitter: 'justice'}},
+  {n: 5, title: 'Non à la règle d’or, oui à la dette', theme: 'Budget', old: 'Non à la règle d’or, oui à la dette', neu: 'Règle d’or constitutionnelle (août 2026)', per: '2012 → août 2026', scandal: {title: 'Écrits attribués à Bardella', sub: 'Révélations Mediapart · attribués, contestés, non jugés', date: '28 septembre 2026', emitter: 'bard'}},
 ];
+// Fiches du bouton « i ». Chaque fait vient du corpus du Project (claude/corpus-declarations-LePen-Bardella.md), du relevé des votes (claude/votes_cles_RN_assemblee.md) ou des fiches sourcées du proto v2 (BIGS).
+// Quand le corpus ne couvre pas un fait affiché (surtout les positions anciennes, 2011-2017), la fiche le dit : « source à compléter ».
+// Sources : [média et auteur, date, lien ou null].
+const INFO = [
+  {old: 'Sortir de l’euro, revenir à une monnaie nationale', oldD: 'programme 2012', neu: 'L’abandon de l’euro n’est « plus une priorité »', neuD: 'vœux à la presse, janvier 2019',
+   d: 'Le 19 octobre 2017, sur France 2, interrogée sur l’abandon de l’euro, Marine Le Pen répond « Nous allons voir » et se dit prête à garder l’euro s’il profite à la France. En janvier 2019, lors de ses vœux à la presse, l’abandon de l’euro n’est plus une priorité : le programme se limite à demander une modification du fonctionnement de la zone euro. Le programme présidentiel de 2022 ne prévoit plus l’abandon de l’euro. Le 6 octobre 2026, elle appelle la BCE à alléger le poids des taux d’intérêt.',
+   src: [['Europe 1 avec Reuters', '19/10/2017', 'https://www.europe1.fr/politique/marine-le-pen-sur-la-sortie-de-leuro-nous-allons-voir-3469202'], ['Public Sénat', '14/04/2022', 'https://www.publicsenat.fr/actualites/politique/sur-l-europe-marine-le-pen-a-t-elle-vraiment-change-202482'], ['LCP, Maxence Kagni', '12/04/2022', 'https://lcp.fr/actualites/presidentielle-deux-visions-opposees-de-l-europe-109357'], ['Boursier.com via Bourse Direct', '06/10/2026', 'https://www.boursedirect.fr/fr/actualites/categorie/divers/marine-le-pen-appelle-la-bce-a-reduire-ses-taux-boursier-1345008394990fb7883a2c8e919a417ac835a525']],
+   note: 'La position de 2012 (sortie de l’euro) n’est pas documentée dans le corpus du Project : source à compléter.'},
+  {old: 'Sortir de l’Union européenne, par référendum', oldD: 'campagne 2016-2017', neu: '« Le Frexit n’est nullement notre projet »', neuD: 'conférence de presse, 13 avril 2022',
+   d: 'Le 13 avril 2022, en conférence de presse consacrée à l’Europe, Marine Le Pen écarte le Frexit et dit vouloir réformer l’UE de l’intérieur. Son programme de 2022 ne prévoit plus la sortie de l’UE ni de l’euro, mais une « Alliance européenne des nations » et une baisse de 5 Md€ de la contribution française. Le 25 janvier 2024, elle affirme ne pas préparer de Frexit caché. En septembre 2026, un référendum sur le Frexit n’est pas à l’ordre du jour.',
+   src: [['Public Sénat', '14/04/2022', 'https://www.publicsenat.fr/actualites/politique/sur-l-europe-marine-le-pen-a-t-elle-vraiment-change-202482'], ['LCP, Maxence Kagni', '12/04/2022', 'https://lcp.fr/actualites/presidentielle-deux-visions-opposees-de-l-europe-109357'], ['LCP, Maxence Kagni', '25/01/2024', 'https://lcp.fr/actualites/2024-sera-une-annee-de-clarification-declare-marine-le-pen-lors-d-une-conference-de'], ['Euronews, James Thomas', '17/09/2026', 'https://fr.euronews.com/my-europe/2026/09/17/marine-le-pen-veut-elle-ou-non-organiser-un-referendum-sur-le-frexit-si-elle-est-elue']],
+   note: 'La position de 2016 (sortie de l’UE et référendum) n’est pas documentée dans le corpus : source à compléter.',
+   sd: 'Pour les législatives de 2012, Jeanne, le micro-parti de Marine Le Pen, vend aux candidats du Front national des « kits de campagne » à 16 650 € : tracts, affiches, site internet et aide à la présentation des comptes. La justice juge ces prestations surfacturées au détriment de l’État, qui rembourse les dépenses des candidats ayant dépassé 5 % des voix. En mars 2023, la cour d’appel de Paris condamne le RN à 250 000 € d’amende pour recel d’abus de biens sociaux. Le 19 juin 2024, la Cour de cassation rend la condamnation définitive.',
+   ssrc: [['Europe 1', '19/06/2024 (mis à jour le 06/11/2024)', null]]},
+  {old: 'La retraite à 60 ans pour tous', oldD: 'programmes 2012 et 2017', neu: 'L’âge de départ dépend de l’âge d’entrée dans la vie active : 60 ans pour ceux qui ont commencé avant 20 ans', neuD: '17 février 2022',
+   d: 'Le programme de 2017 prévoyait le retour de l’âge de départ à 60 ans pour tous. Le 17 février 2022, Marine Le Pen présente un système progressif : 60 ans et 40 annuités pour une entrée dans la vie active entre 17 et 20 ans, 160 à 168 trimestres entre 20 et 24 ans, au moins 42 annuités au-delà. Le programme d’avril 2022 maintient l’âge légal à 62 ans, avec 60 ans pour une entrée avant 20 ans. Le 6 octobre 2026, elle annonce un retour à 62 ans, « voire 60 », le retour à 60 ans dépendant d’une grande réforme de la capitalisation.',
+   src: [['LCP, Jason Wiels', '19/04/2022', 'https://lcp.fr/actualites/presidentielle-retraites-les-projets-d-emmanuel-macron-et-marine-le-pen-a-la-loupe'], ['Public Sénat, Louis Dubar', '17/02/2022', 'https://www.publicsenat.fr/actualites/politique/retraite-a-60-ans-marine-le-pen-corrige-sa-copie-193936'], ['AFP via Bourse Direct', '06/10/2026', 'https://www.boursedirect.fr/fr/actualites/categorie/politique/140-milliards-d-economies-ce-qu-il-faut-retenir-de-l-intervention-de-marine-le-pen-afp-c7e3f37b845db4c22fabbed19f2f95b7ce56ed6b'], ['Euronews, Romain Gutkind avec AFP et AP', '07/10/2026', 'https://fr.euronews.com/2026/10/07/france-le-gouvernement-tire-a-boulets-rouges-sur-le-contre-budget-de-marine-le-pen']],
+   note: 'La position de 2017 est documentée (LCP) ; celle de 2012 ne l’est pas dans le corpus : source à compléter.',
+   sd: 'Pour la présidentielle de 2022, l’équipe de campagne de Marine Le Pen fait imprimer 1,2 million d’exemplaires d’un livret de huit pages. Une page intitulée « une femme de conviction » la montre serrant la main de Vladimir Poutine lors de leur rencontre de 2017 à Moscou. Après l’invasion de l’Ukraine, selon Libération, des délégués départementaux reçoivent la consigne de se débarrasser des exemplaires restants ; le siège du parti dément toute consigne nationale et l’attribue à des militants « zélés ».',
+   ssrc: [['La DH, d’après Libération', '01/03/2022', null]]},
+  {old: 'Sortir du nucléaire, à terme', oldD: '2011-2012', neu: 'Relancer le nucléaire : une vingtaine de réacteurs', neuD: 'mars-avril 2022',
+   d: 'Le 15 novembre 2021, Marine Le Pen réclame un moratoire sur le démantèlement de Fessenheim et prévoit six EPR. Le 14 mars 2022, son plan énergie prolonge les centrales à 60 ans, prévoit cinq paires d’EPR d’ici 2031 et cinq paires d’EPR2 d’ici 2036, et stoppe l’éolien. Le comparatif de l’AFP du 20 avril 2022 retient une vingtaine de réacteurs. Le 19 mars 2024, son groupe vote contre la réforme de la sûreté nucléaire en première lecture, puis pour le texte final le 9 avril.',
+   src: [['AFP via ID l’Info durable', '15/11/2021', 'https://www.linfodurable.fr/nucleaire-le-pen-demande-macron-un-moratoire-sur-le-demantelement-de-fessenheim-29577'], ['Public Sénat, François Vignal', '14/03/2022', 'https://www.publicsenat.fr/article/politique/energies-plein-pot-sur-le-nucleaire-et-haro-sur-les-eoliennes-pour-marine-le-pen'], ['AFP via Connaissance des Énergies', '20/04/2022', 'https://www.connaissancedesenergies.org/afp/eolien-nucleaire-fossiles-les-programmes-de-marine-le-pen-et-emmanuel-macron-220420'], ['Assemblée nationale, scrutins n° 3546 et 3662 (16e lég.)', '19/03/2024 et 09/04/2024', 'https://www.assemblee-nationale.fr/dyn/16/scrutins/3546']],
+   note: 'La position de 2011-2012 (sortie du nucléaire souhaitable) n’est pas documentée dans le corpus : source à compléter.',
+   sd: 'Pendant la campagne des législatives de 2024, plusieurs candidats du RN sont épinglés. Le député sortant Daniel Grenon (Yonne) affirme que les Maghrébins « n’ont pas leur place dans les hauts lieux ». Laurent Gnaedig (Haut-Rhin) estime que les propos de Jean-Marie Le Pen sur les chambres à gaz, « point de détail de l’Histoire », n’étaient pas antisémites. Ludivine Daoudi (Calvados) retire sa candidature après la diffusion d’une photo d’elle coiffée d’une casquette nazie. Jordan Bardella parle de « quatre ou cinq brebis galeuses » qui « seront mis à la porte ».',
+   ssrc: [['LCP, Raphaël Marchal', '04/07/2024', null]]},
+  {old: 'Pas d’IVG dans la Constitution : elle n’est « pas en danger »', oldD: 'novembre 2022', neu: 'Vote pour l’inscription de l’IVG dans la Constitution', neuD: '30 janvier 2024',
+   d: 'En novembre 2022, le RN refuse d’inscrire l’IVG dans la Constitution, au motif qu’elle n’est « pas en danger » en France ; Marine Le Pen propose plutôt d’y figer le droit en vigueur. Le 24 novembre 2022, elle vote pourtant la proposition de loi constitutionnelle (groupe RN : 38 pour, 23 contre, 13 abstentions). Le 30 janvier 2024, elle vote le projet de loi constitutionnelle tout en estimant qu’il « ne sert à rien » ; son groupe se divise (46 pour, 12 contre, 14 abstentions). Le 4 mars 2024, le Congrès adopte le texte.',
+   src: [['LCP, Soizic Bonvarlet', '22/11/2022', null], ['Europe 1', '21/06/2024', null], ['Assemblée nationale, scrutin n° 629 (16e lég.)', '24/11/2022', 'https://www.assemblee-nationale.fr/dyn/16/scrutins/629'], ['Assemblée nationale, scrutin n° 3289 (16e lég.)', '30/01/2024', 'https://www.assemblee-nationale.fr/dyn/16/scrutins/3289']],
+   note: 'Votes nominatifs de Marine Le Pen relevés dans les données ouvertes de l’Assemblée nationale (relevé du Project).',
+   sd: 'Le 13 novembre 2024, après les réquisitions (cinq ans dont deux ferme, inéligibilité avec exécution provisoire), Marine Le Pen dénonce la « violence » et l’« outrance » du parquet. Le 31 mars 2025, le tribunal correctionnel de Paris la condamne pour détournement de fonds publics (quatre ans dont deux ferme, 100 000 € d’amende, cinq ans d’inéligibilité avec exécution provisoire) ; elle parle de « décision politique » et fait appel. Le 7 juillet 2026, la cour d’appel confirme la condamnation (trois ans dont un ferme aménageable, 45 mois d’inéligibilité dont 30 avec sursis). Le soir même, elle annonce sa candidature et un pourvoi en cassation : la condamnation n’est pas définitive.',
+   ssrc: [['Public Sénat', '14/11/2024', 'https://www.publicsenat.fr/actualites/politique/proces-du-rn-marine-le-pen-denonce-la-violence-et-loutrance-des-requisitions'], ['Public Sénat, François Vignal', '31/03/2025', 'https://www.publicsenat.fr/actualites/politique/soyons-bien-clairs-je-suis-eliminee-marine-le-pen-denonce-une-decision-politique-apres-sa-condamnation'], ['LCP, Raphaël Marchal', '07/07/2026', 'https://lcp.fr/actualites/marine-le-pen-condamnee-mais-pas-ecartee-de-la-presidentielle-le-recit-depuis-la-cour-d'], ['LCP, Soizic Bonvarlet', '07/07/2026', 'https://lcp.fr/actualites/ce-soir-je-suis-candidate-a-l-election-presidentielle-annonce-marine-le-pen-438886']]},
+  {old: 'Non à la règle d’or : une « chape de plomb »', oldD: '2012', neu: 'Une règle d’or constitutionnelle de réduction de la dette', neuD: '27 août 2026',
+   d: 'Le 27 août 2026, au débat du Medef à Roland-Garros, Marine Le Pen annonce un plan de 125 Md€ d’économies et une règle d’or constitutionnelle : « Le premier qui doit faire un effort c’est l’État ». Le 6 octobre 2026, elle porte l’objectif à 140 Md€ d’économies nettes d’ici 2032 et propose une règle d’or de réduction annuelle de la dette, adoptée par référendum, avec un déficit sous 3 % du PIB en 2030. Le 20 avril 2022, face à Emmanuel Macron, elle disait : « Quand on a 600 milliards d’euros de dette au compteur, on reste modeste ».',
+   src: [['Public Sénat, Mathilde Nutarelli', '27/08/2026', 'https://www.publicsenat.fr/actualites/politique/dette-retraites-fiscalite-que-retenir-du-premier-debat-des-candidats-a-lelection-presidentielle'], ['AFP via Bourse Direct', '06/10/2026', 'https://www.boursedirect.fr/fr/actualites/categorie/politique/140-milliards-d-economies-ce-qu-il-faut-retenir-de-l-intervention-de-marine-le-pen-afp-c7e3f37b845db4c22fabbed19f2f95b7ce56ed6b'], ['Public Sénat, Stéphane Duguet', '06/10/2026', 'https://www.publicsenat.fr/actualites/politique/140-milliards-deuros-deconomies-dici-2032-leffort-radical-propose-par-marine-le-pen-pour-redresser-les-f'], ['Public Sénat, Louis Dubar', '21/04/2022', 'https://www.publicsenat.fr/article/politique/presidentielle-2022-le-chiffrage-des-programmes-d-emmanuel-macron-et-marine-le-pen']],
+   note: 'La position de 2012 (règle d’or qualifiée de « chape de plomb ») n’est pas documentée dans le corpus : source à compléter.',
+   sd: 'Le 28 septembre 2026, Mediapart publie des écrits antisémites qu’il attribue à Jordan Bardella, datant de 2013, quand il avait 17 ou 18 ans. Jordan Bardella conteste « formellement », dénonce une « opération de barbouzerie » et annonce une plainte en diffamation ; il conteste l’authentification des documents et refuse de « poser genou à terre ». Marine Le Pen rejette les accusations et dit avoir « totalement confiance » en lui. Ces écrits sont attribués et contestés ; aucune décision de justice n’est intervenue.',
+   ssrc: [['LCP, Raphaël Marchal', '28/09/2026', null], ['LCP, Maxence Kagni', '29/09/2026', null], ['Euronews, Alexander Kazakevich', '04/10/2026', 'https://fr.euronews.com/2026/10/04/jai-totalement-confiance-en-jordan-apres-trois-jours-de-silence-marine-le-pen-defend-a-nou'], ['Sud Radio avec AFP, Gabriel Bourovitch', '06/10/2026', 'https://www.sudradio.fr/societe/presidentielle-en-quete-de-credibilite-budgetaire-le-pen-promet-un-effort-radical-de-140-milliards-net']]},
+];
+// Les bonus de début de niveau (achetés avec la réserve de pièces, valables pour le niveau)
+const BONUS = [
+  {id: 'fire', name: 'Contre-feu', price: 300, d: 'Éteint 5 casseroles accrochées, au début du niveau.'},
+  {id: 'pump', name: 'Pompe à fric', price: 120, d: 'Attire les pièces proches pendant tout le niveau.'},
+  {id: 'kevlar', name: 'Veste en kevlar', price: 200, d: 'Les 3 premiers journalistes ne coûtent aucun point.'},
+];
+const MAGNET_R = 160, MAGNET_V = 600, KEVLAR_HITS = 3, FIRE_PANS = 5;
 // Éléments de langage : ce que Marine renvoie à l'émetteur pendant la tempête (formules déjà documentées dans VSHORT, plus deux répliques du jeu)
 const BUBBLES = ['Nous verrons', 'Une décision politique', 'Le Parlement décidera', 'Pas de commentaire !', 'Négocier une dérogation', 'Seulement si forte inflation', 'Cabale !'];
 const EMITTERS = {rn: {name: 'Le bateau RN', frames: ['rn0', 'rn1', 'rn2'], s: 0.9, y: () => WATER - 6, w: 150, h: 170, sfx: 'throw'},
@@ -386,7 +439,8 @@ const PSPEC = [
   {k:'speed', g:'Commun', l:'Vitesse de vol', u:'px écran/s', d:'Défilement à l’œil, constant quelle que soit la distance de caméra.', min:150, max:500, step:10},
   {k:'flight', g:'Commun', l:'Durée du vol', u:'s', d:'Longueur de la phase de vol d’un niveau.', min:30, max:120, step:5},
   {k:'ceil', g:'Commun', l:'Limite d’altitude', u:'px monde', d:'Marge sous le bord haut du monde : au-dessus, le vent emporte Marine (niveau perdu).', min:20, max:200, step:5},
-  {k:'level', g:'Commun', l:'Niveau', u:'1 à 5', d:'Choisit le thème et le scandale de la tempête (liste du document de design §7).', min:1, max:5, step:1},
+  {k:'level', g:'Commun', l:'Niveau de test', u:'1 à 5', d:'Niveau joué par les boutons de test du menu (thème et scandale). La campagne, elle, suit la carte.', min:1, max:5, step:1},
+  {k:'tutoFlight', g:'Commun', l:'Durée du vol du tuto', u:'s', d:'Longueur de la phase de vol du tuto (pas de tempête, course facile).', min:15, max:90, step:5},
   {k:'stormRate', g:'Tempête', l:'Cadence des lancers', u:'s', d:'Temps moyen entre deux casseroles (±30 %).', min:0.2, max:3, step:0.1},
   {k:'panSpeed', g:'Tempête', l:'Vitesse des tirs', u:'px monde/s', d:'Vitesse des tirs tendus (horizontaux). Fixe le temps de réaction : distance émetteur-Marine ÷ vitesse.', min:300, max:1500, step:25},
   {k:'stormLanes', g:'Tempête', l:'Couloirs d’altitude', u:'', d:'Nombre de hauteurs possibles pour les tirs tendus, de la limite d’altitude à l’eau. Moins de couloirs = esquives plus amples.', min:3, max:9, step:1},
@@ -402,15 +456,14 @@ const PSPEC = [
   {k:'chaseMax', g:'Course', l:'Durée de la course', u:'s', d:'Temps au bout duquel l’actu d’or s’en va si la jauge n’est pas pleine.', min:5, max:40, step:1},
   {k:'chaseTime', g:'Course', l:'Temps dans la traîne', u:'s', d:'Temps cumulé passé dans la traîne pour remplir la jauge (si on la suit parfaitement, la course dure ce temps-là).', min:2, max:30, step:0.5},
   {k:'chaseDrain', g:'Course', l:'Perte hors traîne', u:'%/s', d:'La jauge se vide à ce rythme quand Marine sort de la traîne (0 = jamais).', min:0, max:50, step:1},
-  {k:'chaseDist0', g:'Course', l:'Distance de départ', u:'px monde', d:'Distance entre Marine et l’orbe au début de la course.', min:150, max:1400, step:25},
-  {k:'chaseDist1', g:'Course', l:'Distance à la fin', u:'px monde', d:'Distance (à jauge vide) quand le temps est écoulé : l’orbe dérive vers la droite à mesure que le temps passe, et finit par s’envoler.', min:150, max:1600, step:25},
-  {k:'chaseThin', g:'Course', l:'Amincissement final', u:'%', d:'Largeur de la traîne quand la jauge est pleine, en part de la largeur de départ : il faut être plus précis à mesure qu’on remplit.', min:10, max:100, step:5},
+  {k:'chaseX0', g:'Course', l:'Orbe au départ', u:'% écran', d:'Abscisse de l’orbe au début de la course, en part de la largeur de l’écran (Marine part à 22 %).', min:30, max:95, step:1},
+  {k:'chaseX1', g:'Course', l:'Orbe à la fin', u:'% écran', d:'Abscisse de l’orbe quand le temps est écoulé : elle dérive vers la droite avec le temps, puis s’envole.', min:30, max:98, step:1},
+  {k:'chaseThin', g:'Course', l:'Amincissement final', u:'%', d:'Largeur de la traîne quand la jauge est pleine, en part de la largeur de départ : il faut être plus précis à mesure qu’on remplit (et Marine avance vers l’orbe).', min:10, max:100, step:5},
   {k:'chaseW0', g:'Course', l:'Largeur à l’orbe', u:'px monde', d:'Largeur de la traîne juste derrière l’orbe (le plus fin).', min:10, max:200, step:5},
   {k:'chaseGrow', g:'Course', l:'Élargissement', u:'px/s', d:'La traîne s’élargit de ce nombre de px par seconde d’âge : loin derrière l’orbe elle est large, près d’elle elle est fine.', min:0, max:400, step:10},
   {k:'chaseAgil', g:'Course', l:'Agilité de l’orbe', u:'% de Marine', d:'Vitesse verticale de l’orbe en part de celle de Marine (montée et chute) : sous 100 %, la trajectoire reste suivable.', min:20, max:150, step:5},
   {k:'chaseStep0', g:'Course', l:'Changements de cap (début)', u:'s', d:'Temps entre deux changements de direction de l’orbe quand la jauge est vide.', min:0.3, max:4, step:0.1},
   {k:'chaseStep1', g:'Course', l:'Changements de cap (fin)', u:'s', d:'Idem quand la jauge est pleine : plus court = plus nerveux à mesure que la jauge se remplit.', min:0.2, max:4, step:0.1},
-  {k:'chaseClose', g:'Course', l:'Rapprochement à jauge pleine', u:'%', d:'Part de la distance qui reste quand la jauge est pleine : Marine se rapproche de l’orbe à mesure qu’elle remplit la jauge (l’orbe, elle, dérive vers la droite avec le temps).', min:10, max:100, step:5},
   {k:'chaseGain', g:'Course', l:'Gain de l’actu d’or', u:'pt', d:'Points de sondage si on attrape l’actu d’or (en attendant la volte-face).', min:0, max:10, step:0.5},
   {k:'blowT', g:'Commun', l:'Temps d’emportement', u:'s', d:'Au-dessus de la limite, la jauge se remplit en ce temps ; pleine = emportée par le vent (niveau perdu). Elle se vide dessous.', min:0.1, max:2, step:0.1},
   {k:'orbGain', g:'Commun', l:'Orbe d’argent', u:'pt', d:'Points de sondage par orbe d’argent attrapée au-dessus de la limite.', min:0, max:3, step:0.1},
@@ -433,7 +486,7 @@ const PSPEC = [
   {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
 ];
 // valeurs par défaut = réglages sauvegardés par Pierre le 18/10 au soir (caméra loin, vol vif)
-const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, chaseMax: 15, chaseTime: 8, chaseDrain: 5, chaseDist0: 450, chaseDist1: 1000, chaseThin: 45, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseClose: 35, chaseGain: 2, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
+const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, chaseMax: 15, chaseTime: 8, chaseDrain: 5, chaseX0: 55, chaseX1: 92, chaseThin: 45, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseGain: 2, tutoFlight: 40, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
   vUp: 400, tUp: 0.25, vDown: 520, tDown: 0.5, glide: 0, tTurn: 0.05,
   windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
 const P = Object.assign({}, PDEF, {
@@ -449,6 +502,7 @@ async function loadShared(){
   try {
     if (!window.claude || !window.claude.use) return;
     const db = await window.claude.use('db'); if (!db) return;
+    await loadCampShared(db);
     dbDoc = db.doc('settings/main'); const snap = await dbDoc.get();
     if (snap.exists){ applySettings(snap.data()); settingsSrc = 'artifact'; debugRefresh(); }
   } catch(e){ dbDoc = null; }
@@ -463,26 +517,66 @@ async function saveSettings(){
 // ---------- state ----------
 let state = 'title', paused = false, ctrl = 'tap';
 let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, stats, onWater = false, blownT = 0, blowGauge = 0, endReason = '', orbs, nextOrb, wind = 1, windEmptyT = -9;
-let chase = null, trail = [];
+let chase = null, trail = [], marineX = null;   // marineX : abscisse imposée (course) ; null = position normale
 let phase = 'fly', stormT = 0, emitter = null, pans = [], bubbles = [], cass = 0, chain = [], nextSalvo = 0, nextBubble = 0, dark = 0, bannerT = 0, flash = 0, cassInv = 0;
 let coinsList, journos, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
 let keyUp = false, keyDown = false, pointerY = null, pointerDown = false;
 
+// ---------- campagne : progression, sauvegarde, bonus ----------
+// mode 'camp' = la campagne (carte, niveaux, sauvegarde) ; 'test' = les boutons de test du menu (niveau P.level, rien n'est sauvegardé)
+let mode = 'test', levelN = 1, testMode = '', bonus = null, kevlarLeft = 0, infoOpen = null, shopMsg = '';
+const curLevel = () => LEVELS[clamp(levelN, 0, 5)];
+const isTuto = () => levelN === 0;
+const flightDur = () => isTuto() ? P.tutoFlight : P.flight;
+// camp.levels[n] = {entry: {poll, cass} (état à l'entrée du niveau), done, poll, cass, gold, hits} ; unlocked = nombre de chapitres jouables (tuto compris)
+function newCampaign(){ return {v: 1, ts: 0, unlocked: 2, coins: 0, cur: 0, levels: []}; }
+let camp = newCampaign();
+const levelEntry = n => (camp.levels[n] && camp.levels[n].entry) || {poll: P.pollStart, cass: 0};
+const playable = n => n < camp.unlocked;
+let campDoc = null;
+function loadCampLocal(){ try { const j = JSON.parse(localStorage.getItem('p3-campaign') || 'null'); if (j && j.v === 1) camp = j; } catch(e){} }
+async function loadCampShared(db){
+  try { campDoc = db.doc('campaign/main'); const s = await campDoc.get(); if (s.exists){ const j = s.data(); if (j && j.v === 1 && (j.ts || 0) > (camp.ts || 0)) camp = j; } } catch(e){ campDoc = null; }
+}
+async function saveCamp(){
+  camp.ts = Date.now(); const j = JSON.parse(JSON.stringify(camp));
+  try { localStorage.setItem('p3-campaign', JSON.stringify(j)); } catch(e){}
+  if (campDoc){ try { await campDoc.set(j); } catch(e){} }
+}
+function resetCamp(){ camp = newCampaign(); bonus = null; saveCamp(); }
+function unlockAll(){ camp.unlocked = 6; saveCamp(); }
+function buyBonus(id){
+  const b = BONUS.find(x => x.id === id); if (!b) return false;
+  if (id === 'fire' && levelEntry(levelN).cass === 0) return false;
+  if (camp.coins < b.price) return false;
+  camp.coins -= b.price; bonus = id; saveCamp(); return true;
+}
+
 function start(){
   applyCam(); seed = 7; realT = 0; tFlight = 0; py = P.yMax; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0; onWater = true; blownT = 0; blowGauge = 0; endReason = ''; orbs = []; nextOrb = 6; wind = 1; windEmptyT = -9;
-  phase = 'fly'; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chain = []; chase = null; trail = []; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; cassInv = 0;
-  poll = P.pollStart; coins = 0; stats = {hits: 0, orbs: 0, coins: 0, cass: 0, bubbles: 0, gold: false};
+  phase = 'fly'; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chain = []; chase = null; trail = []; marineX = null; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; cassInv = 0; booth = null; infoOpen = null;
+  poll = P.pollStart; coins = 0; stats = {hits: 0, orbs: 0, coins: 0, cass: 0, bubbles: 0, gold: false, kevlar: 0};
   coinsList = []; journos = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0; patOrder = [];
   pointerY = null; pointerDown = false; keyUp = keyDown = false;
+  if (mode === 'camp'){
+    // on repart de l'état d'entrée du niveau (sondages et casseroles accumulés), avec le bonus choisi
+    const e = levelEntry(levelN); poll = e.poll; cass = e.cass;
+    if (bonus === 'fire') cass = Math.max(0, cass - FIRE_PANS);
+    for (let i=0;i<cass;i++) attachPan({w: 'pan' + Math.floor(rnd()*16), s: 0.8});
+    kevlarLeft = bonus === 'kevlar' ? KEVLAR_HITS : 0;
+  } else { bonus = null; kevlarLeft = 0; }
   state = 'play'; paused = false;
   document.getElementById('titleScreen').hidden = true;
   ensureAudio(); musicStart();
 }
-let testMode = '';
-function startTest(){ testMode = 'storm'; start(); startStorm(); }
-function startTestChase(){ testMode = 'chase'; start(); startChase(); }
-function replay(){ if (testMode === 'storm') startTest(); else if (testMode === 'chase') startTestChase(); else start(); }
-function toTitle(){ state = 'title'; musicStop(); document.getElementById('titleScreen').hidden = false; }
+function startLevel(n){ mode = 'camp'; levelN = clamp(n, 0, 5); camp.cur = levelN; testMode = ''; start(); }
+function startTestFly(){ mode = 'test'; levelN = clamp(Math.round(P.level), 1, 5); testMode = 'fly'; start(); }
+function startTest(){ mode = 'test'; levelN = clamp(Math.round(P.level), 1, 5); testMode = 'storm'; start(); startStorm(); }
+function startTestChase(){ mode = 'test'; levelN = clamp(Math.round(P.level), 1, 5); testMode = 'chase'; start(); startChase(); }
+function replay(){ if (mode === 'camp') startLevel(levelN); else if (testMode === 'storm') startTest(); else if (testMode === 'chase') startTestChase(); else startTestFly(); }
+function toTitle(){ if (mode === 'camp' && state !== 'title') saveCamp(); state = 'title'; infoOpen = null; musicStop(); document.getElementById('titleScreen').hidden = false; }
+function goMap(){ if (mode === 'camp') saveCamp(); mode = 'camp'; state = 'map'; infoOpen = null; shopMsg = ''; musicStop(); document.getElementById('titleScreen').hidden = true; }
+function goShop(n){ levelN = n; camp.cur = n; mode = 'camp'; shopMsg = ''; if (n === 0){ bonus = null; startLevel(0); return; } state = 'shop'; }
 
 // ---------- commandes ----------
 function inputFromPointer(ly){ const raw = clamp((H/2 - ly)/(H*P.windRange/200), -1, 1); return Math.sign(raw)*Math.pow(Math.abs(raw), P.windCurve); }
@@ -543,9 +637,10 @@ window.addEventListener('keydown', e => {
   if (e.code === 'ArrowUp' || e.code === 'KeyW') keyUp = true;
   if (e.code === 'ArrowDown' || e.code === 'KeyS') keyDown = true;
   if (e.code === 'Space'){ if (state === 'play' && phase !== 'intro') keyUp = true; e.preventDefault(); }
-  if (e.code === 'Enter' && state === 'title') start();
+  if (e.code === 'Enter' && state === 'title') goMap();
   if (e.code === 'Enter' && state === 'recap') replay();
-  if ((e.code === 'Enter' || e.code === 'Space') && state === 'play' && phase === 'intro' && introT > 0.4) beginStormPlay();
+  if ((e.code === 'Enter' || e.code === 'Space') && state === 'play' && phase === 'intro' && introT > 0.4 && !infoOpen) beginStormPlay();
+  if (e.code === 'Escape' && infoOpen) infoOpen = null;
   if (e.code === 'KeyP' && state === 'play') togglePause();
 });
 window.addEventListener('keyup', e => { if (e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') keyUp = false; if (e.code === 'ArrowDown' || e.code === 'KeyS') keyDown = false; });
@@ -623,15 +718,16 @@ function pop(t, color, x, y, big){ pops.push({t, color, x, y, life: big ? 1.6 : 
 function addPoll(v){ poll = clamp(poll + v, 0, 100); }
 function update(dt){
   realT += dt;
-  if (state === 'blown'){ blownT += dt; py -= 900*dt; scrollX += worldSpeed()*dt*0.5; if (blownT > 0.8){ state = 'recap'; musicStop(); } return; }
+  if (state === 'blown'){ blownT += dt; py -= 900*dt; scrollX += worldSpeed()*dt*0.5; if (blownT > 0.8) endLevel('blown'); return; }
+  if (state === 'final'){ updateFinal(dt); return; }
   if (state !== 'play' || paused) return;
   tFlight += dt; lastDt = dt;
-  if (phase === 'fly' && tFlight >= P.flight) startStorm();
+  if (phase === 'fly' && tFlight >= flightDur()){ if (isTuto()) startChase(); else startStorm(); }
   if (phase === 'intro'){ introT += dt; if (emitter){ emitter.frT += dt; if (emitter.frT > 0.5){ emitter.frT = 0; emitter.fr = (emitter.fr + 1) % emitter.E.frames.length; } } return; }
   applyInput(dt); if (state !== 'play') return;
   const mx = PX(), my = py, dx = worldSpeed()*dt;
   inv = Math.max(0, inv - dt);
-  if (phase === 'fly'){ addPoll(P.pollLevel/P.flight*dt); nextSpawn -= dt; if (nextSpawn <= 0) spawn(); nextOrb -= dt; }   // les sondages montent avec la distance, pendant le vol
+  if (phase === 'fly'){ addPoll(P.pollLevel/flightDur()*dt); nextSpawn -= dt; if (nextSpawn <= 0) spawn(); nextOrb -= dt; }   // les sondages montent avec la distance, pendant le vol
   else if (phase === 'storm') updateStorm(dt);
   else if (phase === 'chase') updateChase(dt);
   updateChain(dt);
@@ -639,7 +735,9 @@ function update(dt){
   for (const o of orbs){ if (o.alert > 0){ o.alert -= dt; continue; } o.x -= dx; if (!o.got && Math.hypot(o.x - mx, o.y - my) < 46){ o.got = true; stats.orbs++; addPoll(P.orbGain); pop('Actu d’argent +' + P.orbGain.toFixed(1).replace('.', ',') + ' pt', '#e8edf5', mx + 10, my - 60, true); sfxP3('catch'); fx.push({kind: 'flash', x: o.x, y: o.y, t: 0}); } }
   orbs = orbs.filter(o => !o.got && o.x > -80);
   // pièces
-  for (const c of coinsList){ c.x -= dx; if (!c.got && Math.hypot(c.x - mx, c.y - my) < 30*coinK()){ c.got = true; c.block.got++; coins++; stats.coins++;
+  for (const c of coinsList){ c.x -= dx;
+    if (bonus === 'pump' && !c.got){ const d = Math.hypot(c.x - mx, c.y - my); if (d < MAGNET_R && d > 1){ c.x += (mx - c.x)/d*MAGNET_V*dt; c.y += (my - c.y)/d*MAGNET_V*dt; } }   // la pompe à fric attire les pièces proches
+    if (!c.got && Math.hypot(c.x - mx, c.y - my) < 30*coinK()){ c.got = true; c.block.got++; coins++; stats.coins++;
       coinChain = (realT - coinChainT < 0.4) ? coinChain + 1 : 0; coinChainT = realT; sfxP3('coin', Math.min(coinChain, 10));
       fx.push({kind: 'spark', x: c.x, y: c.y, t: 0}); } }
   coinsList = coinsList.filter(c => !c.got && c.x > -40);
@@ -650,7 +748,9 @@ function update(dt){
     if (j.track > 0){ j.track -= dt; j.y += clamp(my - j.y, -130*dt, 130*dt); }
     const cy = j.kind === 'boat' ? j.y - 30 : j.y;
     if (inv <= 0 && Math.abs(j.x - mx) < j.w/2 + 22 && Math.abs(cy - my) < j.h/2 + 28){
-      inv = P.hitInv; stats.hits++; addPoll(-P.hitPoll); pop('−' + P.hitPoll.toFixed(1).replace('.', ',') + ' pt', '#d63b3b', mx + 10, my - 60, true); sfxP3('hit'); fx.push({kind: 'flash', x: j.x, y: cy, t: 0});
+      inv = P.hitInv; stats.hits++; sfxP3('hit'); fx.push({kind: 'flash', x: j.x, y: cy, t: 0});
+      if (kevlarLeft > 0){ kevlarLeft--; stats.kevlar++; pop('Kevlar ! (' + kevlarLeft + ' restant' + (kevlarLeft > 1 ? 's' : '') + ')', '#bdf5c9', mx + 10, my - 60, true); }   // la veste en kevlar encaisse
+      else { addPoll(-P.hitPoll); pop('−' + P.hitPoll.toFixed(1).replace('.', ',') + ' pt', '#d63b3b', mx + 10, my - 60, true); }
     }
   }
   journos = journos.filter(j => j.x > -160);
@@ -659,7 +759,6 @@ function update(dt){
 }
 
 // ---------- la tempête : le scandale du niveau ----------
-const curLevel = () => LEVELS[clamp(Math.round(P.level), 1, 5) - 1];
 function startStorm(){
   const L = curLevel(), E = EMITTERS[L.scandal.emitter];
   phase = 'intro'; stormT = 0; bannerT = 0; nextSalvo = 1.2; nextBubble = 2.2; pans = []; bubbles = []; dark = 1; introT = 0;
@@ -729,35 +828,42 @@ function updateChain(dt){
   }
 }
 // ---------- la course : l'actu d'or et sa traîne ----------
+// Positions en référence monde : l'orbe part à chaseX0 % de la largeur d'écran et dérive à droite jusqu'à chaseX1 % quand le temps s'écoule ;
+// Marine part de sa position normale (22 %) et avance vers l'orbe à mesure que la jauge se remplit : jauge pleine = contact.
 function startChase(){
   phase = 'chase'; emitter = null; pans = []; bubbles = []; trail = [];
-  chase = {t: 0, gauge: 0, y: lerp(P.ceil + 80, P.yMax - 40, 0.5), vy: 0, target: 0, nextTurn: 0.8, hist: [], caught: false, leaving: false, catchT: 0, inside: false};
-  chase.target = chase.y; sfxP3('orb');
+  chase = {t: 0, gauge: 0, y: lerp(P.ceil + 80, P.yMax - 40, 0.5), vy: 0, target: 0, nextTurn: 0.8, hist: [], caught: false, leaving: false, catchT: 0, inside: false, x0: PX()};
+  chase.target = chase.y; marineX = chase.x0; sfxP3('orb');
 }
-const chaseDist = () => chase ? lerp(P.chaseDist0, P.chaseDist1, clamp(chase.t/P.chaseMax, 0, 1))*lerp(1, P.chaseClose/100, clamp(chase.gauge, 0, 1)) : 0;   // l'orbe dérive à droite avec le temps, Marine s'en rapproche avec la jauge
+const orbX = () => chase ? lerp(P.chaseX0, P.chaseX1, clamp(chase.t/P.chaseMax, 0, 1))/100*VWW : 0;
+const chaseDist = () => chase ? orbX() - PX() : 0;
+const tutoEase = () => isTuto() ? 1.6 : 1;   // au tuto, la traîne est plus large, l'orbe plus calme, la jauge plus rapide
 const thinK = () => chase ? lerp(1, P.chaseThin/100, clamp(chase.gauge, 0, 1)) : 1;   // la traîne s'amincit avec la jauge
-const trailWidth = age => (P.chaseW0 + P.chaseGrow*age)*thinK();
+const trailWidth = age => (P.chaseW0 + P.chaseGrow*age)*thinK()*tutoEase();
 function updateChase(dt){
-  const c = chase, mx = PX(), my = py, vs = worldSpeed();
+  const c = chase, my = py, vs = worldSpeed();
   c.t += dt; dark = Math.max(0, dark - dt/1.5);
   if (c.caught){ c.catchT += dt; if (c.catchT > 0.9) endLevel('done'); return; }
   if (c.leaving){ c.catchT += dt; camFx = lerp(1, 0.82, clamp(c.catchT/1.2, 0, 1)); VWW = VW/Z/camFx; if (c.catchT > 2.4){ camFx = 1; applyCam(); endLevel('done'); } return; }   // l'actu monte au ciel, la caméra recule, Marine retombe
   // l'orbe : un cap qui change à intervalles (plus courts à mesure que la jauge se remplit) ; vitesse et accélération bornées par celles de Marine
-  const top = P.ceil + 70, bot = P.yMax, vmax = Math.min(P.vUp, P.vDown)*P.chaseAgil/100;
+  const top = P.ceil + 70, bot = P.yMax, vmax = Math.min(P.vUp, P.vDown)*P.chaseAgil/100/(isTuto() ? 1.4 : 1);
   c.nextTurn -= dt; if (c.nextTurn <= 0){ c.nextTurn = lerp(P.chaseStep0, P.chaseStep1, c.gauge)*(0.8 + rnd()*0.4); const span = (bot - top)*lerp(0.45, 0.8, c.gauge); c.target = clamp(c.y + (rnd() - 0.5)*2*span, top, bot - 20); }
   const want = clamp((c.target - c.y)*4, -vmax, vmax), acc = vmax/0.3; c.vy += clamp(want - c.vy, -acc*dt, acc*dt); c.y = clamp(c.y + c.vy*dt, top, bot);
   c.hist.push({t: c.t, y: c.y}); while (c.hist.length > 600) c.hist.shift();
+  // Marine avance vers l'orbe avec la jauge (elle reste 40 px derrière tant que la jauge n'est pas pleine)
+  const ox = orbX(), k = thinK(), want_x = lerp(c.x0, ox - 40, clamp(c.gauge, 0, 1));
+  marineX += clamp(want_x - marineX, -500*dt, 500*dt);
+  const mx = PX();
   // particules : nées à l'orbe, elles s'écartent latéralement de chaseGrow/2 px/s de chaque côté (× l'amincissement courant)
-  const ox = mx + chaseDist(), k = thinK();
-  for (let i=0;i<4;i++) trail.push({x: ox - rnd()*10, y: c.y + (rnd() - 0.5)*P.chaseW0*k, vy: (rnd() - 0.5)*P.chaseGrow*k, age: 0, r: 2.5 + rnd()*3, ph: rnd()*6.3});
+  for (let i=0;i<4;i++) trail.push({x: ox - rnd()*10, y: c.y + (rnd() - 0.5)*P.chaseW0*k*tutoEase(), vy: (rnd() - 0.5)*P.chaseGrow*k*tutoEase(), age: 0, r: 2.5 + rnd()*3, ph: rnd()*6.3});
   for (const q of trail){ q.age += dt; q.x -= vs*dt; q.y += q.vy*dt; }
   trail = trail.filter(q => q.x > -40 && q.age < 4);
   // Marine est-elle dans la traîne ? À sa colonne, la traîne a l'âge dist/vitesse ; sa hauteur est celle de l'orbe à cet instant-là
-  const age = chaseDist()/vs, tt = c.t - age; let ty = c.y;
+  const age = Math.max(0, ox - mx)/vs, tt = c.t - age; let ty = c.y;
   for (let i = c.hist.length - 1; i >= 0; i--){ if (c.hist[i].t <= tt){ ty = c.hist[i].y; break; } }
   c.inside = c.t > age && Math.abs(my - ty) < trailWidth(age)/2;
   c.ty = ty; c.tw = trailWidth(age);
-  if (c.inside) c.gauge = Math.min(1, c.gauge + dt/P.chaseTime); else c.gauge = Math.max(0, c.gauge - dt*P.chaseDrain/100);
+  if (c.inside) c.gauge = Math.min(1, c.gauge + dt/(P.chaseTime/(isTuto() ? 1.4 : 1))); else c.gauge = Math.max(0, c.gauge - dt*P.chaseDrain/100);
   if (c.gauge >= 1){ c.caught = true; c.catchT = 0; stats.gold = true; addPoll(P.chaseGain); pop('Actu en or ! +' + P.chaseGain.toFixed(1).replace('.', ',') + ' pt', '#f2b630', mx + 10, my - 70, true); sfxP3('fanfare'); return; }
   if (c.t >= P.chaseMax){ c.leaving = true; c.catchT = 0; sfxP3('miss'); }
 }
@@ -766,7 +872,7 @@ function drawChase(){
   // la traîne
   for (const q of trail){ const k = clamp(1 - q.age/4, 0, 1), tw = 0.7 + 0.3*Math.sin(realT*8 + q.ph), r = q.r*(1 + q.age*0.35); ctx.fillStyle = 'rgba(255,45,149,' + (0.85*k*tw) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, r, 0, 7); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,' + (0.9*k*tw) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, r*0.45, 0, 7); ctx.fill(); }
   // l'orbe d'or
-  let ox = mx + chaseDist(), oy = c.y;
+  let ox = orbX(), oy = c.y;
   if (c.caught){ const k = clamp(c.catchT/0.5, 0, 1); ox = lerp(ox, mx + 20, k); oy = lerp(oy, py, k); }
   if (c.leaving){ ox += c.catchT*c.catchT*500; oy -= c.catchT*c.catchT*600; }
   const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, 70); g.addColorStop(0, 'rgba(255,226,120,.6)'); g.addColorStop(1, 'rgba(255,200,80,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ox, oy, 70, 0, 7); ctx.fill();
@@ -781,10 +887,42 @@ function drawChaseHud(){
   ctx.fillStyle = 'rgba(20,33,61,.15)'; rr(x + 84, y + 10, 160, 14, 5); ctx.fill(); ctx.fillStyle = c.inside ? '#f2b630' : '#c8961e'; rr(x + 84, y + 10, 160*c.gauge, 14, 5); ctx.fill();
   const left = Math.max(0, P.chaseMax - c.t); text(left.toFixed(0) + ' s', x + w - 14, y + 17, 13, 900, left < 5 ? '#d63b3b' : '#14213d', 'right');
   if (c.leaving) outText('L’actualité s’est envolée', VW/2, H/2 - 40, 26, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
-  else if (!c.caught) outText(c.inside ? 'Dans la traîne' : 'Reste dans la traîne !', VW/2, y + 50, 13, 900, c.inside ? '#bdf5c9' : '#fff', 'center', 'rgba(20,33,61,.6)');
+  else if (!c.caught) outText(c.inside ? (isTuto() ? 'Dans la traîne : la jauge se remplit, Marine avance' : 'Dans la traîne') : (isTuto() ? 'Suis la traîne rose derrière l’actu d’or !' : 'Reste dans la traîne !'), VW/2, y + 50, 13, 900, c.inside ? '#bdf5c9' : '#fff', 'center', 'rgba(20,33,61,.6)');
 }
-function endLevel(reason){ camFx = 1; applyCam(); endReason = reason; state = 'recap'; musicStop(); if (reason === 'sunk') sfxP3('sink'); }
-
+function endLevel(reason){
+  camFx = 1; applyCam(); endReason = reason; musicStop(); if (reason === 'sunk') sfxP3('sink');
+  if (mode !== 'camp'){ state = 'recap'; return; }
+  camp.coins += coins;   // les pièces ramassées vont dans la réserve, gagné ou perdu
+  if (reason === 'done'){
+    camp.levels[levelN] = Object.assign(camp.levels[levelN] || {}, {entry: levelEntry(levelN), done: true, poll, cass, gold: stats.gold, hits: stats.hits});
+    if (levelN < 5){ const nx = levelN + 1; camp.levels[nx] = Object.assign(camp.levels[nx] || {}, {entry: {poll, cass}}); camp.unlocked = Math.max(camp.unlocked, nx + 1); }
+    bonus = null;   // le bonus valait pour ce niveau
+    if (levelN === 5){ saveCamp(); startFinal(); return; }
+  }
+  state = 'recap'; saveCamp();
+}
+// ---------- la fin : Marine se pose et rejoint le bureau de vote flottant ----------
+let booth = null, finalT = 0;
+function startFinal(){ state = 'final'; finalT = 0; phase = 'final'; chase = null; trail = []; emitter = null; pans = []; dark = 0; holding = false; pointerDown = false; keyUp = false; booth = {x: VWW + 320, reached: false, t: 0}; }
+function updateFinal(dt){
+  finalT += dt;
+  // Marine retombe sur l'eau (plus de commande), puis glisse
+  const st = {vy, holdT, relT}; tapStep(st, false, dt); vy = st.vy; holdT = st.holdT; relT = st.relT;
+  const vyBefore = vy; py += vy*dt;
+  if (py >= P.yMax){ py = P.yMax; vy = 0; if (!onWater){ sfxP3('plouf'); fx.push({kind: 'splash', x: PX(), y: WATER, t: 0, big: vyBefore > 300}); onWater = true; } }
+  // le bureau de vote arrive de la droite et s'arrête devant Marine ; le monde défile jusque-là
+  const target = PX() + 150, adv = Math.min(worldSpeed()*dt, booth.x - target);
+  if (adv > 0){ booth.x -= adv; scrollX += adv; }
+  else if (onWater){ if (!booth.reached){ booth.reached = true; booth.t = 0; sfxP3('fanfare'); } booth.t += dt; if (booth.t > 1.6) state = 'finalRecap'; }
+  updateChain(dt);
+  for (const p of pops){ p.life -= dt; p.y -= 26*dt; } pops = pops.filter(p => p.life > 0);
+  for (const f of fx) f.t += dt; fx = fx.filter(f => f.t < 0.5);
+}
+function drawBooth(){
+  if (!booth) return; const bob = Math.sin(realT*1.4)*3, fr = booth.reached && Math.floor(realT*3) % 2 ? 'vote1' : 'vote0';
+  spr(fr, booth.x, WATER + 6 + bob, 0.62);
+  if (booth.reached) outText('Bureau de vote', booth.x, WATER - 190 + bob, 14, 900, '#fff', 'center', 'rgba(20,33,61,.7)');
+}
 
 // ---------- dessin ----------
 const SKY = ['#2f6fd0','#3d82dc','#5296e6','#6aaaee','#86c0f4','#a7d4f8'];
@@ -951,6 +1089,7 @@ function drawIntro(){
   text(E.name + ' sort les casseroles.', tx, y + 126, 14, 800, '#14213d');
   text('Évite-les : chacune s’accroche à la planche. À ' + Math.round(P.cassMax) + ', Marine coule.', tx, y + 148, 12, 700, '#5b6475');
   btn(x + w - 230, y + h - 62, 200, 44, 'Affronter la tempête', '#22a447', '#fff', 'storm');
+  iBtn(x + w - 30, y + 30, 'sinfo');
   ctx.restore();
 }
 function drawBanner(){
@@ -1043,14 +1182,16 @@ function drawCashbox(x, y){
 }
 function drawHud(){
   // bandeau haut : sondages, pièces ; barre du vol
-  const k = clamp(tFlight/P.flight, 0, 1);
+  const k = clamp(tFlight/flightDur(), 0, 1);
   ctx.fillStyle = 'rgba(20,33,61,.35)'; ctx.fillRect(0, 0, VW, 6); ctx.fillStyle = '#f2b630'; ctx.fillRect(0, 0, VW*k, 6);
+  const L = curLevel(); outText((isTuto() ? 'Tuto' : 'Niveau ' + L.n) + ' · ' + L.title + (mode === 'test' ? ' · test' : ''), 12, 20, 12, 900, 'rgba(255,255,255,.85)', 'left', 'rgba(20,33,61,.6)');
+  if (bonus) outText(bonus === 'kevlar' ? 'Kevlar : ' + kevlarLeft + ' journaliste' + (kevlarLeft > 1 ? 's' : '') + ' gratuit' + (kevlarLeft > 1 ? 's' : '') : bonus === 'pump' ? 'Pompe à fric' : 'Contre-feu', 12, 38, 11, 900, '#bdf5c9', 'left', 'rgba(20,33,61,.6)');
   // le bandeau est en bas à gauche, pour laisser la zone des orbes dégagée en haut
   const hy = H - 50;
   ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(10, hy, 250, 40, 10); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
   if (!uiDraw('iPoll', 16, hy + 4, 32)){ ctx.fillStyle = '#2563eb'; rr(20, hy + 8, 24, 24, 4); ctx.fill(); }
   text(fmtPct(poll), 54, hy + 20, 19, 900, '#14213d');
-  drawCashbox(150, hy + 6); text(String(coins), 188, hy + 20, 19, 900, '#14213d');
+  drawCashbox(150, hy + 6); text(String(mode === 'camp' ? camp.coins + coins : coins), 188, hy + 20, 19, 900, '#14213d');
   // jauge de casseroles : 10 crans, alerte à partir de 8
   const n = Math.round(P.cassMax), cw = Math.min(14, 160/n), alert = cass >= n - 2;
   ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(400, hy + 8, 44 + n*cw, 24, 8); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = alert && Math.floor(realT*4) % 2 ? '#d63b3b' : '#14213d'; ctx.stroke();
@@ -1063,6 +1204,11 @@ function drawHud(){
   text(phase === 'chase' ? 'vent infini' : 'vent', 330, hy + 20, 10, 900, phase === 'chase' ? '#14213d' : wind > 0.5 ? '#fff' : '#14213d', 'center');
   if (wind <= 0 && !onWater) outText('Plus de vent ! Pose-toi sur l’eau', VW/2, H - 70, 14, 900, '#fff', 'center', 'rgba(214,59,59,.85)');
 }
+function drawTutoHelp(){
+  if (phase !== 'fly' || paused) return; const t = tFlight;
+  const m = t < 6 ? 'Appuie pour monter, relâche pour descendre.' : t < 12 ? 'Chaque appui consomme du vent : pose-toi sur l’eau pour en reprendre.' : t < 18 ? 'Ramasse les pièces, évite les journalistes.' : t < 24 ? 'Au-dessus de la ligne rouge, le vent t’emporte : niveau perdu.' : t < 30 ? 'Les actus d’argent, tout en haut, font monter les sondages.' : t > flightDur() - 6 ? 'L’actu d’or arrive : reste dans sa traîne pour l’attraper.' : '';
+  if (m) outText(m, VW/2, 64, 15, 900, '#fff', 'center', 'rgba(20,33,61,.7)');
+}
 function drawPops(){ for (const p of pops){ const a = clamp(p.life/0.4, 0, 1); ctx.globalAlpha = a; outText(p.t, p.x, p.y, p.big ? 22 : 16, 900, p.color); ctx.globalAlpha = 1; } }
 function drawFx(){
   for (const f of fx){ const k = f.t/0.5;
@@ -1073,22 +1219,157 @@ function drawFx(){
 function drawRecap(){
   ctx.fillStyle = 'rgba(15,29,51,.45)'; ctx.fillRect(0, 0, VW, H);
   const w = 560, h = 250, x = VW/2 - w/2, y = H/2 - h/2; uiPanel(x, y, w, h);
-  const lost = endReason === 'blown' || endReason === 'sunk', L = curLevel();
-  text(endReason === 'blown' ? 'Emportée par le vent !' : endReason === 'sunk' ? 'Coulée sous les casseroles !' : 'Niveau ' + L.n + ' traversé', VW/2, y + 44, 28, 900, lost ? '#d63b3b' : '#14213d', 'center', UIT);
-  text(endReason === 'blown' ? 'Trop haut : le vent de haute altitude a pris le kite. On recommence le niveau.' : endReason === 'sunk' ? P.cassMax + ' casseroles accrochées, Marine coule. On recommence le niveau.' : 'Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièces  ·  ' + cass + ' casserole' + (cass > 1 ? 's' : ''), VW/2, y + 88, lost ? 13 : 16, 800, '#14213d', 'center');
-  if (!lost) text((stats.gold ? 'Actu d’or attrapée : Marine change de position !' : 'L’actu d’or s’est envolée : pas de volte-face.') + '  ·  ' + stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.orbs + ' actu' + (stats.orbs > 1 ? 's' : '') + ' d’argent', VW/2, y + 116, 12, 700, '#5b6475', 'center');
-  btn(VW/2 - 190, y + 160, 180, 46, lost ? 'Recommencer' : 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Menu', '#fff', '#14213d', 'title');
+  const lost = endReason === 'blown' || endReason === 'sunk', L = curLevel(), camp$ = mode === 'camp';
+  text(endReason === 'blown' ? 'Emportée par le vent !' : endReason === 'sunk' ? 'Coulée sous les casseroles !' : isTuto() ? 'Tuto terminé' : 'Niveau ' + L.n + ' traversé', VW/2, y + 44, 28, 900, lost ? '#d63b3b' : '#14213d', 'center', UIT);
+  text(endReason === 'blown' ? 'Trop haut : le vent de haute altitude a pris le kite. On recommence le niveau.' : endReason === 'sunk' ? P.cassMax + ' casseroles accrochées, Marine coule. On recommence le niveau.' : 'Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièce' + (coins > 1 ? 's' : '') + '  ·  ' + cass + ' casserole' + (cass > 1 ? 's' : ''), VW/2, y + 88, lost ? 13 : 16, 800, '#14213d', 'center');
+  if (!lost) text((stats.gold ? 'Actu d’or attrapée : Marine change de position !' : 'L’actu d’or s’est envolée : position maintenue.') + '  ·  ' + stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.orbs + ' actu' + (stats.orbs > 1 ? 's' : '') + ' d’argent', VW/2, y + 116, 12, 700, '#5b6475', 'center');
+  else if (camp$) text('Les pièces ramassées restent dans la réserve.', VW/2, y + 116, 12, 700, '#5b6475', 'center');
+  if (camp$ && !lost){ btn(VW/2 - 190, y + 160, 180, 46, 'Carte', '#22a447', '#fff', 'map'); btn(VW/2 + 10, y + 160, 180, 46, 'Rejouer', '#fff', '#14213d', 'again'); }
+  else if (camp$){ btn(VW/2 - 190, y + 160, 180, 46, 'Recommencer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Carte', '#fff', '#14213d', 'map'); }
+  else { btn(VW/2 - 190, y + 160, 180, 46, lost ? 'Recommencer' : 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Menu', '#fff', '#14213d', 'title'); }
 }
 let btns = [];
-function btn(x, y, w, h, label, bg, fg, id){ ctx.fillStyle = '#14213d'; rr(x + 3, y + 3, w, h, 10); ctx.fill(); ctx.fillStyle = bg; rr(x, y, w, h, 10); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke(); text(label, x + w/2, y + h/2 + 1, 15, 900, fg, 'center'); btns.push({x, y, w, h, id}); }
-cv.addEventListener('pointerdown', e => { if (state === 'play' && phase === 'intro'){ if (introT > 0.4) beginStormPlay(); return; } if (state !== 'recap') return; const l = toLocal(e); for (const b of btns) if (l.x >= b.x && l.x <= b.x + b.w && l.y >= b.y && l.y <= b.y + b.h){ sfxP3('click'); if (b.id === 'again') replay(); else toTitle(); } });
+function btn(x, y, w, h, label, bg, fg, id, px){ ctx.fillStyle = '#14213d'; rr(x + 3, y + 3, w, h, 10); ctx.fill(); ctx.fillStyle = bg; rr(x, y, w, h, 10); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke(); text(label, x + w/2, y + h/2 + 1, px || 15, 900, fg, 'center'); btns.push({x, y, w, h, id}); }
+function iBtn(x, y, id){ ctx.fillStyle = '#2563eb'; ctx.beginPath(); ctx.arc(x, y, 11, 0, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#14213d'; ctx.stroke(); text('i', x, y + 1, 14, 900, '#fff', 'center', UIT); btns.push({x: x - 16, y: y - 16, w: 32, h: 32, id}); }
+// découpe un texte en lignes qui tiennent dans maxW (les espaces avant « » : ; ! ? % deviennent insécables)
+function wrapText(s, maxW, px, w, fam){
+  font(px, w, fam); s = s.replace(/« /g, '« ').replace(/ ([»:;!?%])/g, ' $1');
+  const words = s.split(' '), lines = []; let cur = '';
+  for (const wd of words){ const t = cur ? cur + ' ' + wd : wd; if (ctx.measureText(t).width > maxW && cur){ lines.push(cur); cur = wd; } else cur = t; }
+  if (cur) lines.push(cur); return lines;
+}
+function strike(x, y, w, color){ ctx.strokeStyle = color || '#d63b3b'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + w, y); ctx.stroke(); }
+function lockIcon(x, y){ ctx.fillStyle = '#5b6475'; rr(x - 9, y - 2, 18, 14, 3); ctx.fill(); ctx.strokeStyle = '#5b6475'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y - 4, 6, Math.PI, 0); ctx.stroke(); }
+function drawCoins(x, y, n){ drawCashbox(x, y - 14); text(String(n), x + 38, y, 18, 900, '#fff'); }
+// ---------- la carte de campagne ----------
+function drawMap(){
+  ctx.fillStyle = 'rgba(15,29,51,.35)'; ctx.fillRect(0, 0, VW, H);
+  outText('La campagne', 24, 38, 26, 900, '#fff', 'left', 'rgba(20,33,61,.7)');
+  outText('Réserve :', VW - 350, 38, 13, 800, '#fff', 'right', 'rgba(20,33,61,.6)'); drawCoins(VW - 342, 38, camp.coins);   // (la croix en haut à droite ramène au menu)
+  const gap = 8, cw = (VW - 48 - gap*5)/6, ch = 268, y = 72;
+  for (let i=0;i<6;i++){
+    const x = 24 + i*(cw + gap), L = LEVELS[i], r = camp.levels[i], done = !!(r && r.done), open = playable(i);
+    panel(x, y, cw, ch, open ? '#fffaf0' : '#d9dde5', 10);
+    text(i === 0 ? 'TUTO' : 'NIVEAU ' + i, x + 10, y + 18, 11, 900, open ? '#d63b3b' : '#5b6475');
+    if (open) iBtn(x + cw - 18, y + 18, 'info:' + i);
+    text(L.theme, x + 10, y + 36, 11, 800, '#5b6475');
+    const lines = wrapText(L.title, cw - 20, 14, 900); let ty = y + 60;
+    for (const ln of lines){ text(ln, x + 10, ty, 14, 900, open ? '#14213d' : '#5b6475'); if (done && r.gold){ font(14, 900); strike(x + 10, ty + 1, ctx.measureText(ln).width); } ty += 17; }
+    if (done){
+      text('Sondages ' + fmtPct(r.poll), x + 10, y + 128, 12, 800, '#14213d');
+      text(r.cass + ' casserole' + (r.cass > 1 ? 's' : ''), x + 10, y + 146, 12, 800, '#14213d');
+      const vl = wrapText(r.gold ? 'Volte-face !' : 'Position maintenue', cw - 20, 12, 900); let vy2 = y + 170; for (const ln of vl){ text(ln, x + 10, vy2, 12, 900, r.gold ? '#16a34a' : '#d63b3b'); vy2 += 15; }
+    } else if (open) text(i === 0 ? 'Apprendre à voler' : 'À jouer', x + 10, y + 128, 12, 800, '#5b6475');
+    else { lockIcon(x + cw/2, y + 150); text('Verrouillé', x + cw/2, y + 178, 12, 800, '#5b6475', 'center'); }
+    if (open) btn(x + 10, y + ch - 50, cw - 20, 38, done ? 'Rejouer' : 'Jouer', '#22a447', '#fff', 'play:' + i, 14);
+    else btn(x + 10, y + ch - 50, cw - 20, 38, 'Jouer', '#9aa4b2', '#e3e7ee', 'locked', 14);
+  }
+  if (camp.levels[5] && camp.levels[5].done) text('Campagne terminée : rejoue un chapitre pour changer son résultat.', VW/2, H - 22, 12, 800, '#fff', 'center');
+  else text('Finir un niveau débloque le suivant, que l’actu d’or soit attrapée ou non.', VW/2, H - 22, 12, 800, '#fff', 'center');
+}
+// ---------- la boutique des bonus, avant chaque niveau ----------
+function drawShop(){
+  ctx.fillStyle = 'rgba(15,29,51,.35)'; ctx.fillRect(0, 0, VW, H);
+  const L = curLevel(), e = levelEntry(levelN);
+  outText('Niveau ' + L.n + ' · ' + L.title, 24, 36, 22, 900, '#fff', 'left', 'rgba(20,33,61,.7)');
+  outText('Tu arrives avec ' + fmtPct(e.poll) + ' de sondages et ' + e.cass + ' casserole' + (e.cass > 1 ? 's' : '') + '. Choisis un bonus pour ce niveau.', 24, 64, 13, 800, '#fff', 'left', 'rgba(20,33,61,.6)');
+  outText('Réserve :', VW - 350, 38, 13, 800, '#fff', 'right', 'rgba(20,33,61,.6)'); drawCoins(VW - 342, 38, camp.coins);
+  btn(24, H - 72, 150, 42, 'Retour à la carte', '#fff', '#14213d', 'map', 13);
+  const w = 214, gap = 14, x0 = (VW - 3*w - 2*gap)/2, y = 92, h = 196;
+  BONUS.forEach((b, i) => {
+    const x = x0 + i*(w + gap), can = camp.coins >= b.price, nothing = b.id === 'fire' && e.cass === 0, ok = can && !nothing;
+    panel(x, y, w, h, '#fffaf0', 10);
+    text(b.name, x + 14, y + 24, 16, 900, '#14213d', 'left', UIT);
+    drawCashbox(x + 14, y + 40); text(b.price + ' pièces', x + 52, y + 56, 13, 900, can ? '#14213d' : '#d63b3b');
+    const lines = wrapText(b.d, w - 28, 11.5, 700); let ty = y + 86; for (const ln of lines){ text(ln, x + 14, ty, 11.5, 700, '#5b6475'); ty += 14; }
+    btn(x + 14, y + h - 52, w - 28, 38, nothing ? 'Rien à éteindre' : 'Choisir', ok ? '#22a447' : '#9aa4b2', ok ? '#fff' : '#e3e7ee', ok ? 'buy:' + b.id : 'locked', 13);
+  });
+  btn(VW/2 - 110, H - 72, 220, 42, 'Sans bonus', '#fff', '#14213d', 'nobonus');
+  if (shopMsg) outText(shopMsg, VW/2, H - 86, 13, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
+}
+// ---------- la fiche « i » : volte-face et scandale, avec leurs sources ----------
+function drawInfo(){
+  const n = infoOpen.n, L = LEVELS[n], I = INFO[n], S = L.scandal, pg = S ? infoOpen.page : 'level';
+  ctx.fillStyle = 'rgba(15,20,40,.55)'; ctx.fillRect(0, 0, VW, H);
+  const w = 790, h = 356, x = VW/2 - w/2, y = H/2 - h/2; panel(x, y, w, h, '#fffaf0', 12);
+  const tx = x + 22, tw = w - 44; let ty = y + 22;
+  const line = (s, px, wt, col, fam) => { text(s, tx, ty, px, wt, col, 'left', fam); ty += px*1.35; };
+  const para = (s, px, wt, col, max) => { const ls = wrapText(s, tw, px, wt); for (const ln of ls.slice(0, max || 99)) line(ln, px, wt, col); };
+  let srcs;
+  if (pg === 'level'){
+    line((n === 0 ? 'TUTO' : 'NIVEAU ' + n) + ' · ' + L.theme + ' · ' + L.per, 11, 900, '#d63b3b');
+    line(L.title, 21, 900, '#14213d', UIT);
+    para('Avant (' + I.oldD + ') : ' + I.old, 12.5, 800, '#14213d', 2);
+    para('Après (' + I.neuD + ') : ' + I.neu, 12.5, 800, '#16a34a', 2);
+    ty += 3; para(I.d, 12, 700, '#1b1f2a', 7); srcs = I.src;
+  } else {
+    line('SCANDALE · ' + S.date + ' · tempête du niveau ' + n, 11, 900, '#d63b3b');
+    line(S.title, 21, 900, '#14213d', UIT);
+    line(S.sub, 12.5, 800, '#5b6475');
+    ty += 3; para(I.sd, 12, 700, '#1b1f2a', 8); srcs = I.ssrc;
+  }
+  ty += 4; text('Sources', tx, ty, 11, 900, '#5b6475'); ty += 14;
+  srcs.forEach((s, i) => { const lbl = '· ' + s[0] + ', ' + s[1] + (s[2] ? '  ↗' : ''); text(lbl, tx, ty, 11.5, s[2] ? 800 : 700, s[2] ? '#2563eb' : '#1b1f2a'); if (s[2]){ font(11.5, 800); const lw = ctx.measureText(lbl).width; btns.push({x: tx - 4, y: ty - 8, w: lw + 8, h: 16, id: 'src:' + i}); } ty += 14.5; });
+  if (pg === 'level' && I.note){ ty += 2; para(I.note, 11, 700, '#5b6475', 2); }
+  if (S) btn(x + w - 330, y + h - 50, 160, 36, pg === 'level' ? 'Le scandale' : 'La volte-face', '#fff', '#14213d', 'infoPage', 13);
+  btn(x + w - 160, y + h - 50, 140, 36, 'Fermer', '#22a447', '#fff', 'infoClose', 13);
+}
+// ---------- le bilan final : mai 2027 ----------
+function drawFinalRecap(){
+  ctx.fillStyle = 'rgba(15,29,51,.5)'; ctx.fillRect(0, 0, VW, H);
+  const w = 800, h = 360, x = VW/2 - w/2, y = H/2 - h/2; uiPanel(x, y, w, h);
+  text('Mai 2027 : le verdict des urnes', x + 30, y + 36, 24, 900, '#14213d', 'left', UIT);
+  // colonne gauche : le score et son seuil (fictif)
+  const verdict = poll < 30 ? 'Éliminée au premier tour' : poll <= 45 ? 'Qualifiée pour le second tour' : 'Élue présidente';
+  text(fmtPct(poll), x + 30, y + 92, 44, 900, poll < 30 ? '#d63b3b' : poll <= 45 ? '#c8961e' : '#16a34a', 'left', UIT);
+  text('d’intentions de vote (score du jeu)', x + 30, y + 122, 11, 800, '#5b6475');
+  const vl = wrapText(verdict, 250, 17, 900); let vy2 = y + 152; for (const ln of vl){ text(ln, x + 30, vy2, 17, 900, '#14213d'); vy2 += 21; }
+  const th = wrapText('Seuils fictifs du jeu : moins de 30 % éliminée au premier tour, de 30 à 45 % second tour, plus de 45 % élue.', 250, 10, 700); vy2 += 4; for (const ln of th){ text(ln, x + 30, vy2, 10, 700, '#5b6475'); vy2 += 12.5; }
+  vy2 += 8; text(cass + ' casserole' + (cass > 1 ? 's' : '') + ' accrochée' + (cass > 1 ? 's' : '') + '  ·  ' + camp.coins + ' pièces en réserve', x + 30, vy2, 11, 800, '#14213d');
+  // colonne droite : les cinq positions, l'ancienne en grand (barrée si volte-face), la nouvelle en petit
+  const cx = x + 310, cw = w - 340; text('Cinq chapitres, cinq positions', cx, y + 70, 12, 900, '#d63b3b');
+  for (let i=1;i<=5;i++){ const L = LEVELS[i], r = camp.levels[i], gold = !!(r && r.gold), ry = y + 94 + (i - 1)*50;
+    text(L.old, cx, ry, 14, 900, '#14213d'); if (gold){ font(14, 900); strike(cx, ry + 1, ctx.measureText(L.old).width); }
+    text(gold ? 'volte-face' : 'maintenue', cx + cw, ry, 10, 900, gold ? '#16a34a' : '#d63b3b', 'right');
+    const nl = wrapText(L.neu, cw, 10.5, 700); text(nl[0] || '', cx, ry + 17, 10.5, 700, gold ? '#5b6475' : '#9aa4b2'); }
+  btn(x + 30, y + h - 58, 130, 40, 'Carte', '#22a447', '#fff', 'map', 14); btn(x + 170, y + h - 58, 110, 40, 'Menu', '#fff', '#14213d', 'title', 14);
+}
+// ---------- boutons du canvas : un seul point d'entrée ----------
+const hit = l => { for (let i = btns.length - 1; i >= 0; i--){ const b = btns[i]; if (l.x >= b.x && l.x <= b.x + b.w && l.y >= b.y && l.y <= b.y + b.h) return b; } return null; };
+function openInfo(n, page){ infoOpen = {n: clamp(n, 0, 5), page: page === 'scandal' && LEVELS[n].scandal ? 'scandal' : 'level'}; }
+function onBtn(id){
+  if (id === 'locked') return;
+  if (id === 'infoClose'){ infoOpen = null; return; }
+  if (id === 'infoPage'){ if (infoOpen) infoOpen.page = infoOpen.page === 'level' ? 'scandal' : 'level'; return; }
+  if (id.startsWith('src:')){ if (!infoOpen) return; const I = INFO[infoOpen.n], s = (infoOpen.page === 'level' ? I.src : I.ssrc)[+id.slice(4)]; if (s && s[2]){ try { window.open(s[2], '_blank', 'noopener'); } catch(e){} } return; }
+  if (infoOpen) return;
+  if (id === 'again') replay(); else if (id === 'title') toTitle(); else if (id === 'map') goMap();
+  else if (id.startsWith('info:')) openInfo(+id.slice(5), 'level');
+  else if (id.startsWith('play:')){ const n = +id.slice(5); if (playable(n)) goShop(n); }
+  else if (id.startsWith('buy:')){ if (buyBonus(id.slice(4))) startLevel(levelN); else shopMsg = 'Pas assez de pièces'; }
+  else if (id === 'nobonus'){ bonus = null; startLevel(levelN); }
+  else if (id === 'storm') beginStormPlay();
+  else if (id === 'sinfo') openInfo(levelN, 'scandal');
+}
+cv.addEventListener('pointerdown', e => {
+  const ok = state === 'recap' || state === 'map' || state === 'shop' || state === 'finalRecap' || (state === 'play' && phase === 'intro');
+  if (!ok) return;
+  const l = toLocal(e), b = hit(l);
+  if (b){ if (b.id !== 'locked') sfxP3('click'); onBtn(b.id); return; }
+  if (infoOpen) return;
+  if (state === 'play' && phase === 'intro' && introT > 0.4) beginStormPlay();
+});
 
 function draw(){
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);
   btns = [];
   if (state === 'title'){ ctx.fillStyle = '#4a90d9'; ctx.fillRect(0, 0, VW, H); return; }
+  if (state === 'map' || state === 'shop'){   // écrans de campagne : le décor derrière, l'interface devant
+    ctx.setTransform(dpr*scale*Z, 0, 0, dpr*scale*Z, 0, 0); drawSky(); drawFar(); drawNear();
+    ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0); if (state === 'map') drawMap(); else drawShop(); if (infoOpen) drawInfo(); return;
+  }
   { const k = dpr*scale*Z*camFx, ax = PX(), ay = WATER; ctx.setTransform(k, 0, 0, k, dpr*scale*Z*(1 - camFx)*ax, dpr*scale*Z*(1 - camFx)*ay); }   // le monde, caméra reculée (camFx : recul temporaire ancré sur Marine)
-  drawSky(); drawCeiling(); drawFar(); drawNear();
+  drawSky(); if (state === 'play' || state === 'blown') drawCeiling(); drawFar(); drawNear(); drawBooth();
   if (dark > 0) drawStormSky();
   if (emitter) drawEmitter();
   if (phase === 'chase' && chase) drawChase();
@@ -1101,14 +1382,15 @@ function draw(){
   drawMarine(); drawCass(); for (const c of pans) if (!(c.delay > 0)) drawPan(c); drawFx(); drawPops();
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);   // l'interface, à l'échelle de l'écran
   if (ctrl === 'wind') drawVane();
-  drawHud(); if (phase === 'chase' && chase) drawChaseHud(); if (bannerT > 0) drawBanner(); if (phase === 'intro' && state === 'play') drawIntro();
+  if (state !== 'final' && state !== 'finalRecap'){ drawHud(); if (phase === 'chase' && chase) drawChaseHud(); if (bannerT > 0) drawBanner(); if (isTuto() && state === 'play') drawTutoHelp(); if (phase === 'intro' && state === 'play') drawIntro(); }
   if (paused){ ctx.fillStyle = 'rgba(15,29,51,.4)'; ctx.fillRect(0, 0, VW, H); outText('Pause', VW/2, H/2, 40, 900, '#fff'); }
-  if (state === 'recap') drawRecap();
+  if (state === 'final' && booth && booth.reached) outText('Mai 2027 : Marine arrive au bureau de vote', VW/2, 60, 22, 900, '#fff', 'center', 'rgba(20,33,61,.7)');
+  if (state === 'recap') drawRecap(); if (state === 'finalRecap') drawFinalRecap(); if (infoOpen) drawInfo();
 }
 let last = performance.now();
 function loop(now){
   const dt = Math.min(0.05, (now - last)/1000); last = now;
-  if (state === 'play' && !paused && phase !== 'intro') scrollX += worldSpeed()*dt;
+  if (state === 'play' && !paused && phase !== 'intro' && !infoOpen) scrollX += worldSpeed()*dt;
   update(dt); draw(); musicSync();
   requestAnimationFrame(loop);
 }
@@ -1126,7 +1408,8 @@ function setSfxMuted(v){ sfxMuted = v; try { localStorage.setItem('vdd-sfx-mute'
 setMuted(muted); setSfxMuted(sfxMuted);
 for (const id of ['musicBtn', 'musicTitle']) document.getElementById(id).addEventListener('click', () => setMuted(!muted));
 for (const id of ['soundBtn', 'soundTitle']) document.getElementById(id).addEventListener('click', () => { ensureAudio(); setSfxMuted(!sfxMuted); });
-document.getElementById('startBtn').addEventListener('click', () => { testMode = ''; start(); });
+document.getElementById('startBtn').addEventListener('click', goMap);
+document.getElementById('flyBtn').addEventListener('click', startTestFly);
 document.getElementById('chaseBtn').addEventListener('click', startTestChase);
 document.getElementById('stormBtn').addEventListener('click', startTest);
 document.querySelectorAll('#ctrlSel button').forEach(b => b.addEventListener('click', () => { ctrl = b.dataset.ctrl; syncCtrlButtons(); }));
@@ -1148,12 +1431,16 @@ function debugBuild(){
     h += '</div>';
   }
   h += '<div class="row"><button type="button" id="dbgSave">Sauvegarder</button><button type="button" id="dbgReset">Réinitialiser</button><button type="button" id="dbgClose">Fermer</button></div><p id="dbgMsg"></p>';
+  h += '<h3>Campagne</h3><div class="row"><button type="button" id="dbgUnlock">Tout débloquer</button><button type="button" id="dbgCoins">+500 pièces</button><button type="button" id="dbgCampReset">Campagne à zéro</button></div>';
   dbg.innerHTML = h;
   dbg.querySelectorAll('input[type=range]').forEach(inp => inp.addEventListener('input', () => { const k = inp.dataset.k; P[k] = parseFloat(inp.value); applyCam(); if (k === 'cam' && state === 'play') py = Math.min(py, P.yMax); debugRefresh(); }));
   dbg.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => { dbgTab = b.dataset.tab; dbg.querySelectorAll('.tabs button').forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false')); dbg.querySelectorAll('.tab').forEach(t => { t.hidden = t.dataset.tab !== dbgTab; }); }));
   dbg.querySelector('#dbgSave').addEventListener('click', async () => { const m = await saveSettings(); dbg.querySelector('#dbgMsg').textContent = m; });
   dbg.querySelector('#dbgReset').addEventListener('click', () => { applySettings(PDEF); debugRefresh(); dbg.querySelector('#dbgMsg').textContent = 'Valeurs par défaut (non sauvegardées)'; });
   dbg.querySelector('#dbgClose').addEventListener('click', () => { dbg.hidden = true; });
+  dbg.querySelector('#dbgUnlock').addEventListener('click', () => { unlockAll(); dbg.querySelector('#dbgMsg').textContent = 'Tous les chapitres sont ouverts'; });
+  dbg.querySelector('#dbgCoins').addEventListener('click', () => { camp.coins += 500; saveCamp(); dbg.querySelector('#dbgMsg').textContent = 'Réserve : ' + camp.coins + ' pièces'; });
+  dbg.querySelector('#dbgCampReset').addEventListener('click', () => { resetCamp(); dbg.querySelector('#dbgMsg').textContent = 'Campagne remise à zéro'; if (state !== 'title') goMap(); });
   debugRefresh();
 }
 const fmtV = (sp, v) => (sp.step < 1 ? v.toFixed(sp.step < 0.1 ? 2 : 1) : String(Math.round(v))).replace('.', ',');
@@ -1165,7 +1452,7 @@ function debugRefresh(){
 function syncCtrlButtons(){ document.querySelectorAll('#dbgCtrl button, #ctrlSel button').forEach(b => b.setAttribute('aria-pressed', b.dataset.ctrl === ctrl ? 'true' : 'false')); }
 document.getElementById('gearBtn').addEventListener('click', () => { dbg.hidden = !dbg.hidden; if (!dbg.hidden){ placeDebug(); debugRefresh(); } });
 placeDebug();
-loadLocal(); applyCam(); debugBuild(); loadShared();
+loadLocal(); loadCampLocal(); applyCam(); debugBuild(); loadShared();
 
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
@@ -1174,6 +1461,10 @@ window.__vdd = {
   get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
   get world(){ return {Z, WH, WATER, HZ, VWW}; },
   setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,
+  // campagne
+  get camp(){ return camp; }, get mode(){ return mode; }, get levelN(){ return levelN; }, get bonus(){ return bonus; }, get kevlarLeft(){ return kevlarLeft; }, get infoOpen(){ return infoOpen; }, get booth(){ return booth && {x: booth.x, reached: booth.reached}; }, get finalT(){ return finalT; },
+  get btns(){ return btns.map(b => ({x: b.x, y: b.y, w: b.w, h: b.h, id: b.id})); }, tap(id){ onBtn(id); }, startLevel, startTestFly, goMap, goShop, buyBonus, unlockAll, resetCamp, openInfo, saveCamp,
+  setPoll(v){ poll = v; }, setGauge(v){ if (chase) chase.gauge = v; }, endLevel, startFinal,
 };
 })();
 </script>
