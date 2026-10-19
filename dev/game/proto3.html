@@ -276,8 +276,9 @@ window.addEventListener('orientationchange', () => setTimeout(resize, 200));
 resize();
 function toLocal(e){
   let lx, ly;
-  if (rotated){ lx = e.clientY - oy; ly = window.innerWidth - e.clientX - ox; }
-  else { const r = wrap.getBoundingClientRect(); lx = e.clientX - r.left; ly = e.clientY - r.top; }
+  const r = wrap.getBoundingClientRect();   // le rectangle réel à l'écran, quelle que soit la rotation
+  if (rotated){ lx = e.clientY - r.top; ly = r.right - e.clientX; }
+  else { lx = e.clientX - r.left; ly = e.clientY - r.top; }
   return {x: lx/scale, y: ly/scale};
 }
 
