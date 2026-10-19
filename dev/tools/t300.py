@@ -140,14 +140,20 @@ with sync_playwright() as p:
       const ty = c.ty === undefined ? c.y : c.ty; const up = ty < v.y - 6 && (v.wind > 0.05 || v.onWater); v.hold(up); if (!window.__dmax || c.dist > window.__dmax) window.__dmax = c.dist; if (v.onWater && v.wind > 0.9) window.__refilled = true; requestAnimationFrame(step); }; requestAnimationFrame(step); })''')
     c = ev(pg, 'window.__vdd.chase'); print('   course (suivi) : t %.1f s, jauge %.2f, dist %.0f, attrapée %s' % (c['t'], c['gauge'], c['dist'], c['caught']))
     check(c['caught'] and c['t'] < ev(pg, 'window.__vdd.P.chaseMax'), 'un bot qui suit la traîne remplit la jauge avant la fin (%.1f s)' % c['t'])
-    check(c['dist'] > d0 + 100, 'l\'orbe s\'est éloignée avec le temps (distance %.0f -> %.0f)' % (d0, c['dist']))
-    check(ev(pg, 'window.__refilled') is True, 'la traîne passe à l\'eau : le bot a pu recharger son vent en route')
+    check(c['dist'] < d0, 'Marine s\'est rapprochée de l\'orbe en remplissant la jauge (distance %.0f -> %.0f)' % (d0, c['dist']))
+    check(ev(pg, 'window.__vdd.wind') >= 0.99, 'vol infini pendant la course (jauge de vent pleine)')
     pg.screenshot(path=D + 'p3_chase.png'); pg.wait_for_timeout(1200)
     check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.stats.gold'), 'actu d\'or attrapée -> récap avec volte-face')
     # sans suivre : l'orbe s'en va à chaseMax, le niveau est réussi sans volte-face
-    ev(pg, 'window.__vdd.startTestChase()'); pg.wait_for_timeout(300); ev(pg, 'window.__vdd.P.chaseMax = 6'); t0 = time.time()
-    while time.time() - t0 < 12 and ev(pg, 'window.__vdd.state') == 'play': pg.wait_for_timeout(100)
-    check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.endReason') == 'done' and not ev(pg, 'window.__vdd.stats.gold'), 'sans suivre, l\'orbe s\'en va et le niveau est réussi sans volte-face')
+    ev(pg, 'window.__vdd.startTestChase()'); pg.wait_for_timeout(300); ev(pg, 'window.__vdd.P.chaseMax = 6'); t0 = time.time(); seen = None
+    while time.time() - t0 < 14 and ev(pg, 'window.__vdd.state') == 'play':
+        c = ev(pg, 'window.__vdd.chase'); ev(pg, 'window.__vdd.hold(window.__vdd.y > 330)')   # reste à mi-hauteur, appui maintenu pendant l'envol
+        if c and c['leaving'] and seen is None and c['dist'] > 0: pg.wait_for_timeout(900); seen = ev(pg, 'window.__vdd.chase'); pg.screenshot(path=D + 'p3_flyaway.png')
+        pg.wait_for_timeout(100)
+    pg.mouse.up(); c = ev(pg, 'window.__vdd.chase')
+    check(seen is not None and seen['camFx'] < 0.95, 'quand le temps est écoulé, la caméra recule (camFx %.2f)' % (seen['camFx'] if seen else 1))
+    check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.endReason') == 'done' and not ev(pg, 'window.__vdd.stats.gold') and ev(pg, 'window.__vdd.onWater'), 'l\'actu s\'envole, Marine retombe à l\'eau malgré l\'appui, niveau réussi sans volte-face')
+    ev(pg, 'window.__vdd.P.chaseMax = 15')
     # menu à onglets, largeur <= 25 %
     pg.click('#gearBtn'); pg.wait_for_timeout(200)
     w = ev(pg, 'document.getElementById("debug").getBoundingClientRect().width'); W = ev(pg, 'window.innerWidth'); check(w <= W*0.25 + 1, 'menu de réglage : %.0f px sur %d (%.0f %%)' % (w, W, 100*w/W))

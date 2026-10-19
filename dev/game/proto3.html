@@ -180,7 +180,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.13', BUILD = '18/10/2026 à 20h47';
+const VERSION = 'proto 3 · 0.14', BUILD = '18/10/2026 à 20h47';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -243,7 +243,7 @@ const pick = arr => arr[Math.floor(rnd()*arr.length)];
 // Cadre fixe 845 x 390 px CSS (19,5:9, la taille d'un iPhone en paysage), affiché entre 100 et 150 % selon la fenêtre, lettreboxé. Le monde est vu à l'échelle Z (distance de la caméra).
 const H = 390, VW = 845, VIEW_MAX = 1.5;
 let Z = 0.8, WH = H/Z, WATER = WH - 115, HZ = WATER - 140;   // hauteur du monde, ligne d'eau et horizon, en px monde (recalculés par applyCam)
-let VWW = 1000, scale = 1, dpr = 1, rotated = false, ox = 0, oy = 0, dbgReady = false;
+let VWW = 1000, scale = 1, dpr = 1, rotated = false, ox = 0, oy = 0, dbgReady = false, camFx = 1;
 const PX = () => Math.max(190, VWW*0.22);   // x de Marine, en px monde
 function applyCam(){ Z = P.cam; WH = H/Z; WATER = WH - 92/Z; HZ = WATER - 140; VWW = VW/Z; P.yMax = WATER - 62; }
 function layoutScreens(W, H2){
@@ -402,15 +402,14 @@ const PSPEC = [
   {k:'chaseTime', g:'Course', l:'Temps dans la traîne', u:'s', d:'Temps cumulé passé dans la traîne pour remplir la jauge (si on la suit parfaitement, la course dure ce temps-là).', min:2, max:30, step:0.5},
   {k:'chaseDrain', g:'Course', l:'Perte hors traîne', u:'%/s', d:'La jauge se vide à ce rythme quand Marine sort de la traîne (0 = jamais).', min:0, max:50, step:1},
   {k:'chaseDist0', g:'Course', l:'Distance de départ', u:'px monde', d:'Distance entre Marine et l’orbe au début de la course.', min:150, max:1400, step:25},
-  {k:'chaseDist1', g:'Course', l:'Distance à la fin', u:'px monde', d:'Distance quand le temps est écoulé : l’orbe s’éloigne à mesure que le temps passe, et finit par s’envoler.', min:150, max:1600, step:25},
+  {k:'chaseDist1', g:'Course', l:'Distance à la fin', u:'px monde', d:'Distance (à jauge vide) quand le temps est écoulé : l’orbe dérive vers la droite à mesure que le temps passe, et finit par s’envoler.', min:150, max:1600, step:25},
   {k:'chaseThin', g:'Course', l:'Amincissement final', u:'%', d:'Largeur de la traîne quand la jauge est pleine, en part de la largeur de départ : il faut être plus précis à mesure qu’on remplit.', min:10, max:100, step:5},
   {k:'chaseW0', g:'Course', l:'Largeur à l’orbe', u:'px monde', d:'Largeur de la traîne juste derrière l’orbe (le plus fin).', min:10, max:200, step:5},
   {k:'chaseGrow', g:'Course', l:'Élargissement', u:'px/s', d:'La traîne s’élargit de ce nombre de px par seconde d’âge : loin derrière l’orbe elle est large, près d’elle elle est fine.', min:0, max:400, step:10},
   {k:'chaseAgil', g:'Course', l:'Agilité de l’orbe', u:'% de Marine', d:'Vitesse verticale de l’orbe en part de celle de Marine (montée et chute) : sous 100 %, la trajectoire reste suivable.', min:20, max:150, step:5},
   {k:'chaseStep0', g:'Course', l:'Changements de cap (début)', u:'s', d:'Temps entre deux changements de direction de l’orbe quand la jauge est vide.', min:0.3, max:4, step:0.1},
   {k:'chaseStep1', g:'Course', l:'Changements de cap (fin)', u:'s', d:'Idem quand la jauge est pleine : plus court = plus nerveux à mesure que la jauge se remplit.', min:0.2, max:4, step:0.1},
-  {k:'chaseWaterEvery', g:'Course', l:'Passage à l’eau', u:'s', d:'L’orbe descend au ras de l’eau à cet intervalle, pour que Marine puisse se poser et recharger son vent.', min:2, max:12, step:0.5},
-  {k:'chaseWaterHold', g:'Course', l:'Durée à l’eau', u:'s', d:'Temps que l’orbe passe au ras de l’eau à chaque passage (la recharge complète prend windRefill).', min:0.5, max:5, step:0.1},
+  {k:'chaseClose', g:'Course', l:'Rapprochement à jauge pleine', u:'%', d:'Part de la distance qui reste quand la jauge est pleine : Marine se rapproche de l’orbe à mesure qu’elle remplit la jauge (l’orbe, elle, dérive vers la droite avec le temps).', min:10, max:100, step:5},
   {k:'chaseGain', g:'Course', l:'Gain de l’actu d’or', u:'pt', d:'Points de sondage si on attrape l’actu d’or (en attendant la volte-face).', min:0, max:10, step:0.5},
   {k:'blowT', g:'Commun', l:'Temps d’emportement', u:'s', d:'Au-dessus de la limite, la jauge se remplit en ce temps ; pleine = emportée par le vent (niveau perdu). Elle se vide dessous.', min:0.1, max:2, step:0.1},
   {k:'orbGain', g:'Commun', l:'Orbe d’argent', u:'pt', d:'Points de sondage par orbe d’argent attrapée au-dessus de la limite.', min:0, max:3, step:0.1},
@@ -433,7 +432,7 @@ const PSPEC = [
   {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
 ];
 // valeurs par défaut = réglages sauvegardés par Pierre le 18/10 au soir (caméra loin, vol vif)
-const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, chaseMax: 15, chaseTime: 8, chaseDrain: 5, chaseDist0: 450, chaseDist1: 1000, chaseThin: 45, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseWaterEvery: 4, chaseWaterHold: 1.8, chaseGain: 2, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
+const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, chaseMax: 15, chaseTime: 8, chaseDrain: 5, chaseDist0: 450, chaseDist1: 1000, chaseThin: 45, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseClose: 35, chaseGain: 2, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
   vUp: 400, tUp: 0.25, vDown: 520, tDown: 0.5, glide: 0, tTurn: 0.05,
   windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
 const P = Object.assign({}, PDEF, {
@@ -504,11 +503,12 @@ function applyInput(dt){
   if (ctrl === 'tap'){
     const want = pointerDown || keyUp;
     // réserve de vent : l'appui consomme (sauf sur l'eau), la glisse sur l'eau recharge ; vide, l'appui ne répond plus
-    // pendant la course, le vent ne manque pas : l'actu d'or porte
-    if (want && !onWater){ wind = Math.max(0, wind - dt/P.windCap); if (wind === 0 && windEmptyT < 0){ windEmptyT = realT; sfxP3('down'); } }
-    if (onWater) wind = Math.min(1, wind + dt/P.windRefill);
+    // pendant la course, le vol est infini : Marine est portée par le scandale qu'elle vient de traverser (planche d'argent)
+    if (phase === 'chase') wind = 1;
+    else { if (want && !onWater){ wind = Math.max(0, wind - dt/P.windCap); if (wind === 0 && windEmptyT < 0){ windEmptyT = realT; sfxP3('down'); } }
+      if (onWater) wind = Math.min(1, wind + dt/P.windRefill); }
     if (wind > 0) windEmptyT = -9;
-    holding = want && (wind > 0 || onWater);
+    holding = want && (wind > 0 || onWater) && !(chase && chase.leaving);   // quand l'actu s'envole, Marine retombe
     const st = {vy, holdT, relT}; tapStep(st, holding, dt); vy = st.vy; holdT = st.holdT; relT = st.relT;
   } else {
     if (pointerDown && pointerY !== null) aIn = inputFromPointer(pointerY);
@@ -730,22 +730,20 @@ function updateChain(dt){
 // ---------- la course : l'actu d'or et sa traîne ----------
 function startChase(){
   phase = 'chase'; emitter = null; pans = []; bubbles = []; trail = [];
-  chase = {t: 0, gauge: 0, y: lerp(P.ceil + 80, P.yMax - 40, 0.5), vy: 0, target: 0, nextTurn: 0.8, waterT: P.chaseWaterEvery, waterHold: 0, hist: [], caught: false, leaving: false, catchT: 0, inside: false};
+  chase = {t: 0, gauge: 0, y: lerp(P.ceil + 80, P.yMax - 40, 0.5), vy: 0, target: 0, nextTurn: 0.8, hist: [], caught: false, leaving: false, catchT: 0, inside: false};
   chase.target = chase.y; sfxP3('orb');
 }
-const chaseDist = () => chase ? lerp(P.chaseDist0, P.chaseDist1, clamp(chase.t/P.chaseMax, 0, 1)) : 0;   // l'orbe s'éloigne avec le temps
+const chaseDist = () => chase ? lerp(P.chaseDist0, P.chaseDist1, clamp(chase.t/P.chaseMax, 0, 1))*lerp(1, P.chaseClose/100, clamp(chase.gauge, 0, 1)) : 0;   // l'orbe dérive à droite avec le temps, Marine s'en rapproche avec la jauge
 const thinK = () => chase ? lerp(1, P.chaseThin/100, clamp(chase.gauge, 0, 1)) : 1;   // la traîne s'amincit avec la jauge
 const trailWidth = age => (P.chaseW0 + P.chaseGrow*age)*thinK();
 function updateChase(dt){
   const c = chase, mx = PX(), my = py, vs = worldSpeed();
   c.t += dt; dark = Math.max(0, dark - dt/1.5);
   if (c.caught){ c.catchT += dt; if (c.catchT > 0.9) endLevel('done'); return; }
-  if (c.leaving){ c.catchT += dt; if (c.catchT > 1.0) endLevel('done'); return; }
-  // l'orbe : un cap qui change à intervalles (plus courts à mesure que la jauge se remplit), et un passage à l'eau régulier ; vitesse et accélération bornées par celles de Marine
+  if (c.leaving){ c.catchT += dt; camFx = lerp(1, 0.82, clamp(c.catchT/1.2, 0, 1)); VWW = VW/Z/camFx; if (c.catchT > 2.4){ camFx = 1; applyCam(); endLevel('done'); } return; }   // l'actu monte au ciel, la caméra recule, Marine retombe
+  // l'orbe : un cap qui change à intervalles (plus courts à mesure que la jauge se remplit) ; vitesse et accélération bornées par celles de Marine
   const top = P.ceil + 70, bot = P.yMax, vmax = Math.min(P.vUp, P.vDown)*P.chaseAgil/100;
-  if (c.waterHold > 0){ c.waterHold -= dt; c.target = bot; }
-  else { c.waterT -= dt; if (c.waterT <= 0){ c.waterT = P.chaseWaterEvery; c.waterHold = P.chaseWaterHold + (bot - c.y)/vmax; c.target = bot; }
-    else { c.nextTurn -= dt; if (c.nextTurn <= 0){ c.nextTurn = lerp(P.chaseStep0, P.chaseStep1, c.gauge)*(0.8 + rnd()*0.4); const span = (bot - top)*lerp(0.45, 0.8, c.gauge); c.target = clamp(c.y + (rnd() - 0.5)*2*span, top, bot - 20); } } }
+  c.nextTurn -= dt; if (c.nextTurn <= 0){ c.nextTurn = lerp(P.chaseStep0, P.chaseStep1, c.gauge)*(0.8 + rnd()*0.4); const span = (bot - top)*lerp(0.45, 0.8, c.gauge); c.target = clamp(c.y + (rnd() - 0.5)*2*span, top, bot - 20); }
   const want = clamp((c.target - c.y)*4, -vmax, vmax), acc = vmax/0.3; c.vy += clamp(want - c.vy, -acc*dt, acc*dt); c.y = clamp(c.y + c.vy*dt, top, bot);
   c.hist.push({t: c.t, y: c.y}); while (c.hist.length > 600) c.hist.shift();
   // particules : nées à l'orbe, elles s'écartent latéralement de chaseGrow/2 px/s de chaque côté (× l'amincissement courant)
@@ -760,7 +758,7 @@ function updateChase(dt){
   c.ty = ty; c.tw = trailWidth(age);
   if (c.inside) c.gauge = Math.min(1, c.gauge + dt/P.chaseTime); else c.gauge = Math.max(0, c.gauge - dt*P.chaseDrain/100);
   if (c.gauge >= 1){ c.caught = true; c.catchT = 0; stats.gold = true; addPoll(P.chaseGain); pop('Actu en or ! +' + P.chaseGain.toFixed(1).replace('.', ',') + ' pt', '#f2b630', mx + 10, my - 70, true); sfxP3('fanfare'); return; }
-  if (c.t >= P.chaseMax){ c.leaving = true; c.catchT = 0; pop('L’actu s’envole…', '#fde68a', ox - 40, c.y - 60, true); sfxP3('miss'); }
+  if (c.t >= P.chaseMax){ c.leaving = true; c.catchT = 0; sfxP3('miss'); }
 }
 function drawChase(){
   const c = chase, mx = PX();
@@ -769,7 +767,7 @@ function drawChase(){
   // l'orbe d'or
   let ox = mx + chaseDist(), oy = c.y;
   if (c.caught){ const k = clamp(c.catchT/0.5, 0, 1); ox = lerp(ox, mx + 20, k); oy = lerp(oy, py, k); }
-  if (c.leaving){ ox += c.catchT*c.catchT*1400; oy -= c.catchT*c.catchT*500; }
+  if (c.leaving){ ox += c.catchT*c.catchT*500; oy -= c.catchT*c.catchT*600; }
   const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, 70); g.addColorStop(0, 'rgba(255,226,120,.6)'); g.addColorStop(1, 'rgba(255,200,80,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ox, oy, 70, 0, 7); ctx.fill();
   spr('orbg' + (Math.floor(realT*8) % 4), ox, oy + 18, 1.1);
   // repère de debug léger : la fenêtre de la traîne à la colonne de Marine
@@ -781,9 +779,10 @@ function drawChaseHud(){
   text('Actu d’or', x + 12, y + 17, 12, 900, '#14213d');
   ctx.fillStyle = 'rgba(20,33,61,.15)'; rr(x + 84, y + 10, 160, 14, 5); ctx.fill(); ctx.fillStyle = c.inside ? '#f2b630' : '#c8961e'; rr(x + 84, y + 10, 160*c.gauge, 14, 5); ctx.fill();
   const left = Math.max(0, P.chaseMax - c.t); text(left.toFixed(0) + ' s', x + w - 14, y + 17, 13, 900, left < 5 ? '#d63b3b' : '#14213d', 'right');
-  outText(c.inside ? 'Dans la traîne' : 'Reste dans la traîne !', VW/2, y + 50, 13, 900, c.inside ? '#bdf5c9' : '#fff', 'center', 'rgba(20,33,61,.6)');
+  if (c.leaving) outText('L’actualité s’est envolée', VW/2, H/2 - 40, 26, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
+  else if (!c.caught) outText(c.inside ? 'Dans la traîne' : 'Reste dans la traîne !', VW/2, y + 50, 13, 900, c.inside ? '#bdf5c9' : '#fff', 'center', 'rgba(20,33,61,.6)');
 }
-function endLevel(reason){ endReason = reason; state = 'recap'; musicStop(); if (reason === 'sunk') sfxP3('sink'); }
+function endLevel(reason){ camFx = 1; applyCam(); endReason = reason; state = 'recap'; musicStop(); if (reason === 'sunk') sfxP3('sink'); }
 
 
 // ---------- dessin ----------
@@ -799,7 +798,8 @@ function tileRow(a, inset, x0, x1, y, tw, th, off){
 }
 function drawSky(){
   const a = ATLAS.sky, im = atlasImg(a);
-  if (im){ ctx.imageSmoothingEnabled = true; ctx.drawImage(im, a[0] + 2, a[1], a[2] - 4, a[3], 0, 0, VWW, HZ + 6); }
+  ctx.fillStyle = '#2a5fb8'; ctx.fillRect(-200, -600, VWW + 400, 600);   // au-dessus du monde (visible quand la caméra recule)
+  if (im){ ctx.imageSmoothingEnabled = true; ctx.drawImage(im, a[0] + 2, a[1], a[2] - 4, a[3], -400, 0, VWW + 400, HZ + 6); }
   else { const g = ctx.createLinearGradient(0, 0, 0, HZ); SKY.forEach((c, i) => g.addColorStop(i/(SKY.length - 1), c)); ctx.fillStyle = g; ctx.fillRect(0, 0, VWW, HZ + 6); }
   spr('sun', VWW - 130, 70, 1);
   const off = scrollX*0.12 + realT*6;
@@ -818,7 +818,7 @@ function farHouses(sc){
 function drawFar(){
   const sa = ATLAS.seaFar;
   const hg = WATER - HZ + 12, tw = sa[2]*hg/sa[3];
-  if (!tileRow(sa, 0, 0, VWW, HZ, tw, hg, scrollX*0.3)){ ctx.fillStyle = '#4593d6'; ctx.fillRect(0, HZ, VWW, hg); }
+  if (!tileRow(sa, 0, -400, VWW, HZ, tw, hg, scrollX*0.3)){ ctx.fillStyle = '#4593d6'; ctx.fillRect(0, HZ, VWW, hg); }
   const hz = ctx.createLinearGradient(0, HZ, 0, HZ + 50); hz.addColorStop(0, 'rgba(210,235,252,.45)'); hz.addColorStop(1, 'rgba(210,235,252,0)'); ctx.fillStyle = hz; ctx.fillRect(0, HZ, VWW, 50);
   if (sea === 'cote'){
     const sc = 0.36, tw2 = SW('houses', sc), off = scrollX*0.2;
@@ -842,8 +842,9 @@ function drawFar(){
 }
 function drawNear(){
   const a = ATLAS.seaNear, h = WH - WATER + 30, tw = a[2]*h/a[3];
-  if (!tileRow(a, 0, 0, VWW, WATER - 24, tw, h, scrollX*1.15)){ ctx.fillStyle = '#2b70b8'; ctx.fillRect(0, WATER - 10, VWW, WH - WATER + 10); }
-  const fa = ATLAS.foam, fh = 18, ftw = fa[2]*fh/fa[3]; ctx.save(); ctx.globalAlpha = 0.85; tileRow(fa, 0, 0, VWW, WATER - 22, ftw, fh, scrollX*1.4); ctx.restore();
+  if (!tileRow(a, 0, -400, VWW, WATER - 24, tw, h, scrollX*1.15)){ ctx.fillStyle = '#2b70b8'; ctx.fillRect(-400, WATER - 10, VWW + 400, WH - WATER + 10); }
+  const fa = ATLAS.foam, fh = 18, ftw = fa[2]*fh/fa[3]; ctx.save(); ctx.globalAlpha = 0.85; tileRow(fa, 0, -400, VWW, WATER - 22, ftw, fh, scrollX*1.4); ctx.restore();
+  ctx.fillStyle = '#1d4f8f'; ctx.fillRect(-400, WH, VWW + 400, 400);   // sous le monde (visible quand la caméra recule)
   // traits de vitesse sur l'eau
   ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; const sp = scrollX*1.6;
   for (let i=0;i<10;i++){ const span = VWW + 300, x = ((i*377 + 90 - sp) % span + span) % span - 150, y = WATER + 10 + (i*53) % 60; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 40 + (i % 3)*20, y); ctx.stroke(); }
@@ -1000,6 +1001,14 @@ function drawMarine(){
   ctx.stroke();
   spr(kn, kx, ky, ks);
   ctx.restore();
+  if (phase === 'chase'){   // planche d'argent étincelante : Marine est portée par le scandale
+    ctx.save(); ctx.translate(x, y + 60); ctx.rotate(tilt*0.5);
+    const g = ctx.createLinearGradient(-60, 0, 44, 0); g.addColorStop(0, '#9aa4b2'); g.addColorStop(0.35, '#ffffff'); g.addColorStop(0.6, '#c9d2dc'); g.addColorStop(1, '#8e98a6');
+    ctx.fillStyle = g; rr(-62, 2, 108, 13, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#4b5563'; ctx.stroke();
+    const sh = Math.sin(realT*6)*0.5 + 0.5; ctx.fillStyle = 'rgba(255,255,255,' + (0.3 + 0.5*sh) + ')'; rr(-40 + sh*40, 4, 22, 4, 2); ctx.fill();
+    ctx.restore();
+    for (let i=0;i<3;i++){ const a = realT*3 + i*2.1, sx = x - 70 + ((realT*60 + i*37) % 120), sy = y + 50 + Math.sin(a)*10, r = 2 + (Math.sin(a*2) + 1)*2; ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.moveTo(sx, sy - r); ctx.lineTo(sx + r*0.35, sy - r*0.35); ctx.lineTo(sx + r, sy); ctx.lineTo(sx + r*0.35, sy + r*0.35); ctx.lineTo(sx, sy + r); ctx.lineTo(sx - r*0.35, sy + r*0.35); ctx.lineTo(sx - r, sy); ctx.lineTo(sx - r*0.35, sy - r*0.35); ctx.closePath(); ctx.fill(); }
+  }
   spr('airN', x, y + 60, RS, false, tilt);
   // filets de vent derrière Marine : vitesse
   ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 2;
@@ -1047,10 +1056,10 @@ function drawHud(){
   if (!uiDraw('iCass', 404, hy + 10, 20)){ ctx.fillStyle = '#d63b3b'; rr(406, hy + 12, 16, 16, 3); ctx.fill(); }
   for (let i=0;i<n;i++){ ctx.fillStyle = i < cass ? (alert ? '#d63b3b' : '#f97316') : 'rgba(20,33,61,.15)'; rr(432 + i*cw, hy + 14, cw - 3, 12, 3); ctx.fill(); }
   // jauge de vent : sous le bandeau, rouge sous 20 %, clignote vide
-  const wc = wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.2 ? '#d63b3b' : wind < 0.5 ? '#f2b630' : '#2563eb';
+  const wc = phase === 'chase' ? '#c9d2dc' : wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.2 ? '#d63b3b' : wind < 0.5 ? '#f2b630' : '#2563eb';
   ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(270, hy + 8, 120, 24, 8); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
   ctx.fillStyle = 'rgba(20,33,61,.15)'; rr(276, hy + 14, 108, 12, 4); ctx.fill(); ctx.fillStyle = wc; rr(276, hy + 14, 108*wind, 12, 4); ctx.fill();
-  text('vent', 330, hy + 20, 10, 900, wind > 0.5 ? '#fff' : '#14213d', 'center');
+  text(phase === 'chase' ? 'vent infini' : 'vent', 330, hy + 20, 10, 900, phase === 'chase' ? '#14213d' : wind > 0.5 ? '#fff' : '#14213d', 'center');
   if (wind <= 0 && !onWater) outText('Plus de vent ! Pose-toi sur l’eau', VW/2, H - 70, 14, 900, '#fff', 'center', 'rgba(214,59,59,.85)');
 }
 function drawPops(){ for (const p of pops){ const a = clamp(p.life/0.4, 0, 1); ctx.globalAlpha = a; outText(p.t, p.x, p.y, p.big ? 22 : 16, 900, p.color); ctx.globalAlpha = 1; } }
@@ -1077,7 +1086,7 @@ function draw(){
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);
   btns = [];
   if (state === 'title'){ ctx.fillStyle = '#4a90d9'; ctx.fillRect(0, 0, VW, H); return; }
-  ctx.setTransform(dpr*scale*Z, 0, 0, dpr*scale*Z, 0, 0);   // le monde, caméra reculée
+  { const k = dpr*scale*Z*camFx, ax = PX(), ay = WATER; ctx.setTransform(k, 0, 0, k, dpr*scale*Z*(1 - camFx)*ax, dpr*scale*Z*(1 - camFx)*ay); }   // le monde, caméra reculée (camFx : recul temporaire ancré sur Marine)
   drawSky(); drawCeiling(); drawFar(); drawNear();
   if (dark > 0) drawStormSky();
   if (emitter) drawEmitter();
@@ -1160,7 +1169,7 @@ loadLocal(); applyCam(); debugBuild(); loadShared();
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, gauge: chase.gauge, y: chase.y, ty: chase.ty, tw: chase.tw, inside: chase.inside, caught: chase.caught, leaving: chase.leaving, dist: chaseDist(), waterHold: chase.waterHold}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
+  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, gauge: chase.gauge, y: chase.y, ty: chase.ty, tw: chase.tw, inside: chase.inside, caught: chase.caught, leaving: chase.leaving, dist: chaseDist(), camFx}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
   get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
   get world(){ return {Z, WH, WATER, HZ, VWW}; },
   setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,
