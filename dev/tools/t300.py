@@ -108,14 +108,13 @@ with sync_playwright() as p:
         if lvl == 1: pg.screenshot(path=D + 'p3_intro.png')
         pg.mouse.move(640, 200); pg.mouse.down(); pg.wait_for_timeout(100); pg.mouse.up(); pg.wait_for_timeout(100)
         check(ev(pg, 'window.__vdd.phase') == 'storm' and abs(ev(pg, 'window.__vdd.y') - y0) < 1, 'le tap reprend le jeu, qui était en pause')
-        pg.wait_for_timeout(2500); pl = ev(pg, 'window.__vdd.pansList'); check(len(pl) > 0 and all(x['kind'] in ('shot', 'drop') for x in pl), 'des casseroles sont lancées, tirs tendus ou retombées (%d)' % len(pl))
+        pg.wait_for_timeout(2500); pl = ev(pg, 'window.__vdd.pansList'); check(len(pl) > 0 and all(x['kind'] in ('shot', 'lob', 'curve') for x in pl), 'des casseroles sont lancées : tirs tendus, cloches sur Marine ou incurvées (%d)' % len(pl))
         if lvl == 1: pg.wait_for_timeout(1200); pg.screenshot(path=D + 'p3_storm.png')
         if dodge:
             # bot dans la page, à la frame : se place dans le couloir le plus loin de toute menace qui atteint sa colonne dans les 1,3 s
             ev(pg, '''() => new Promise(res => { const v = window.__vdd; const step = () => { if (v.state !== 'play'){ v.hold(false); res(); return; }
               const px = v.px, y = v.y, P = v.P, top = P.ceil + 60, bot = P.yMax; const th = [];
-              for (const c of v.pansList){ if (c.kind === 'shot'){ const t = (c.x - px)/Math.max(1, -c.vx) + Math.max(0, c.delay); if (t < 1.3 && c.x > px - 30) th.push(c.y); }
-                else { const t = (c.x - px)/Math.max(1, -c.vx) + Math.max(0, c.delay); if (t < 1.4 && c.x > px - 30) th.push(c.y + (c.x - px)/(-c.vx)*c.vy); } }
+              for (const c of v.pansList){ const tc = (c.x - px)/Math.max(1, -c.vx), t = tc + Math.max(0, c.delay); if (t < 1.4 && c.x > px - 30) th.push(c.y + c.vy*tc + 0.5*c.g*tc*tc); }
               let best = y, bestD = -1; for (let k = 0; k <= 8; k++){ const cy = top + (bot - top)*k/8; const d = th.length ? Math.min(...th.map(t => Math.abs(t - cy))) : 1e9; const score = d - Math.abs(cy - y)*0.15; if (score > bestD){ bestD = score; best = cy; } }
               if (!th.length) best = v.onWater ? y : Math.max(y, bot - 120);
               const up = best < y - 8 && (v.wind > 0.05 || v.onWater); v.hold(up); requestAnimationFrame(step); }; requestAnimationFrame(step); })''')
@@ -124,7 +123,7 @@ with sync_playwright() as p:
             while time.time() - t0 < 30 and ev(pg, 'window.__vdd.state') == 'play': pg.wait_for_timeout(100)
         pg.mouse.up(); print('   tempête niveau %d (%s) : casseroles %d, chaîne %d, raison %s' % (lvl, 'esquive' if dodge else 'immobile sur l\'eau', ev(pg, 'window.__vdd.cass'), len(ev(pg, 'window.__vdd.chain')), ev(pg, 'window.__vdd.endReason')))
         check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.endReason') in ('done', 'sunk'), 'la tempête se termine (délai ou coulée)')
-        if not dodge: check(ev(pg, 'window.__vdd.cass') >= 3, 'rester sur l\'eau sans bouger ne suffit pas : les retombées touchent (%d)' % ev(pg, 'window.__vdd.cass'))
+        if not dodge: check(ev(pg, 'window.__vdd.cass') >= 3, 'rester sur l\'eau sans bouger ne suffit pas : les cloches sur Marine touchent (%d)' % ev(pg, 'window.__vdd.cass'))
         if dodge: check(ev(pg, 'window.__vdd.endReason') == 'done', 'un bot qui esquive par couloirs traverse la tempête (%d casseroles)' % ev(pg, 'window.__vdd.cass'))
         check(not errs, 'aucune erreur JS (tempête %d) ' % lvl + str(errs[:3]))
         b.close()

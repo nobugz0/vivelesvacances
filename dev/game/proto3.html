@@ -173,7 +173,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.10', BUILD = '18/10/2026 à 20h47';
+const VERSION = 'proto 3 · 0.11', BUILD = '18/10/2026 à 20h47';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -383,8 +383,9 @@ const PSPEC = [
   {k:'panSpeed', g:'Tempête', l:'Vitesse des tirs', u:'px monde/s', d:'Vitesse des tirs tendus (horizontaux). Fixe le temps de réaction : distance émetteur-Marine ÷ vitesse.', min:300, max:1500, step:25},
   {k:'stormLanes', g:'Tempête', l:'Couloirs d’altitude', u:'', d:'Nombre de hauteurs possibles pour les tirs tendus, de la limite d’altitude à l’eau. Moins de couloirs = esquives plus amples.', min:3, max:9, step:1},
   {k:'aimShare', g:'Tempête', l:'Part des tirs visés', u:'%', d:'Part des tirs tendus lancés dans le couloir de Marine (le reste est tiré au hasard).', min:0, max:100, step:5},
-  {k:'dropShare', g:'Tempête', l:'Part des retombées', u:'%', d:'Part des lancers qui tombent à la verticale sur la position de Marine (punit l’immobilité, y compris sur l’eau).', min:0, max:100, step:5},
-  {k:'dropSpeed', g:'Tempête', l:'Vitesse des retombées', u:'px monde/s', d:'Vitesse de chute des retombées.', min:200, max:1200, step:25},
+  {k:'lobShare', g:'Tempête', l:'Part des retombées sur Marine', u:'%', d:'Lancers en cloche depuis l’émetteur qui retombent exactement sur la position de Marine au moment du lancer (les plus durs à éviter).', min:0, max:100, step:5},
+  {k:'curveShare', g:'Tempête', l:'Part des trajectoires incurvées', u:'%', d:'Lancers en cloche qui croisent la colonne de Marine à une autre hauteur que la sienne (ni son couloir, ni l’eau si elle y est).', min:0, max:100, step:5},
+  {k:'lobGrav', g:'Tempête', l:'Courbure des cloches', u:'px/s²', d:'Gravité des lancers en cloche : plus elle est forte, plus la cloche est haute et lente à lire.', min:200, max:1600, step:50},
   {k:'telegraph', g:'Tempête', l:'Préavis', u:'s', d:'Temps pendant lequel un repère rouge annonce la hauteur (tir) ou la position (retombée) avant le lancer.', min:0, max:1.5, step:0.05},
   {k:'stormHits', g:'Vent', l:'Touches pour faire fuir', u:'', d:'(éléments de langage, mis de côté)', min:1, max:6, step:1},
   {k:'stormMax', g:'Tempête', l:'Durée maximale', u:'s', d:'Au bout de ce temps, l’émetteur s’en va de lui-même.', min:8, max:60, step:1},
@@ -411,7 +412,7 @@ const PSPEC = [
   {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
 ];
 // valeurs par défaut = réglages sauvegardés par Pierre le 18/10 au soir (caméra loin, vol vif)
-const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, dropShare: 30, dropSpeed: 520, telegraph: 0.5, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
+const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
   vUp: 400, tUp: 0.25, vDown: 520, tDown: 0.5, glide: 0, tTurn: 0.05,
   windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
 const P = Object.assign({}, PDEF, {
@@ -656,19 +657,22 @@ function updateStorm(dt){
   if (!e.fled && e.pause <= 0){ nextSalvo -= dt; if (nextSalvo <= 0){ nextSalvo = P.stormRate*(0.75 + rnd()*0.5);
     const n = Math.round(P.stormLanes), laneY = k => lerp(P.ceil + 50, P.yMax, k/(n - 1)), myLane = Math.round((my - (P.ceil + 50))/(P.yMax - (P.ceil + 50))*(n - 1));
     const w = rnd() < 0.3 ? 'coc' + Math.floor(rnd()*4) : 'pan' + Math.floor(rnd()*16);
-    if (rnd()*100 < P.dropShare){
-      // retombée : part en haut à droite et tombe en diagonale raide pour croiser la colonne de Marine à sa hauteur actuelle ; esquivable en changeant d'altitude
-      const sx = mx + 380, sy = P.ceil - 80, t = (my - sy)/P.dropSpeed;
-      pans.push({kind: 'drop', x: sx, y: sy, vx: -(sx - mx)/t, vy: P.dropSpeed, g: 0, delay: P.telegraph, rot: rnd()*6.3, spin: 3, w, s: 0.75 + rnd()*0.25, ty: my});
+    const ox = e.x - 60, oy = e.y - e.E.h*0.6, r = rnd()*100;
+    if (r < P.lobShare || r < P.lobShare + P.curveShare){
+      // cloche depuis l'émetteur : retombe sur Marine (lob) ou croise sa colonne à une autre hauteur (incurvée)
+      let ty = my;
+      if (r >= P.lobShare){ let k = Math.floor(rnd()*(n - 1)); if (k >= clamp(myLane, 0, n - 1)) k++; ty = laneY(k); if (onWater && ty > P.yMax - 40) ty = laneY(Math.max(0, k - 2)); }
+      const t = (ox - mx)/P.panSpeed*1.15, g = P.lobGrav, vx = -(ox - mx)/t, vy0 = (ty - oy)/t - 0.5*g*t;
+      pans.push({kind: r < P.lobShare ? 'lob' : 'curve', x: ox, y: oy, vx, vy: vy0, g, delay: P.telegraph, rot: rnd()*6.3, spin: 1.2 + rnd()*0.8, w, s: 0.75 + rnd()*0.25});
     } else {
       const lane = rnd()*100 < P.aimShare ? clamp(myLane, 0, n - 1) : Math.floor(rnd()*n);
-      pans.push({kind: 'shot', x: e.x - 60, y: laneY(lane) + (rnd() - 0.5)*10, vx: -P.panSpeed, vy: 0, g: 0, delay: P.telegraph, rot: rnd()*6.3, spin: 5, w, s: 0.75 + rnd()*0.25});
+      pans.push({kind: 'shot', x: ox, y: laneY(lane) + (rnd() - 0.5)*10, vx: -P.panSpeed, vy: 0, g: 0, delay: P.telegraph, rot: rnd()*6.3, spin: 0.5, w, s: 0.75 + rnd()*0.25});
     } } }
   for (const c of pans){ if (c.delay > 0){ c.delay -= dt; if (c.delay <= 0) sfxP3(e.E.sfx); continue; }
 c.vy += c.g*dt; c.x += c.vx*dt; c.y += c.vy*dt; c.rot += c.spin*dt;
     if (!c.hit && cassInv <= 0 && Math.hypot(c.x - mx, c.y - my) < 42){ c.hit = true; cass++; stats.cass++; cassInv = 0.5; sfxP3('clank'); attachPan(c); pop('Casserole !', '#d63b3b', mx + 10, my - 60, true); fx.push({kind: 'flash', x: c.x, y: c.y, t: 0});
       if (cass >= P.cassMax){ endLevel('sunk'); return; } } }
-  for (const c of pans) if (c.kind === 'drop' && !c.hit && c.y > WATER - 4 && !c.splashed){ c.splashed = true; fx.push({kind: 'splash', x: c.x, y: WATER, t: 0, big: false}); sfxP3('plouf'); }
+  for (const c of pans) if (c.kind !== 'shot' && !c.hit && c.y > WATER - 4 && !c.splashed){ c.splashed = true; fx.push({kind: 'splash', x: c.x, y: WATER, t: 0, big: false}); sfxP3('plouf'); }
   pans = pans.filter(c => !c.hit && c.x > -100 && c.y < WATER + 10);
   // les éléments de langage : on les attrape, ils partent sur l'émetteur
   if (!e.fled && P.useBubbles){ nextBubble -= dt; if (nextBubble <= 0){ nextBubble = P.bubbleEvery; bubbles.push({x: VWW + 80, y: lerp(P.ceil + 50, P.yMax - 40, rnd()), t: pick(BUBBLES), ph: rnd()*6.3, thrown: false}); } }
@@ -827,7 +831,9 @@ function drawPan(c){
   if (c.delay > 0){   // préavis : repère rouge clignotant au bord droit (tir) ou au-dessus de la position (retombée)
     const k = 0.5 + 0.5*Math.sin(realT*18); ctx.save(); ctx.globalAlpha = 0.55 + 0.45*k;
     if (c.kind === 'shot'){ ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.moveTo(VWW - 70, c.y); ctx.lineTo(VWW - 30, c.y - 16); ctx.lineTo(VWW - 30, c.y + 16); ctx.closePath(); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke(); ctx.strokeStyle = 'rgba(214,59,59,.5)'; ctx.setLineDash([12, 10]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(VWW - 70, c.y); ctx.lineTo(VWW - 420, c.y); ctx.stroke(); ctx.setLineDash([]); }
-    else { const tt = (WATER - c.y)/c.vy, ex = c.x + c.vx*tt; ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.moveTo(c.x, P.ceil + 30); ctx.lineTo(c.x - 16, P.ceil); ctx.lineTo(c.x + 16, P.ceil); ctx.closePath(); ctx.fill(); ctx.strokeStyle = 'rgba(214,59,59,.5)'; ctx.setLineDash([12, 10]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(c.x, P.ceil + 30); ctx.lineTo(ex, WATER); ctx.stroke(); ctx.setLineDash([]); }
+    else { // cloche : la trajectoire prévue en pointillés, et un triangle au-dessus de l'émetteur
+      ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.moveTo(c.x, c.y - 40); ctx.lineTo(c.x - 16, c.y - 70); ctx.lineTo(c.x + 16, c.y - 70); ctx.closePath(); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
+      ctx.fillStyle = 'rgba(214,59,59,.6)'; for (let t = 0.1; t < 3; t += 0.12){ const x = c.x + c.vx*t, y = c.y + c.vy*t + 0.5*c.g*t*t; if (y > WATER || x < -40) break; ctx.beginPath(); ctx.arc(x, y, 4, 0, 7); ctx.fill(); } }
     ctx.restore(); return; }
   spr(c.w, c.x, c.y, c.s, false, c.rot);
 }
@@ -1064,7 +1070,7 @@ loadLocal(); applyCam(); debugBuild(); loadShared();
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
+  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
   get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
   get world(){ return {Z, WH, WATER, HZ, VWW}; },
   setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,
