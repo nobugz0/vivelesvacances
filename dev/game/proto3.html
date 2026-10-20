@@ -185,7 +185,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.15', BUILD = '20/10/2026 à 00h59';
+const VERSION = 'proto 3 · 0.16', BUILD = '20/10/2026 à 13h28';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -211,7 +211,7 @@ function spr(name, x, y, s, flip, rot, alpha){
   const a = ATLAS[name]; if (!a) return; const im = atlasImg(a); if (!im) return;
   ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); if (flip) ctx.scale(-1, 1);
   if (alpha !== undefined) ctx.globalAlpha *= alpha;
-  ctx.imageSmoothingEnabled = s < 0.97; ctx.imageSmoothingQuality = 'high';
+  ctx.imageSmoothingEnabled = s < 0.97; ctx.imageSmoothingQuality = 'medium';
   ctx.drawImage(im, a[0], a[1], a[2], a[3], -a[4]*s, -a[5]*s, a[2]*s, a[3]*s);
   ctx.restore();
 }
@@ -271,7 +271,7 @@ function resize(){
   const w = VW*scale, h = H*scale; ox = (aw - w)/2; oy = (ah - h)/2;
   wrap.style.width = w + 'px'; wrap.style.height = h + 'px';
   wrap.style.transform = rotated ? 'translate(' + (iw - oy) + 'px,' + ox + 'px) rotate(90deg)' : 'translate(' + ox + 'px,' + oy + 'px)';
-  dpr = Math.min(window.devicePixelRatio || 1, 3);
+  dpr = Math.min(window.devicePixelRatio || 1, 2);   // 2 suffit pour du pixel art à cette taille ; 3 triplait le nombre de pixels à remplir
   cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
   VWW = VW/Z;
   layoutScreens(w, h); if (dbgReady) placeDebug();
@@ -374,11 +374,11 @@ const VSHORT = [['Entente avec Poutine', 'Stop aux opérations russes'], ['Quitt
 // Les positions courtes (old/neu) servent aux cartes et au bilan final ; les fiches détaillées et sourcées sont dans INFO.
 const LEVELS = [
   {n: 0, title: 'Retour au franc', theme: 'Monnaie', old: 'Retour au franc', neu: 'L’euro n’est « plus une priorité » (janvier 2019)', per: '2012 → janvier 2019', scandal: null},
-  {n: 1, title: 'On sort de l’Europe', theme: 'Europe', old: 'On sort de l’Europe', neu: '« Le Frexit n’est nullement notre projet » (avril 2022)', per: '2016 → avril 2022', scandal: {title: 'Kits de campagne', sub: 'Législatives 2012 · condamnation définitive du RN', date: '19 juin 2024', emitter: 'justice'}},
-  {n: 2, title: 'La retraite à 60 ans', theme: 'Retraites', old: 'La retraite à 60 ans', neu: '60 ans pour les carrières longues, 62 pour les autres (février 2022)', per: '2017 → février 2022', scandal: {title: 'Les tracts Poutine', sub: 'Poignée de main mise au rebut', date: '1er mars 2022', emitter: 'rn'}},
-  {n: 3, title: 'Le nucléaire, on arrête', theme: 'Énergie', old: 'Le nucléaire, on arrête', neu: 'Une vingtaine de réacteurs (avril 2022)', per: '2011-2012 → avril 2022', scandal: {title: '« Brebis galeuses »', sub: 'Candidats RN des législatives', date: 'juin-juillet 2024', emitter: 'bard'}},
-  {n: 4, title: 'Non à l’IVG dans la Constitution', theme: 'IVG', old: 'Non à l’IVG dans la Constitution', neu: 'Votée le 30 janvier 2024', per: 'novembre 2022 → janvier 2024', scandal: {title: 'Assistants parlementaires', sub: '1re instance, appel, pourvoi en cassation', date: '31 mars 2025 · 7 juillet 2026', emitter: 'justice'}},
-  {n: 5, title: 'Non à la règle d’or, oui à la dette', theme: 'Budget', old: 'Non à la règle d’or, oui à la dette', neu: 'Règle d’or constitutionnelle (août 2026)', per: '2012 → août 2026', scandal: {title: 'Écrits attribués à Bardella', sub: 'Révélations Mediapart · attribués, contestés, non jugés', date: '28 septembre 2026', emitter: 'bard'}},
+  {n: 1, title: 'On sort de l’Europe', theme: 'Europe', old: 'On sort de l’Europe', neu: '« Le Frexit n’est nullement notre projet » (avril 2022)', per: '2016 → avril 2022', scandal: {title: 'Kits de campagne', sub: 'Législatives 2012 · condamnation définitive du RN', date: '19 juin 2024', emitter: 'justice', short: 'En 2012, Jeanne, le micro-parti de Marine Le Pen, vend aux candidats FN des kits de campagne surfacturés, remboursés par l’État. En mars 2023, la cour d’appel condamne le RN pour recel d’abus de biens sociaux ; le 19 juin 2024, la Cour de cassation rend la condamnation définitive.'}},
+  {n: 2, title: 'La retraite à 60 ans', theme: 'Retraites', old: 'La retraite à 60 ans', neu: '60 ans pour les carrières longues, 62 pour les autres (février 2022)', per: '2017 → février 2022', scandal: {title: 'Les tracts Poutine', sub: 'Poignée de main mise au rebut', date: '1er mars 2022', emitter: 'rn', short: '1,2 million de livrets de campagne montrent Marine Le Pen serrant la main de Vladimir Poutine. Une semaine après l’invasion de l’Ukraine, selon Libération, des délégués reçoivent la consigne de se débarrasser des exemplaires restants ; le parti dément toute consigne nationale.'}},
+  {n: 3, title: 'Le nucléaire, on arrête', theme: 'Énergie', old: 'Le nucléaire, on arrête', neu: 'Une vingtaine de réacteurs (avril 2022)', per: '2011-2012 → avril 2022', scandal: {title: '« Brebis galeuses »', sub: 'Candidats RN des législatives', date: 'juin-juillet 2024', emitter: 'bard', short: 'Aux législatives de 2024, plusieurs candidats RN dérapent : les Maghrébins qui « n’ont pas leur place dans les hauts lieux », les chambres à gaz, une casquette nazie. Jordan Bardella parle de « quatre ou cinq brebis galeuses » qui « seront mis à la porte ».'}},
+  {n: 4, title: 'Non à l’IVG dans la Constitution', theme: 'IVG', old: 'Non à l’IVG dans la Constitution', neu: 'Votée le 30 janvier 2024', per: 'novembre 2022 → janvier 2024', scandal: {title: 'Assistants parlementaires', sub: '1re instance, appel, pourvoi en cassation', date: '31 mars 2025 · 7 juillet 2026', emitter: 'justice', short: 'Le 31 mars 2025, le tribunal correctionnel de Paris condamne Marine Le Pen pour détournement de fonds publics (assistants parlementaires européens), avec inéligibilité à exécution provisoire. Le 7 juillet 2026, la cour d’appel confirme la condamnation ; elle se pourvoit en cassation : la condamnation n’est pas définitive.'}},
+  {n: 5, title: 'Non à la règle d’or, oui à la dette', theme: 'Budget', old: 'Non à la règle d’or, oui à la dette', neu: 'Règle d’or constitutionnelle (août 2026)', per: '2012 → août 2026', scandal: {title: 'Écrits attribués à Bardella', sub: 'Révélations Mediapart · attribués, contestés, non jugés', date: '28 septembre 2026', emitter: 'bard', short: 'Le 28 septembre 2026, Mediapart publie des écrits antisémites datés de 2013 qu’il attribue à Jordan Bardella. Il conteste « formellement », dénonce une « opération de barbouzerie » et annonce une plainte en diffamation. Aucune décision de justice n’est intervenue.'}},
 ];
 // Fiches du bouton « i ». Chaque fait vient du corpus du Project (claude/corpus-declarations-LePen-Bardella.md), du relevé des votes (claude/votes_cles_RN_assemblee.md) ou des fiches sourcées du proto v2 (BIGS).
 // Quand le corpus ne couvre pas un fait affiché (surtout les positions anciennes, 2011-2017), la fiche le dit : « source à compléter ».
@@ -438,7 +438,7 @@ const PSPEC = [
   {k:'cam', g:'Commun', l:'Distance de la caméra', u:'×', d:'0,4 = très loin (on voit beaucoup, tout est petit), 1,2 = très proche. La hauteur jouable suit.', min:0.4, max:1.2, step:0.05},
   {k:'speed', g:'Commun', l:'Vitesse de vol', u:'px écran/s', d:'Défilement à l’œil, constant quelle que soit la distance de caméra.', min:150, max:500, step:10},
   {k:'flight', g:'Commun', l:'Durée du vol', u:'s', d:'Longueur de la phase de vol d’un niveau.', min:30, max:120, step:5},
-  {k:'ceil', g:'Commun', l:'Limite d’altitude', u:'px monde', d:'Marge sous le bord haut du monde : au-dessus, le vent emporte Marine (niveau perdu).', min:20, max:200, step:5},
+  {k:'ceil', g:'Commun', l:'Plafond', u:'px monde', d:'Marge sous le bord haut du monde : Marine ne monte pas plus haut (sans sanction).', min:20, max:200, step:5},
   {k:'level', g:'Commun', l:'Niveau de test', u:'1 à 5', d:'Niveau joué par les boutons de test du menu (thème et scandale). La campagne, elle, suit la carte.', min:1, max:5, step:1},
   {k:'tutoFlight', g:'Commun', l:'Durée du vol du tuto', u:'s', d:'Longueur de la phase de vol du tuto (pas de tempête, course facile).', min:15, max:90, step:5},
   {k:'stormRate', g:'Tempête', l:'Cadence des lancers', u:'s', d:'Temps moyen entre deux casseroles (±30 %).', min:0.2, max:3, step:0.1},
@@ -448,6 +448,7 @@ const PSPEC = [
   {k:'lobShare', g:'Tempête', l:'Part des retombées sur Marine', u:'%', d:'Lancers en cloche depuis l’émetteur qui retombent exactement sur la position de Marine au moment du lancer (les plus durs à éviter).', min:0, max:100, step:5},
   {k:'curveShare', g:'Tempête', l:'Part des trajectoires incurvées', u:'%', d:'Lancers en cloche qui croisent la colonne de Marine à une autre hauteur que la sienne (ni son couloir, ni l’eau si elle y est).', min:0, max:100, step:5},
   {k:'lobGrav', g:'Tempête', l:'Courbure des cloches', u:'px/s²', d:'Gravité des lancers en cloche : plus elle est forte, plus la cloche est haute et lente à lire.', min:200, max:1600, step:50},
+  {k:'shotArc', g:'Tempête', l:'Courbure des tirs tendus', u:'px/s²', d:'Les tirs « tendus » décrivent une légère parabole : ils montent un peu puis retombent exactement dans leur couloir à la colonne de Marine. 0 = droits.', min:0, max:600, step:10},
   {k:'telegraph', g:'Tempête', l:'Préavis', u:'s', d:'Temps pendant lequel un repère rouge annonce la hauteur (tir) ou la position (retombée) avant le lancer.', min:0, max:1.5, step:0.05},
   {k:'stormHits', g:'Vent', l:'Touches pour faire fuir', u:'', d:'(éléments de langage, mis de côté)', min:1, max:6, step:1},
   {k:'stormMax', g:'Tempête', l:'Durée maximale', u:'s', d:'Au bout de ce temps, l’émetteur s’en va de lui-même.', min:8, max:60, step:1},
@@ -465,10 +466,9 @@ const PSPEC = [
   {k:'chaseStep0', g:'Course', l:'Changements de cap (début)', u:'s', d:'Temps entre deux changements de direction de l’orbe quand la jauge est vide.', min:0.3, max:4, step:0.1},
   {k:'chaseStep1', g:'Course', l:'Changements de cap (fin)', u:'s', d:'Idem quand la jauge est pleine : plus court = plus nerveux à mesure que la jauge se remplit.', min:0.2, max:4, step:0.1},
   {k:'chaseGain', g:'Course', l:'Gain de l’actu d’or', u:'pt', d:'Points de sondage si on attrape l’actu d’or (en attendant la volte-face).', min:0, max:10, step:0.5},
-  {k:'blowT', g:'Commun', l:'Temps d’emportement', u:'s', d:'Au-dessus de la limite, la jauge se remplit en ce temps ; pleine = emportée par le vent (niveau perdu). Elle se vide dessous.', min:0.1, max:2, step:0.1},
-  {k:'orbGain', g:'Commun', l:'Orbe d’argent', u:'pt', d:'Points de sondage par orbe d’argent attrapée au-dessus de la limite.', min:0, max:3, step:0.1},
-  {k:'orbEvery', g:'Commun', l:'Fréquence des orbes', u:'s', d:'Temps moyen entre deux orbes d’argent.', min:5, max:40, step:1},
   {k:'pollLevel', g:'Commun', l:'Sondages par niveau', u:'pt', d:'Gain continu sur toute la durée du vol si on ne touche aucun journaliste.', min:0, max:20, step:1},
+  {k:'grazePoll', g:'Commun', l:'Bonus de frôlement', u:'pt', d:'Points de sondage gagnés en frôlant un journaliste sans le toucher.', min:0, max:3, step:0.1},
+  {k:'grazeR', g:'Commun', l:'Marge de frôlement', u:'px monde', d:'Distance au-delà de la zone de contact dans laquelle le passage compte comme un frôlement.', min:10, max:120, step:5},
   {k:'hitPoll', g:'Commun', l:'Coût d’un journaliste', u:'pt', d:'Points de sondage perdus à chaque contact (puis 1 s d’invincibilité).', min:0, max:3, step:0.1},
   {k:'windCap', g:'Appui', l:'Réserve de vent', u:'s d’appui', d:'Secondes d’appui cumulées que permet une jauge pleine. Monter consomme, planer et descendre sont gratuits. Vide : l’appui ne répond plus.', min:1, max:12, step:0.5},
   {k:'windRefill', g:'Appui', l:'Recharge sur l’eau', u:'s', d:'Temps pour remplir la jauge en glissant sur l’eau.', min:0.3, max:5, step:0.1},
@@ -486,7 +486,7 @@ const PSPEC = [
   {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
 ];
 // valeurs par défaut = réglages sauvegardés par Pierre le 18/10 au soir (caméra loin, vol vif)
-const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, chaseMax: 15, chaseTime: 8, chaseDrain: 5, chaseX0: 55, chaseX1: 92, chaseThin: 45, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseGain: 2, tutoFlight: 40, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, blowT: 0.6, orbGain: 1, orbEvery: 13, pollLevel: 10, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
+const PDEF = {cam: 0.5, speed: 340, flight: 75, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, shotArc: 150, chaseMax: 15, chaseTime: 8, chaseDrain: 5, chaseX0: 55, chaseX1: 92, chaseThin: 45, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseGain: 2, tutoFlight: 40, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0, pollLevel: 10, grazePoll: 0.5, grazeR: 40, hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
   vUp: 400, tUp: 0.25, vDown: 520, tDown: 0.5, glide: 0, tTurn: 0.05,
   windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
 const P = Object.assign({}, PDEF, {
@@ -516,7 +516,7 @@ async function saveSettings(){
 
 // ---------- state ----------
 let state = 'title', paused = false, ctrl = 'tap';
-let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, stats, onWater = false, blownT = 0, blowGauge = 0, endReason = '', orbs, nextOrb, wind = 1, windEmptyT = -9;
+let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, stats, onWater = false, endReason = '', wind = 1, windEmptyT = -9;
 let chase = null, trail = [], marineX = null;   // marineX : abscisse imposée (course) ; null = position normale
 let phase = 'fly', stormT = 0, emitter = null, pans = [], bubbles = [], cass = 0, chain = [], nextSalvo = 0, nextBubble = 0, dark = 0, bannerT = 0, flash = 0, cassInv = 0;
 let coinsList, journos, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
@@ -553,9 +553,9 @@ function buyBonus(id){
 }
 
 function start(){
-  applyCam(); seed = 7; realT = 0; tFlight = 0; py = P.yMax; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0; onWater = true; blownT = 0; blowGauge = 0; endReason = ''; orbs = []; nextOrb = 6; wind = 1; windEmptyT = -9;
+  applyCam(); seed = 7; realT = 0; tFlight = 0; py = P.yMax; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0; onWater = true; endReason = ''; wind = 1; windEmptyT = -9;
   phase = 'fly'; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chain = []; chase = null; trail = []; marineX = null; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; cassInv = 0; booth = null; infoOpen = null;
-  poll = P.pollStart; coins = 0; stats = {hits: 0, orbs: 0, coins: 0, cass: 0, bubbles: 0, gold: false, kevlar: 0};
+  poll = P.pollStart; coins = 0; stats = {hits: 0, graze: 0, coins: 0, cass: 0, bubbles: 0, gold: false, kevlar: 0};
   coinsList = []; journos = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0; patOrder = [];
   pointerY = null; pointerDown = false; keyUp = keyDown = false;
   if (mode === 'camp'){
@@ -571,7 +571,7 @@ function start(){
 }
 function startLevel(n){ mode = 'camp'; levelN = clamp(n, 0, 5); camp.cur = levelN; testMode = ''; start(); }
 function startTestFly(){ mode = 'test'; levelN = clamp(Math.round(P.level), 1, 5); testMode = 'fly'; start(); }
-function startTest(){ mode = 'test'; levelN = clamp(Math.round(P.level), 1, 5); testMode = 'storm'; start(); startStorm(); }
+function startTest(){ mode = 'test'; levelN = clamp(Math.round(P.level), 1, 5); testMode = 'storm'; start(); startStorm(true); }
 function startTestChase(){ mode = 'test'; levelN = clamp(Math.round(P.level), 1, 5); testMode = 'chase'; start(); startChase(); }
 function replay(){ if (mode === 'camp') startLevel(levelN); else if (testMode === 'storm') startTest(); else if (testMode === 'chase') startTestChase(); else startTestFly(); }
 function toTitle(){ if (mode === 'camp' && state !== 'title') saveCamp(); state = 'title'; infoOpen = null; musicStop(); document.getElementById('titleScreen').hidden = false; }
@@ -616,17 +616,12 @@ function applyInput(dt){
   }
   const vyBefore = vy;
   py += vy*dt;
-  if (py < P.ceil - 40) py = P.ceil - 40;   // on ne monte pas plus haut que la zone des orbes
+  if (py < P.ceil){ py = P.ceil; if (vy < 0) vy = 0; }   // le plafond borne le vol, sans sanction
   if (py >= P.yMax){
     py = P.yMax; if (vy > 0) vy = 0;
     if (!onWater){ sfxP3('plouf'); fx.push({kind: 'splash', x: PX(), y: WATER, t: 0, big: vyBefore > 300}); onWater = true; wind = Math.max(wind, P.windMin/100); }
   } else if (onWater && py < P.yMax - 2) onWater = false;
-  // limite d'altitude : au-dessus, la jauge d'emportement se remplit ; pleine, le vent emporte Marine
-  if (py < P.ceil){ const was = blowGauge; blowGauge = Math.min(1, blowGauge + dt/P.blowT); if (was === 0) sfxP3('alert'); if (blowGauge >= 1){ state = 'blown'; blownT = 0; endReason = 'blown'; sfxP3('gust'); } }
-  else blowGauge = Math.max(0, blowGauge - dt/P.blowT*1.5);
 }
-// orbes d'argent : au-dessus de la limite, annoncées 1 s avant d'entrer, toujours en concurrence avec un bloc de pièces en bas
-function addOrb(x){ orbs.push({x, y: P.ceil - 22, alert: 1.0, ph: rnd()*6.3}); }
 
 cv.addEventListener('pointerdown', e => { ensureAudio(); if (state !== 'play' || phase === 'intro') return; e.preventDefault(); const l = toLocal(e); pointerDown = true; pointerY = l.y; });
 cv.addEventListener('pointermove', e => { if (!pointerDown) return; const l = toLocal(e); pointerY = l.y; });
@@ -649,7 +644,7 @@ window.addEventListener('keyup', e => { if (e.code === 'ArrowUp' || e.code === '
 // Chaque motif est posé à droite de l'écran (x = VW + marge) et défile vers la gauche.
 // Les pièces grossissent un peu quand la caméra recule, pour rester lisibles à l'écran
 const coinK = () => clamp(Math.sqrt(0.8/Z)*1.15, 1, 2), coinR = () => P.coinR*coinK(), coinGap = () => P.coinGap*coinK();
-const COIN_TOP = () => P.ceil + 60;   // les pièces restent au moins 60 px sous la limite
+const COIN_TOP = () => P.ceil + 40;   // les pièces restent un peu sous le plafond
 function addCoin(x, y, block){ if (y < COIN_TOP() || y > P.yMax + 10) return; coinsList.push({x, y, r: coinR(), block, ph: rnd()*6.3}); block.n++; }
 function newBlock(){ const b = {n: 0, got: 0, done: false}; return b; }
 function coinLine(x0, y, n, b){ for (let i=0;i<n;i++) addCoin(x0 + i*coinGap(), y, b); return x0 + n*coinGap(); }
@@ -718,22 +713,19 @@ function pop(t, color, x, y, big){ pops.push({t, color, x, y, life: big ? 1.6 : 
 function addPoll(v){ poll = clamp(poll + v, 0, 100); }
 function update(dt){
   realT += dt;
-  if (state === 'blown'){ blownT += dt; py -= 900*dt; scrollX += worldSpeed()*dt*0.5; if (blownT > 0.8) endLevel('blown'); return; }
   if (state === 'final'){ updateFinal(dt); return; }
   if (state !== 'play' || paused) return;
   tFlight += dt; lastDt = dt;
-  if (phase === 'fly' && tFlight >= flightDur()){ if (isTuto()) startChase(); else startStorm(); }
+  if (phase === 'fly' && tFlight >= flightDur()){ if (isTuto()) startChase(); else startStorm(false); }
   if (phase === 'intro'){ introT += dt; if (emitter){ emitter.frT += dt; if (emitter.frT > 0.5){ emitter.frT = 0; emitter.fr = (emitter.fr + 1) % emitter.E.frames.length; } } return; }
   applyInput(dt); if (state !== 'play') return;
   const mx = PX(), my = py, dx = worldSpeed()*dt;
   inv = Math.max(0, inv - dt);
-  if (phase === 'fly'){ addPoll(P.pollLevel/flightDur()*dt); nextSpawn -= dt; if (nextSpawn <= 0) spawn(); nextOrb -= dt; }   // les sondages montent avec la distance, pendant le vol
+  if (phase === 'fly'){ addPoll(P.pollLevel/flightDur()*dt); nextSpawn -= dt; if (nextSpawn <= 0) spawn(); }   // les sondages montent avec la distance, pendant le vol
+  else if (phase === 'approach') updateApproach(dt);
   else if (phase === 'storm') updateStorm(dt);
   else if (phase === 'chase') updateChase(dt);
   updateChain(dt);
-  if (phase === 'fly' && nextOrb <= 0){ addOrb(VWW + 40); const b = newBlock(); coinLine(VWW + 40 + sec(0.3), P.yMax, 20, b); coinLine(VWW + 40 + sec(0.3), P.yMax - coinGap(), 20, b); nextOrb = P.orbEvery*(0.8 + rnd()*0.4); }
-  for (const o of orbs){ if (o.alert > 0){ o.alert -= dt; continue; } o.x -= dx; if (!o.got && Math.hypot(o.x - mx, o.y - my) < 46){ o.got = true; stats.orbs++; addPoll(P.orbGain); pop('Actu d’argent +' + P.orbGain.toFixed(1).replace('.', ',') + ' pt', '#e8edf5', mx + 10, my - 60, true); sfxP3('catch'); fx.push({kind: 'flash', x: o.x, y: o.y, t: 0}); } }
-  orbs = orbs.filter(o => !o.got && o.x > -80);
   // pièces
   for (const c of coinsList){ c.x -= dx;
     if (bonus === 'pump' && !c.got){ const d = Math.hypot(c.x - mx, c.y - my); if (d < MAGNET_R && d > 1){ c.x += (mx - c.x)/d*MAGNET_V*dt; c.y += (my - c.y)/d*MAGNET_V*dt; } }   // la pompe à fric attire les pièces proches
@@ -747,8 +739,11 @@ function update(dt){
     j.x -= dx + (j.vx || 0)*dt;
     if (j.track > 0){ j.track -= dt; j.y += clamp(my - j.y, -130*dt, 130*dt); }
     const cy = j.kind === 'boat' ? j.y - 30 : j.y;
-    if (inv <= 0 && Math.abs(j.x - mx) < j.w/2 + 22 && Math.abs(cy - my) < j.h/2 + 28){
-      inv = P.hitInv; stats.hits++; sfxP3('hit'); fx.push({kind: 'flash', x: j.x, y: cy, t: 0});
+    // frôlement : on mesure de combien Marine est passée à côté de la zone de contact ; le journaliste passé sans contact, le bonus tombe
+    const over = Math.max(Math.abs(j.x - mx) - (j.w/2 + 22), Math.abs(cy - my) - (j.h/2 + 28)); if (j.near === undefined || over < j.near) j.near = over;
+    if (!j.passed && j.x + j.w/2 < mx - 40){ j.passed = true; if (!j.hitDone && j.near >= 0 && j.near < P.grazeR){ addPoll(P.grazePoll); stats.graze++; pop('Frôlé ! +' + P.grazePoll.toFixed(1).replace('.', ',') + ' pt', '#bdf5c9', mx + 10, my - 60, true); sfxP3('up'); } }
+    if (inv <= 0 && !j.hitDone && Math.abs(j.x - mx) < j.w/2 + 22 && Math.abs(cy - my) < j.h/2 + 28){
+      j.hitDone = true; inv = P.hitInv; stats.hits++; sfxP3('hit'); fx.push({kind: 'flash', x: j.x, y: cy, t: 0});
       if (kevlarLeft > 0){ kevlarLeft--; stats.kevlar++; pop('Kevlar ! (' + kevlarLeft + ' restant' + (kevlarLeft > 1 ? 's' : '') + ')', '#bdf5c9', mx + 10, my - 60, true); }   // la veste en kevlar encaisse
       else { addPoll(-P.hitPoll); pop('−' + P.hitPoll.toFixed(1).replace('.', ',') + ' pt', '#d63b3b', mx + 10, my - 60, true); }
     }
@@ -759,16 +754,24 @@ function update(dt){
 }
 
 // ---------- la tempête : le scandale du niveau ----------
-function startStorm(){
+function startStorm(direct){
   const L = curLevel(), E = EMITTERS[L.scandal.emitter];
-  phase = 'intro'; stormT = 0; bannerT = 0; nextSalvo = 1.2; nextBubble = 2.2; pans = []; bubbles = []; dark = 1; introT = 0;
-  emitter = {kind: L.scandal.emitter, E, x: VWW - 230, tx: VWW - 230, y: E.y(), hits: 0, recoil: 0, pause: 0, fled: false, fr: 0, frT: 0};
-  pointerDown = false; keyUp = false; sfxP3('wall');
+  stormT = 0; bannerT = 0; nextSalvo = 1.2; nextBubble = 2.2; nextStormCoin = 1.5; pans = []; bubbles = []; introT = 0;
+  // l'émetteur arrive de la droite à vue (le jeu continue), se met en place, puis la carte du scandale s'affiche ; direct = tout de suite en place (boutons de test)
+  emitter = {kind: L.scandal.emitter, E, x: direct ? VWW - 230 : VWW + 360, tx: VWW - 230, y: E.y(), hits: 0, recoil: 0, pause: 0, fled: false, fr: 0, frT: 0};
+  if (direct){ phase = 'intro'; dark = 1; pointerDown = false; keyUp = false; sfxP3('wall'); } else { phase = 'approach'; dark = Math.max(dark, 0.01); sfxP3('gust'); }
 }
-let introT = 0;
+function updateApproach(dt){
+  const e = emitter; dark = Math.min(1, dark + dt/1.6);
+  e.x += clamp(e.tx - e.x, -560*dt, 560*dt); e.frT += dt; if (e.frT > 0.5){ e.frT = 0; e.fr = (e.fr + 1) % e.E.frames.length; }
+  if (Math.abs(e.x - e.tx) < 1){ phase = 'intro'; introT = 0; pointerDown = false; keyUp = false; holding = false; sfxP3('wall'); }
+}
+let introT = 0, nextStormCoin = 1.5;
 function beginStormPlay(){ if (phase !== 'intro') return; phase = 'storm'; sfxP3('click'); }
 function updateStorm(dt){
   stormT += dt; const mx = PX(), my = py, e = emitter;
+  // des pièces continuent d'arriver pendant la tempête (sans journalistes) : rubans et vagues
+  nextStormCoin -= dt; if (nextStormCoin <= 0 && !e.fled){ nextStormCoin = 2.2 + rnd()*1.2; const b = newBlock(); if (rnd() < 0.5) coinLines(VWW + 60, bandY(pick(['low', 'mid', 'high'])), 8 + Math.floor(rnd()*8), b, 2); else { const pts = simPath(lerp(COIN_TOP(), WATER, 0.3 + rnd()*0.4), [[true, 0.35], [false, 0.5], [true, 0.35], [false, 0.5]]); coinPath(VWW + 60, pts, b, 0, undefined, 2); } }
   dark = Math.min(1, dark + dt/2); flash = Math.max(0, flash - dt*3); if (rnd() < dt*0.12) flash = 1;
   if (bannerT > 0) bannerT -= dt;
   cassInv = Math.max(0, cassInv - dt);
@@ -792,7 +795,8 @@ function updateStorm(dt){
       pans.push({kind: r < P.lobShare ? 'lob' : 'curve', x: ox, y: oy, vx, vy: vy0, g, delay: P.telegraph, rot: rnd()*6.3, spin: 1.2 + rnd()*0.8, w, s: 0.75 + rnd()*0.25});
     } else {
       const lane = rnd()*100 < P.aimShare ? clamp(myLane, 0, n - 1) : Math.floor(rnd()*n);
-      pans.push({kind: 'shot', x: ox, y: laneY(lane) + (rnd() - 0.5)*10, vx: -P.panSpeed, vy: 0, g: 0, delay: P.telegraph, rot: rnd()*6.3, spin: 0.5, w, s: 0.75 + rnd()*0.25});
+      const ts = (ox - mx)/P.panSpeed;   // temps jusqu'à la colonne de Marine : la parabole y repasse exactement par le couloir
+      pans.push({kind: 'shot', x: ox, y: laneY(lane) + (rnd() - 0.5)*10, vx: -P.panSpeed, vy: -0.5*P.shotArc*ts, g: P.shotArc, delay: P.telegraph, rot: rnd()*6.3, spin: 0.5, w, s: 0.75 + rnd()*0.25});
     } } }
   for (const c of pans){ if (c.delay > 0){ c.delay -= dt; if (c.delay <= 0) sfxP3(e.E.sfx); continue; }
 c.vy += c.g*dt; c.x += c.vx*dt; c.y += c.vy*dt; c.rot += c.spin*dt;
@@ -831,8 +835,8 @@ function updateChain(dt){
 // Positions en référence monde : l'orbe part à chaseX0 % de la largeur d'écran et dérive à droite jusqu'à chaseX1 % quand le temps s'écoule ;
 // Marine part de sa position normale (22 %) et avance vers l'orbe à mesure que la jauge se remplit : jauge pleine = contact.
 function startChase(){
-  phase = 'chase'; emitter = null; pans = []; bubbles = []; trail = [];
-  chase = {t: 0, gauge: 0, y: lerp(P.ceil + 80, P.yMax - 40, 0.5), vy: 0, target: 0, nextTurn: 0.8, hist: [], caught: false, leaving: false, catchT: 0, inside: false, x0: PX()};
+  phase = 'chase'; emitter = null; pans = []; bubbles = []; trail = []; nextStormCoin = 1.5;
+  chase = {t: 0, gauge: 0, y: P.yMax - 30, vy: 0, target: 0, nextTurn: 1.2, hist: [], caught: false, leaving: false, catchT: 0, inside: false, x0: PX()};
   chase.target = chase.y; marineX = chase.x0; sfxP3('orb');
 }
 const orbX = () => chase ? lerp(P.chaseX0, P.chaseX1, clamp(chase.t/P.chaseMax, 0, 1))/100*VWW : 0;
@@ -878,7 +882,7 @@ function drawChase(){
   const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, 70); g.addColorStop(0, 'rgba(255,226,120,.6)'); g.addColorStop(1, 'rgba(255,200,80,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ox, oy, 70, 0, 7); ctx.fill();
   spr('orbg' + (Math.floor(realT*8) % 4), ox, oy + 18, 1.1);
   // repère de debug léger : la fenêtre de la traîne à la colonne de Marine
-  if (!c.caught && !c.leaving && c.ty !== undefined){ ctx.strokeStyle = c.inside ? 'rgba(22,163,74,.7)' : 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; ctx.setLineDash([6, 6]); ctx.beginPath(); ctx.moveTo(mx + 40, c.ty - c.tw/2); ctx.lineTo(mx + 40, c.ty + c.tw/2); ctx.stroke(); ctx.setLineDash([]); }
+  if (!c.caught && !c.leaving && c.ty !== undefined){ ctx.strokeStyle = c.inside ? 'rgba(22,163,74,.7)' : 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(mx + 40, c.ty - c.tw/2); ctx.lineTo(mx + 40, c.ty + c.tw/2); ctx.stroke(); }
 }
 function drawChaseHud(){
   const c = chase, w = 300, x = VW/2 - w/2, y = 14;
@@ -1034,12 +1038,20 @@ function drawJourno(j){
   if (j.track > 0){ ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.arc(28, -2, 3 + 1.5*Math.sin(realT*20), 0, 7); ctx.fill(); }
   ctx.restore();
 }
+let rainPat = null;
+function rainPattern(){
+  if (rainPat) return rainPat;   // la pluie est un motif pré-rendu une fois (une seule passe de remplissage par image, au lieu de 40 traits)
+  const c = document.createElement('canvas'); c.width = 256; c.height = 256; const g = c.getContext('2d');
+  g.strokeStyle = 'rgba(200,215,240,.6)'; g.lineWidth = 1.5; g.lineCap = 'round'; g.beginPath();
+  for (let i=0;i<9;i++){ const x = (i*97 + 20) % 256, y = (i*151 + 30) % 256; g.moveTo(x, y); g.lineTo(x - 11, y + 22); if (x < 20){ g.moveTo(x + 256, y); g.lineTo(x + 256 - 11, y + 22); } if (y > 230){ g.moveTo(x, y - 256); g.lineTo(x - 11, y - 256 + 22); } }
+  g.stroke(); rainPat = ctx.createPattern(c, 'repeat'); return rainPat;
+}
 function drawStormSky(){
   const a = 0.5*dark + (flash > 0 ? -0.35*flash : 0);
   ctx.fillStyle = a >= 0 ? 'rgba(15,20,40,' + a + ')' : 'rgba(255,255,255,' + (-a) + ')'; ctx.fillRect(0, 0, VWW, WH);
-  // pluie oblique
-  ctx.strokeStyle = 'rgba(200,215,240,' + (0.35*dark) + ')'; ctx.lineWidth = 1.5; const off = realT*900;
-  for (let i=0;i<40;i++){ const x = ((i*137 + off*0.6) % (VWW + 200)) - 100, y = ((i*271 + off) % (WH + 100)) - 50; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 14, y + 26); ctx.stroke(); }
+  // pluie oblique : le motif défile (translation du repère, remplissage unique)
+  const p = rainPattern(); if (!p) return; const off = realT*900;
+  ctx.save(); ctx.globalAlpha = 0.6*dark; ctx.translate(-((off*0.5) % 256), (off % 256)); ctx.fillStyle = p; ctx.fillRect(-256, -256 - (off % 256), VWW + 512, WH + 512); ctx.restore();
 }
 function drawEmitter(){
   const e = emitter, E = e.E, bob = Math.sin(realT*1.3)*3;
@@ -1050,13 +1062,15 @@ function drawEmitter(){
   outText(E.name, e.x, e.y - E.h - 34, 13, 900, '#fff', 'center', 'rgba(20,33,61,.7)');
 }
 function drawPan(c){
-  if (c.delay > 0){   // préavis : repère rouge clignotant au bord droit (tir) ou au-dessus de la position (retombée)
+  if (c.delay > 0){   // préavis : repère rouge clignotant et trajectoire prévue en pointillés (un seul chemin, pas de setLineDash)
     const k = 0.5 + 0.5*Math.sin(realT*18); ctx.save(); ctx.globalAlpha = 0.55 + 0.45*k;
-    if (c.kind === 'shot'){ ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.moveTo(VWW - 70, c.y); ctx.lineTo(VWW - 30, c.y - 16); ctx.lineTo(VWW - 30, c.y + 16); ctx.closePath(); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke(); ctx.strokeStyle = 'rgba(214,59,59,.5)'; ctx.setLineDash([12, 10]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(VWW - 70, c.y); ctx.lineTo(VWW - 420, c.y); ctx.stroke(); ctx.setLineDash([]); }
-    else { // cloche : la trajectoire prévue en pointillés, et un triangle au-dessus de l'émetteur
-      ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.moveTo(c.x, c.y - 40); ctx.lineTo(c.x - 16, c.y - 70); ctx.lineTo(c.x + 16, c.y - 70); ctx.closePath(); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
-      ctx.fillStyle = 'rgba(214,59,59,.6)'; for (let t = 0.1; t < 3; t += 0.12){ const x = c.x + c.vx*t, y = c.y + c.vy*t + 0.5*c.g*t*t; if (y > WATER || x < -40) break; ctx.beginPath(); ctx.arc(x, y, 4, 0, 7); ctx.fill(); } }
-    ctx.restore(); return; }
+    ctx.fillStyle = '#d63b3b'; ctx.beginPath();
+    if (c.kind === 'shot'){ ctx.moveTo(VWW - 70, c.y); ctx.lineTo(VWW - 30, c.y - 16); ctx.lineTo(VWW - 30, c.y + 16); }
+    else { ctx.moveTo(c.x, c.y - 40); ctx.lineTo(c.x - 16, c.y - 70); ctx.lineTo(c.x + 16, c.y - 70); }
+    ctx.closePath(); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
+    ctx.fillStyle = 'rgba(214,59,59,.6)'; ctx.beginPath();
+    for (let t = 0.1; t < 3; t += 0.12){ const x = c.x + c.vx*t, y = c.y + c.vy*t + 0.5*c.g*t*t; if (y > WATER || x < -40) break; ctx.moveTo(x + 4, y); ctx.arc(x, y, 4, 0, 7); }
+    ctx.fill(); ctx.restore(); return; }
   spr(c.w, c.x, c.y, c.s, false, c.rot);
 }
 function drawBubble(b){
@@ -1074,22 +1088,24 @@ function drawCass(){
   for (let i=0;i<chain.length;i++){ const l = chain[i]; spr(l.w, l.x, l.y + 10, l.s*0.8, false, l.rot*0.5, blink && i === chain.length - 1 ? 0.4 : 1); }
 }
 function drawIntro(){
-  // carte de pause : le scandale et son émetteur, le jeu reprend au tap
+  // carte de pause : le scandale (visuel dédié à venir, titre, résumé), l'émetteur et la consigne ; le jeu reprend au bouton ou au tap
   const L = curLevel(), S = L.scandal, E = emitter.E, k = clamp(introT/0.4, 0, 1);
   ctx.fillStyle = 'rgba(15,20,40,' + (0.45*k) + ')'; ctx.fillRect(0, 0, VW, H);
-  const w = 640, h = 230, x = VW/2 - w/2, y = H/2 - h/2 + (1 - k)*30; ctx.save(); ctx.globalAlpha = k; uiPanel(x, y, w, h);
-  // portrait de l'émetteur à gauche
-  ctx.save(); ctx.beginPath(); rr(x + 28, y + 30, 150, 150, 12); ctx.clip(); ctx.fillStyle = '#9bbfe6'; ctx.fillRect(x + 28, y + 30, 150, 150);
-  const fr = E.frames[emitter.fr], a = ATLAS[fr], ps = Math.min(140/a[2], 140/a[3]); spr(fr, x + 103, y + 30 + 75 + a[5]*ps - a[3]*ps/2, ps); ctx.restore();
-  ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; rr(x + 28, y + 30, 150, 150, 12); ctx.stroke();
-  const tx = x + 205;
-  text('SCANDALE · ' + S.date, tx, y + 42, 12, 900, '#d63b3b');
-  text(S.title, tx, y + 70, 26, 900, '#14213d', 'left', UIT);
-  text(S.sub, tx, y + 98, 13, 700, '#5b6475');
-  text(E.name + ' sort les casseroles.', tx, y + 126, 14, 800, '#14213d');
-  text('Évite-les : chacune s’accroche à la planche. À ' + Math.round(P.cassMax) + ', Marine coule.', tx, y + 148, 12, 700, '#5b6475');
-  btn(x + w - 230, y + h - 62, 200, 44, 'Affronter la tempête', '#22a447', '#fff', 'storm');
-  iBtn(x + w - 30, y + 30, 'sinfo');
+  const w = 800, h = 348, x = VW/2 - w/2, y = H/2 - h/2 + (1 - k)*30; ctx.save(); ctx.globalAlpha = k; uiPanel(x, y, w, h);
+  // visuel du scandale : emplacement réservé (grand cadre), avec l'émetteur en attendant l'illustration dédiée
+  const vx = x + 26, vy2 = y + 26, vw = 296, vh = 232;
+  ctx.save(); ctx.beginPath(); rr(vx, vy2, vw, vh, 12); ctx.clip(); const gr = ctx.createLinearGradient(0, vy2, 0, vy2 + vh); gr.addColorStop(0, '#5b7fb5'); gr.addColorStop(1, '#2c4a7c'); ctx.fillStyle = gr; ctx.fillRect(vx, vy2, vw, vh);
+  const fr = E.frames[emitter.fr], a = ATLAS[fr], ps = Math.min(200/a[2], 190/a[3]); spr(fr, vx + vw/2, vy2 + 20 + 95 + a[5]*ps - a[3]*ps/2, ps); ctx.restore();
+  ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; rr(vx, vy2, vw, vh, 12); ctx.stroke();
+  ctx.fillStyle = 'rgba(20,33,61,.75)'; rr(vx + 8, vy2 + vh - 30, vw - 16, 22, 6); ctx.fill(); text('Visuel du scandale : à venir', vx + vw/2, vy2 + vh - 19, 11, 800, '#fff', 'center');
+  const tx = x + 346, tw = w - 372; let ty = y + 40;
+  text('SCANDALE · ' + S.date, tx, ty, 12, 900, '#d63b3b'); ty += 30;
+  text(S.title, tx, ty, 26, 900, '#14213d', 'left', UIT); ty += 26;
+  text(S.sub, tx, ty, 12.5, 700, '#5b6475'); ty += 24;
+  for (const ln of wrapText(S.short, tw, 13, 700).slice(0, 6)){ text(ln, tx, ty, 13, 700, '#1b1f2a'); ty += 17; }
+  ty += 6; for (const ln of wrapText(E.name + ' sort les casseroles : évite-les, chacune s’accroche à la planche. À ' + Math.round(P.cassMax) + ', Marine coule.', tw, 11.5, 800).slice(0, 2)){ text(ln, tx, ty, 11.5, 800, '#5b6475'); ty += 14; }
+  btn(x + w - 250, y + h - 60, 222, 44, 'Affronter la tempête', '#22a447', '#fff', 'storm');
+  iBtn(x + w - 284, y + h - 38, 'sinfo'); text('sources', x + w - 302, y + h - 38, 11, 800, '#5b6475', 'right');
   ctx.restore();
 }
 function drawBanner(){
@@ -1101,37 +1117,20 @@ function drawBanner(){
   text(S.sub, VW/2, y + 61, 12, 700, '#5b6475', 'center');
   ctx.restore();
 }
-function drawOrb(o){
-  if (o.alert > 0){ const k = 0.5 + 0.5*Math.sin(realT*12); ctx.save(); ctx.globalAlpha = 0.5 + 0.5*k; spr('orbs0', VWW - 50, o.y, 0.7); outText('Actu', VWW - 50, o.y - 34, 12, 800, '#e8edf5', 'center', 'rgba(20,33,61,.6)'); ctx.restore(); return; }
-  const f = Math.floor(realT*8 + o.ph) % 4, bob = Math.sin(realT*3 + o.ph)*4;
-  const g = ctx.createRadialGradient(o.x, o.y + bob, 0, o.x, o.y + bob, 60); g.addColorStop(0, 'rgba(230,240,255,.5)'); g.addColorStop(1, 'rgba(230,240,255,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(o.x, o.y + bob, 60, 0, 7); ctx.fill();
-  spr('orbs' + f, o.x, o.y + bob + 20, 0.9);
-}
-function drawCeiling(){
-  // zone de turbulence sous la limite : nuages sombres qui filent, puis la ligne
-  const y = P.ceil, off = scrollX*2.2 + realT*120;
-  ctx.save();
-  const g = ctx.createLinearGradient(0, y - 30, 0, y + 46); g.addColorStop(0, 'rgba(40,50,80,.55)'); g.addColorStop(0.4, 'rgba(60,70,100,.25)'); g.addColorStop(1, 'rgba(60,70,100,0)');
-  ctx.fillStyle = g; ctx.fillRect(0, y - 30, VWW, 76);
-  ctx.strokeStyle = 'rgba(230,236,245,.7)'; ctx.lineWidth = 2;
-  for (let i=0;i<14;i++){ const span = VWW + 200, x = ((i*173 + 40 - off*(0.8 + (i % 3)*0.2)) % span + span) % span - 100, yy = y + 4 + (i*29) % 36; ctx.beginPath(); ctx.moveTo(x, yy); ctx.lineTo(x + 50 + (i % 4)*18, yy - 3); ctx.stroke(); }
-  ctx.setLineDash([10, 8]); ctx.strokeStyle = 'rgba(214,59,59,.85)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(VWW, y); ctx.stroke(); ctx.setLineDash([]);
-  outText('Vent de haute altitude', VWW*0.72, y - 14, 13, 800, 'rgba(255,255,255,.75)', 'center', 'rgba(20,33,61,.5)');
-  if (blowGauge > 0){ const x = PX(), k = 1/Z; ctx.fillStyle = 'rgba(20,33,61,.6)'; rr(x - 40*k, y + 56, 80*k, 10*k, 5*k); ctx.fill(); ctx.fillStyle = blowGauge > 0.7 ? '#d63b3b' : '#f2b630'; rr(x - 38*k, y + 56 + 2*k, 76*k*blowGauge, 6*k, 3*k); ctx.fill(); outText('Emportée !', x, y + 44, 12*k, 900, '#fff', 'center', 'rgba(214,59,59,.8)'); }
-  ctx.restore();
-}
 function kiteFrame(){ if (ctrl === 'tap' && wind <= 0 && !onWater) return 'kite3'; if (ctrl === 'tap' && holding) return Math.floor(realT*8) % 2 ? 'kite3' : 'kite1'; return vy < -60 ? 'kite1' : Math.sin(realT*0.9) > 0.75 ? 'kite2' : 'kite0'; }
 const RS = 0.69;
 function drawMarine(){
   const x = PX(), y = py, blink = inv > 0 && Math.floor(realT*18) % 2 === 0;
   // sillage quand Marine est posée sur l'eau
   if (onWater){ spr('wake' + (Math.floor(realT*10) % 4), x - 10, WATER + 2, 0.9); }
+  // feedback de course : dans la traîne, Marine rayonne doré
+  if (phase === 'chase' && chase && chase.inside && !chase.caught){ const k = 0.75 + 0.25*Math.sin(realT*10), g = ctx.createRadialGradient(x, y + 10, 20, x, y + 10, 110*k); g.addColorStop(0, 'rgba(255,220,100,.45)'); g.addColorStop(1, 'rgba(255,200,80,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y + 10, 110*k, 0, 7); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,230,120,' + (0.5 + 0.4*k) + ')'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y + 10, 80 + 10*k, 0, 7); ctx.stroke(); }
   if (blink) return;
-  const near = clamp(1 - (py - P.ceil)/50, 0, 1);   // proche de la limite : le kite tremble
-  const shake = state === 'blown' ? 6 : near*4 + blowGauge*6;
+  const shake = 0;
   // direction : en mode appui, c'est la vitesse verticale ; en mode vent, c'est la girouette (le vent souffle, la voile le montre avant Marine)
   const sag = ctrl === 'tap' && wind <= 0 && !onWater ? 1 : 0;   // jauge vide : le kite s'affaisse
-  const dir = state === 'blown' ? 1 : ctrl === 'wind' ? aVane : clamp(-vy/P.vDown, -1, 1) - sag*0.6;
+  const dir = ctrl === 'wind' ? aVane : clamp(-vy/P.vDown, -1, 1) - sag*0.6;
   const tilt = -dir*0.2;
   const kn = kiteFrame(), ks = 0.69*0.56, kx = x + 90 + dir*30 + (shake ? (Math.random() - 0.5)*shake*2 : 0), ky = y - 96 - dir*30 + Math.sin(realT*1.7)*4 + (shake ? (Math.random() - 0.5)*shake*2 : 0);
   const le = LE2.airN, lx = x + le[0]*RS, ly = y + le[1]*RS;
@@ -1150,6 +1149,11 @@ function drawMarine(){
     for (let i=0;i<3;i++){ const a = realT*3 + i*2.1, sx = x - 70 + ((realT*60 + i*37) % 120), sy = y + 50 + Math.sin(a)*10, r = 2 + (Math.sin(a*2) + 1)*2; ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.moveTo(sx, sy - r); ctx.lineTo(sx + r*0.35, sy - r*0.35); ctx.lineTo(sx + r, sy); ctx.lineTo(sx + r*0.35, sy + r*0.35); ctx.lineTo(sx, sy + r); ctx.lineTo(sx - r*0.35, sy + r*0.35); ctx.lineTo(sx - r, sy); ctx.lineTo(sx - r*0.35, sy - r*0.35); ctx.closePath(); ctx.fill(); }
   }
   spr('airN', x, y + 60, RS, false, tilt);
+  // jauge de vent sous la planche : bleue, orange sous 50 %, rouge sous 20 %, clignote vide ; argent (infini) pendant la course
+  { const k = 1/Z, gw = 76*k, gh = 9*k, gx = x - gw/2 - 6, gy = y + 84;
+    const wc = phase === 'chase' ? '#c9d2dc' : wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.2 ? '#d63b3b' : wind < 0.5 ? '#f2b630' : '#2563eb';
+    ctx.fillStyle = 'rgba(20,33,61,.55)'; rr(gx - 2*k, gy - 2*k, gw + 4*k, gh + 4*k, 5*k); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.25)'; rr(gx, gy, gw, gh, 4*k); ctx.fill(); ctx.fillStyle = wc; rr(gx, gy, gw*wind, gh, 4*k); ctx.fill();
+    if (phase === 'chase') outText('vent infini', x - 6, gy + gh + 9*k, 9*k, 900, '#e8edf5', 'center', 'rgba(20,33,61,.6)'); }
   // filets de vent derrière Marine : vitesse
   ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 2;
   for (let i=0;i<3;i++){ const yy = y - 20 + i*30 + Math.sin(realT*9 + i)*4, l = 36 + 24*Math.abs(dir); ctx.beginPath(); ctx.moveTo(x - 60 - i*14, yy); ctx.lineTo(x - 60 - i*14 - l, yy - dir*l*0.6); ctx.stroke(); }
@@ -1186,7 +1190,7 @@ function drawHud(){
   ctx.fillStyle = 'rgba(20,33,61,.35)'; ctx.fillRect(0, 0, VW, 6); ctx.fillStyle = '#f2b630'; ctx.fillRect(0, 0, VW*k, 6);
   const L = curLevel(); outText((isTuto() ? 'Tuto' : 'Niveau ' + L.n) + ' · ' + L.title + (mode === 'test' ? ' · test' : ''), 12, 20, 12, 900, 'rgba(255,255,255,.85)', 'left', 'rgba(20,33,61,.6)');
   if (bonus) outText(bonus === 'kevlar' ? 'Kevlar : ' + kevlarLeft + ' journaliste' + (kevlarLeft > 1 ? 's' : '') + ' gratuit' + (kevlarLeft > 1 ? 's' : '') : bonus === 'pump' ? 'Pompe à fric' : 'Contre-feu', 12, 38, 11, 900, '#bdf5c9', 'left', 'rgba(20,33,61,.6)');
-  // le bandeau est en bas à gauche, pour laisser la zone des orbes dégagée en haut
+  // le bandeau est en bas à gauche
   const hy = H - 50;
   ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(10, hy, 250, 40, 10); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
   if (!uiDraw('iPoll', 16, hy + 4, 32)){ ctx.fillStyle = '#2563eb'; rr(20, hy + 8, 24, 24, 4); ctx.fill(); }
@@ -1194,19 +1198,14 @@ function drawHud(){
   drawCashbox(150, hy + 6); text(String(mode === 'camp' ? camp.coins + coins : coins), 188, hy + 20, 19, 900, '#14213d');
   // jauge de casseroles : 10 crans, alerte à partir de 8
   const n = Math.round(P.cassMax), cw = Math.min(14, 160/n), alert = cass >= n - 2;
-  ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(400, hy + 8, 44 + n*cw, 24, 8); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = alert && Math.floor(realT*4) % 2 ? '#d63b3b' : '#14213d'; ctx.stroke();
-  if (!uiDraw('iCass', 404, hy + 10, 20)){ ctx.fillStyle = '#d63b3b'; rr(406, hy + 12, 16, 16, 3); ctx.fill(); }
-  for (let i=0;i<n;i++){ ctx.fillStyle = i < cass ? (alert ? '#d63b3b' : '#f97316') : 'rgba(20,33,61,.15)'; rr(432 + i*cw, hy + 14, cw - 3, 12, 3); ctx.fill(); }
-  // jauge de vent : sous le bandeau, rouge sous 20 %, clignote vide
-  const wc = phase === 'chase' ? '#c9d2dc' : wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.2 ? '#d63b3b' : wind < 0.5 ? '#f2b630' : '#2563eb';
-  ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(270, hy + 8, 120, 24, 8); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
-  ctx.fillStyle = 'rgba(20,33,61,.15)'; rr(276, hy + 14, 108, 12, 4); ctx.fill(); ctx.fillStyle = wc; rr(276, hy + 14, 108*wind, 12, 4); ctx.fill();
-  text(phase === 'chase' ? 'vent infini' : 'vent', 330, hy + 20, 10, 900, phase === 'chase' ? '#14213d' : wind > 0.5 ? '#fff' : '#14213d', 'center');
+  ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(280, hy + 8, 44 + n*cw, 24, 8); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = alert && Math.floor(realT*4) % 2 ? '#d63b3b' : '#14213d'; ctx.stroke();
+  if (!uiDraw('iCass', 284, hy + 10, 20)){ ctx.fillStyle = '#d63b3b'; rr(286, hy + 12, 16, 16, 3); ctx.fill(); }
+  for (let i=0;i<n;i++){ ctx.fillStyle = i < cass ? (alert ? '#d63b3b' : '#f97316') : 'rgba(20,33,61,.15)'; rr(312 + i*cw, hy + 14, cw - 3, 12, 3); ctx.fill(); }
   if (wind <= 0 && !onWater) outText('Plus de vent ! Pose-toi sur l’eau', VW/2, H - 70, 14, 900, '#fff', 'center', 'rgba(214,59,59,.85)');
 }
 function drawTutoHelp(){
   if (phase !== 'fly' || paused) return; const t = tFlight;
-  const m = t < 6 ? 'Appuie pour monter, relâche pour descendre.' : t < 12 ? 'Chaque appui consomme du vent : pose-toi sur l’eau pour en reprendre.' : t < 18 ? 'Ramasse les pièces, évite les journalistes.' : t < 24 ? 'Au-dessus de la ligne rouge, le vent t’emporte : niveau perdu.' : t < 30 ? 'Les actus d’argent, tout en haut, font monter les sondages.' : t > flightDur() - 6 ? 'L’actu d’or arrive : reste dans sa traîne pour l’attraper.' : '';
+  const m = t < 6 ? 'Appuie pour monter, relâche pour descendre.' : t < 12 ? 'Chaque appui consomme du vent (jauge sous la planche) : pose-toi sur l’eau pour en reprendre.' : t < 18 ? 'Ramasse les pièces, évite les journalistes.' : t < 24 ? 'Frôler un journaliste sans le toucher fait monter les sondages.' : t > flightDur() - 6 ? 'L’actu d’or arrive : reste dans sa traîne pour l’attraper.' : '';
   if (m) outText(m, VW/2, 64, 15, 900, '#fff', 'center', 'rgba(20,33,61,.7)');
 }
 function drawPops(){ for (const p of pops){ const a = clamp(p.life/0.4, 0, 1); ctx.globalAlpha = a; outText(p.t, p.x, p.y, p.big ? 22 : 16, 900, p.color); ctx.globalAlpha = 1; } }
@@ -1218,15 +1217,27 @@ function drawFx(){
 }
 function drawRecap(){
   ctx.fillStyle = 'rgba(15,29,51,.45)'; ctx.fillRect(0, 0, VW, H);
-  const w = 560, h = 250, x = VW/2 - w/2, y = H/2 - h/2; uiPanel(x, y, w, h);
-  const lost = endReason === 'blown' || endReason === 'sunk', L = curLevel(), camp$ = mode === 'camp';
-  text(endReason === 'blown' ? 'Emportée par le vent !' : endReason === 'sunk' ? 'Coulée sous les casseroles !' : isTuto() ? 'Tuto terminé' : 'Niveau ' + L.n + ' traversé', VW/2, y + 44, 28, 900, lost ? '#d63b3b' : '#14213d', 'center', UIT);
-  text(endReason === 'blown' ? 'Trop haut : le vent de haute altitude a pris le kite. On recommence le niveau.' : endReason === 'sunk' ? P.cassMax + ' casseroles accrochées, Marine coule. On recommence le niveau.' : 'Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièce' + (coins > 1 ? 's' : '') + '  ·  ' + cass + ' casserole' + (cass > 1 ? 's' : ''), VW/2, y + 88, lost ? 13 : 16, 800, '#14213d', 'center');
-  if (!lost) text((stats.gold ? 'Actu d’or attrapée : Marine change de position !' : 'L’actu d’or s’est envolée : position maintenue.') + '  ·  ' + stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.orbs + ' actu' + (stats.orbs > 1 ? 's' : '') + ' d’argent', VW/2, y + 116, 12, 700, '#5b6475', 'center');
-  else if (camp$) text('Les pièces ramassées restent dans la réserve.', VW/2, y + 116, 12, 700, '#5b6475', 'center');
-  if (camp$ && !lost){ btn(VW/2 - 190, y + 160, 180, 46, 'Carte', '#22a447', '#fff', 'map'); btn(VW/2 + 10, y + 160, 180, 46, 'Rejouer', '#fff', '#14213d', 'again'); }
-  else if (camp$){ btn(VW/2 - 190, y + 160, 180, 46, 'Recommencer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Carte', '#fff', '#14213d', 'map'); }
-  else { btn(VW/2 - 190, y + 160, 180, 46, lost ? 'Recommencer' : 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 160, 180, 46, 'Menu', '#fff', '#14213d', 'title'); }
+  const lost = endReason === 'sunk', L = curLevel(), camp$ = mode === 'camp';
+  const w = 620, h = lost ? 230 : 268, x = VW/2 - w/2, y = H/2 - h/2; uiPanel(x, y, w, h);
+  if (lost){
+    text('Coulée sous les casseroles !', VW/2, y + 44, 28, 900, '#d63b3b', 'center', UIT);
+    text(P.cassMax + ' casseroles accrochées, Marine coule. On recommence le niveau.', VW/2, y + 86, 13, 800, '#14213d', 'center');
+    if (camp$) text('Les pièces ramassées restent dans la réserve.', VW/2, y + 110, 12, 700, '#5b6475', 'center');
+    if (camp$){ btn(VW/2 - 190, y + 150, 180, 46, 'Recommencer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 150, 180, 46, 'Carte', '#fff', '#14213d', 'map'); }
+    else { btn(VW/2 - 190, y + 150, 180, 46, 'Recommencer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 150, 180, 46, 'Menu', '#fff', '#14213d', 'title'); }
+    return;
+  }
+  text(isTuto() ? 'Tuto terminé' : 'Niveau ' + L.n + ' traversé', VW/2, y + 38, 22, 900, '#14213d', 'center', UIT);
+  // la position tenue, en avant : barrée si l'actu d'or a été attrapée, la nouvelle position en plus petit dessous
+  text(stats.gold ? 'VOLTE-FACE' : 'POSITION MAINTENUE', VW/2, y + 70, 11, 900, stats.gold ? '#16a34a' : '#d63b3b', 'center');
+  const ol = wrapText(L.old, w - 60, 24, 900, UIT); let ty = y + 98;
+  for (const ln of ol){ text(ln, VW/2, ty, 24, 900, '#14213d', 'center', UIT); if (stats.gold){ font(24, 900, UIT); const lw = ctx.measureText(ln).width; strike(VW/2 - lw/2, ty + 1, lw); } ty += 28; }
+  if (stats.gold){ for (const ln of wrapText('Nouvelle position : ' + L.neu, w - 60, 13, 800).slice(0, 2)){ text(ln, VW/2, ty, 13, 800, '#16a34a', 'center'); ty += 16; } }
+  else { text('L’actu d’or s’est envolée : Marine n’a pas changé d’avis.', VW/2, ty, 13, 800, '#5b6475', 'center'); ty += 16; }
+  text('Sondages ' + fmtPct(poll) + '  ·  ' + coins + ' pièce' + (coins > 1 ? 's' : '') + '  ·  ' + cass + ' casserole' + (cass > 1 ? 's' : '') + '  ·  ' + stats.hits + ' journaliste' + (stats.hits > 1 ? 's' : '') + ' touché' + (stats.hits > 1 ? 's' : '') + '  ·  ' + stats.graze + ' frôlé' + (stats.graze > 1 ? 's' : ''), VW/2, y + h - 88, 12, 700, '#5b6475', 'center');
+  if (camp$ && levelN < 5){ btn(x + 20, y + h - 62, 200, 46, 'Niveau suivant', '#22a447', '#fff', 'next'); btn(x + 236, y + h - 62, 180, 46, 'Carte', '#fff', '#14213d', 'map'); btn(x + 432, y + h - 62, 168, 46, 'Rejouer', '#fff', '#14213d', 'again'); }
+  else if (camp$){ btn(VW/2 - 190, y + h - 62, 180, 46, 'Carte', '#22a447', '#fff', 'map'); btn(VW/2 + 10, y + h - 62, 180, 46, 'Rejouer', '#fff', '#14213d', 'again'); }
+  else { btn(VW/2 - 190, y + h - 62, 180, 46, 'Rejouer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + h - 62, 180, 46, 'Menu', '#fff', '#14213d', 'title'); }
 }
 let btns = [];
 function btn(x, y, w, h, label, bg, fg, id, px){ ctx.fillStyle = '#14213d'; rr(x + 3, y + 3, w, h, 10); ctx.fill(); ctx.fillStyle = bg; rr(x, y, w, h, 10); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; ctx.stroke(); text(label, x + w/2, y + h/2 + 1, px || 15, 900, fg, 'center'); btns.push({x, y, w, h, id}); }
@@ -1344,6 +1355,7 @@ function onBtn(id){
   if (id.startsWith('src:')){ if (!infoOpen) return; const I = INFO[infoOpen.n], s = (infoOpen.page === 'level' ? I.src : I.ssrc)[+id.slice(4)]; if (s && s[2]){ try { window.open(s[2], '_blank', 'noopener'); } catch(e){} } return; }
   if (infoOpen) return;
   if (id === 'again') replay(); else if (id === 'title') toTitle(); else if (id === 'map') goMap();
+  else if (id === 'next'){ if (mode === 'camp' && levelN < 5 && playable(levelN + 1)) goShop(levelN + 1); }
   else if (id.startsWith('info:')) openInfo(+id.slice(5), 'level');
   else if (id.startsWith('play:')){ const n = +id.slice(5); if (playable(n)) goShop(n); }
   else if (id.startsWith('buy:')){ if (buyBonus(id.slice(4))) startLevel(levelN); else shopMsg = 'Pas assez de pièces'; }
@@ -1369,7 +1381,7 @@ function draw(){
     ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0); if (state === 'map') drawMap(); else drawShop(); if (infoOpen) drawInfo(); return;
   }
   { const k = dpr*scale*Z*camFx, ax = PX(), ay = WATER; ctx.setTransform(k, 0, 0, k, dpr*scale*Z*(1 - camFx)*ax, dpr*scale*Z*(1 - camFx)*ay); }   // le monde, caméra reculée (camFx : recul temporaire ancré sur Marine)
-  drawSky(); if (state === 'play' || state === 'blown') drawCeiling(); drawFar(); drawNear(); drawBooth();
+  drawSky(); drawFar(); drawNear(); drawBooth();
   if (dark > 0) drawStormSky();
   if (emitter) drawEmitter();
   if (phase === 'chase' && chase) drawChase();
@@ -1377,7 +1389,6 @@ function draw(){
   for (const j of journos) if (j.kind === 'boat') drawJourno(j);
   for (const c of coinsList) drawCoin(c);
   for (const j of journos) if (j.kind !== 'boat') drawJourno(j);
-  for (const o of orbs) drawOrb(o);
   for (const b of bubbles) drawBubble(b);
   drawMarine(); drawCass(); for (const c of pans) if (!(c.delay > 0)) drawPan(c); drawFx(); drawPops();
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);   // l'interface, à l'échelle de l'écran
@@ -1457,13 +1468,15 @@ loadLocal(); loadCampLocal(); applyCam(); debugBuild(); loadShared();
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, get blowGauge(){ return blowGauge; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, gauge: chase.gauge, y: chase.y, ty: chase.ty, tw: chase.tw, inside: chase.inside, caught: chase.caught, leaving: chase.leaving, dist: chaseDist(), camFx}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, get orbs(){ return orbs.map(o => ({x: o.x, y: o.y, alert: o.alert})); }, simPath, get endReason(){ return endReason; },
+  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, addJourno(kind, x, y){ if (kind === 'glider') addGlider(x, y); else if (kind === 'boat') addBoat(x); else addHeli(x, y, false); }, clearField(){ journos = []; coinsList = []; nextSpawn = 999; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, gauge: chase.gauge, y: chase.y, ty: chase.ty, tw: chase.tw, inside: chase.inside, caught: chase.caught, leaving: chase.leaving, dist: chaseDist(), camFx}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, simPath, get endReason(){ return endReason; },
   get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
   get world(){ return {Z, WH, WATER, HZ, VWW}; },
   setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,
   // campagne
   get camp(){ return camp; }, get mode(){ return mode; }, get levelN(){ return levelN; }, get bonus(){ return bonus; }, get kevlarLeft(){ return kevlarLeft; }, get infoOpen(){ return infoOpen; }, get booth(){ return booth && {x: booth.x, reached: booth.reached}; }, get finalT(){ return finalT; },
   get btns(){ return btns.map(b => ({x: b.x, y: b.y, w: b.w, h: b.h, id: b.id})); }, tap(id){ onBtn(id); }, startLevel, startTestFly, goMap, goShop, buyBonus, unlockAll, resetCamp, openInfo, saveCamp,
+  bench(n){ const t0 = performance.now(); for (let i=0;i<n;i++) draw(); const td = performance.now() - t0; const t1 = performance.now(); for (let i=0;i<n;i++) update(1/60); return {draw: td/n, update: (performance.now() - t1)/n}; },
+  benchFn(name, n){ const f = {drawSky, drawFar, drawNear, drawStormSky, drawMarine, drawCass, drawHud, drawFx, drawPops}[name]; const k = dpr*scale*Z; ctx.setTransform(k, 0, 0, k, 0, 0); const t0 = performance.now(); for (let i=0;i<n;i++) f(); return (performance.now() - t0)/n; },
   setPoll(v){ poll = v; }, setGauge(v){ if (chase) chase.gauge = v; }, endLevel, startFinal,
 };
 })();
