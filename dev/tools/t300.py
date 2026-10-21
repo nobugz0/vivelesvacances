@@ -140,31 +140,31 @@ with sync_playwright() as p:
     t0 = time.time()
     while time.time() - t0 < 25 and ev(pg, 'window.__vdd.state') == 'play': pg.wait_for_timeout(100)
     check(ev(pg, 'window.__vdd.endReason') == 'sunk', 'à cassMax casseroles, Marine coule -> on recommence le niveau'); pg.screenshot(path=D + 'p3_sunk.png'); b.close()
-    # D. la course : bouton de test, orbe et traîne, jauge qui se remplit dans la traîne, rattrapage progressif, fin par capture ou départ ; menu à onglets
+    # D. la course par cercles : bouton de test, girouette au ras de l'eau, cercles lâchés, bot qui les passe (Marine avance, caméra se rapproche), capture ; sans rien faire, la girouette s'envole
+    RING_BOT = """() => new Promise(res => { const v = window.__vdd; const step = () => { const c = v.chase; if (v.state !== 'play' || v.phase !== 'chase' || !c || c.caught || c.leaving){ v.hold(false); res(); return; }
+      const nx = c.rings.filter(r => r.state === 'wait' && r.x > v.px).sort((a, b) => a.x - b.x)[0]; const ty = nx ? nx.y : c.y; v.hold(ty < v.y - 6); requestAnimationFrame(step); }; requestAnimationFrame(step); })"""
     b, pg, errs = boot(p, 'tap'); pg.click('#closeBtn'); pg.wait_for_timeout(200); pg.click('#chaseBtn'); pg.wait_for_timeout(600)
     c = ev(pg, 'window.__vdd.chase'); check(ev(pg, 'window.__vdd.phase') == 'chase' and c and c['t'] < 1, '« Tester la course » lance la course directement (t=%.1f)' % c['t'])
-    check(c['y'] > ev(pg, 'window.__vdd.P.yMax') - 60, 'l\'orbe part au ras de l\'eau (y %.0f)' % c['y'])
-    d0 = c['dist']; px0 = ev(pg, 'window.__vdd.px'); want = ev(pg, 'window.__vdd.P.chaseX0/100*window.__vdd.world.VWW0 - window.__vdd.px'); check(abs(d0 - want) < 40, 'orbe au départ à chaseX0 %% de l\'écran, Marine à 22 %% (distance %.0f)' % d0)
-    # bot qui suit la traîne à la frame : vise ty
-    ev(pg, '''() => new Promise(res => { const v = window.__vdd; const step = () => { const c = v.chase; if (v.state !== 'play' || !c || c.caught || c.leaving){ v.hold(false); res(); return; }
-      const ty = c.ty === undefined ? c.y : c.ty; const up = ty < v.y - 6 && (v.wind > 0.05 || v.onWater); v.hold(up); if (!window.__dmax || c.dist > window.__dmax) window.__dmax = c.dist; if (v.onWater && v.wind > 0.9) window.__refilled = true; requestAnimationFrame(step); }; requestAnimationFrame(step); })''')
-    c = ev(pg, 'window.__vdd.chase'); print('   course (suivi) : t %.1f s, jauge %.2f, dist %.0f, attrapée %s' % (c['t'], c['gauge'], c['dist'], c['caught']))
-    check(c['caught'] and c['t'] < ev(pg, 'window.__vdd.P.chaseMax'), 'un bot qui suit la traîne remplit la jauge avant la fin (%.1f s)' % c['t'])
-    check(ev(pg, 'window.__vdd.world.camFx') > 1.25, 'la caméra s\'est rapprochée avec la jauge (camFx %.2f)' % ev(pg, 'window.__vdd.world.camFx'))
-    px1 = ev(pg, 'window.__vdd.px'); check(c['dist'] < d0 and px1 > px0 + 100, 'Marine a avancé vers l\'orbe en remplissant la jauge (x %.0f -> %.0f, distance %.0f -> %.0f)' % (px0, px1, d0, c['dist']))
+    check(c['y'] > ev(pg, 'window.__vdd.P.yMax') - 60, 'la girouette part au ras de l\'eau (y %.0f)' % c['y'])
+    d0 = c['dist']; px0 = ev(pg, 'window.__vdd.px'); want = ev(pg, 'window.__vdd.P.chaseX0/100*window.__vdd.world.VWW0 - window.__vdd.px'); check(abs(d0 - want) < 40, 'girouette au départ à chaseX0 %% de la largeur de base, Marine à 22 %% (distance %.0f)' % d0)
+    pg.wait_for_timeout(2800); c = ev(pg, 'window.__vdd.chase'); check(c['dropped'] >= 1 and len(c['rings']) >= 1 and all(abs(r['y'] - c['y']) < 400 for r in c['rings']), 'la girouette lâche des cercles derrière elle (%d)' % c['dropped'])
+    ev(pg, RING_BOT); c = ev(pg, 'window.__vdd.chase'); print('   course (cercles) : t %.1f s, passés %d / lâchés %d, dist %.0f, attrapée %s' % (c['t'], c['passed'], c['dropped'], c['dist'], c['caught']))
+    check(c['caught'] and c['passed'] == ev(pg, 'window.__vdd.P.ringNeed'), 'un bot qui vise les cercles en passe %d et attrape la girouette (%.1f s)' % (c['passed'], c['t']))
+    check(ev(pg, 'window.__vdd.world.camFx') > 1.25, 'la caméra s\'est rapprochée à chaque cercle (camFx %.2f)' % ev(pg, 'window.__vdd.world.camFx'))
+    px1 = ev(pg, 'window.__vdd.px'); check(c['dist'] < d0 and px1 > px0 + 100, 'Marine a avancé vers la girouette à chaque cercle (x %.0f -> %.0f, distance %.0f -> %.0f)' % (px0, px1, d0, c['dist']))
     check(ev(pg, 'window.__vdd.wind') >= 0.99, 'vol infini pendant la course (jauge de vent pleine)')
     pg.screenshot(path=D + 'p3_chase.png'); pg.wait_for_timeout(1200)
-    check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.stats.gold'), 'actu d\'or attrapée -> récap avec volte-face')
-    # sans suivre : l'orbe s'en va à chaseMax, le niveau est réussi sans volte-face
-    ev(pg, 'window.__vdd.startTestChase()'); pg.wait_for_timeout(300); ev(pg, 'window.__vdd.P.chaseMax = 6'); t0 = time.time(); seen = None
-    while time.time() - t0 < 14 and ev(pg, 'window.__vdd.state') == 'play':
+    check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.stats.gold'), 'girouette attrapée -> récap (mode test) avec volte-face')
+    # sans rien faire : les cercles sont manqués, la girouette s'envole après le dernier, le niveau est réussi sans volte-face
+    ev(pg, 'window.__vdd.startTestChase()'); pg.wait_for_timeout(300); ev(pg, 'window.__vdd.P.ringTotal = 4'); t0 = time.time(); seen = None
+    while time.time() - t0 < 16 and ev(pg, 'window.__vdd.state') == 'play':
         c = ev(pg, 'window.__vdd.chase'); ev(pg, 'window.__vdd.hold(window.__vdd.y > 330)')   # reste à mi-hauteur, appui maintenu pendant l'envol
-        if c and c['leaving'] and seen is None and c['dist'] > 0: pg.wait_for_timeout(900); seen = ev(pg, 'window.__vdd.chase'); pg.screenshot(path=D + 'p3_flyaway.png')
+        if c and c['leaving'] and seen is None: pg.wait_for_timeout(900); seen = ev(pg, 'window.__vdd.chase'); pg.screenshot(path=D + 'p3_flyaway.png')
         pg.wait_for_timeout(100)
     pg.mouse.up(); c = ev(pg, 'window.__vdd.chase')
-    check(seen is not None and seen['camFx'] < 0.95, 'quand le temps est écoulé, la caméra recule (camFx %.2f)' % (seen['camFx'] if seen else 1))
-    check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.endReason') == 'done' and not ev(pg, 'window.__vdd.stats.gold') and ev(pg, 'window.__vdd.onWater'), 'l\'actu s\'envole, Marine retombe à l\'eau malgré l\'appui, niveau réussi sans volte-face')
-    ev(pg, 'window.__vdd.P.chaseMax = 15')
+    check(seen is not None and seen['camFx'] < 0.95, 'tous les cercles lâchés sans le compte : la girouette s\'envole, la caméra recule (camFx %.2f)' % (seen['camFx'] if seen else 1))
+    check(ev(pg, 'window.__vdd.state') == 'recap' and ev(pg, 'window.__vdd.endReason') == 'done' and not ev(pg, 'window.__vdd.stats.gold') and ev(pg, 'window.__vdd.onWater'), 'la girouette s\'envole, Marine retombe à l\'eau malgré l\'appui, niveau réussi sans volte-face')
+    ev(pg, 'window.__vdd.P.ringTotal = 8')
     # menu à onglets, largeur <= 25 %
     pg.click('#gearBtn'); pg.wait_for_timeout(200)
     w = ev(pg, 'document.getElementById("debug").getBoundingClientRect().width'); W = ev(pg, 'window.innerWidth'); check(w <= W*0.25 + 1, 'menu de réglage : %.0f px sur %d (%.0f %%)' % (w, W, 100*w/W))
@@ -174,9 +174,7 @@ with sync_playwright() as p:
     check(not errs, 'aucune erreur JS (course) ' + str(errs[:3]))
     b.close()
 
-    # E. la campagne : menu, carte, tuto, boutique et bonus, perte et reprise, déblocage, sauvegarde, fiches « i », fin de campagne
-    TRAIL_BOT = """() => new Promise(res => { const v = window.__vdd; const step = () => { const c = v.chase; if (v.state !== 'play' || v.phase !== 'chase' || !c || c.caught || c.leaving){ v.hold(false); res(); return; }
-      const ty = c.ty === undefined ? c.y : c.ty; v.hold(ty < v.y - 6); requestAnimationFrame(step); }; requestAnimationFrame(step); })"""
+    # E. la campagne enchaînée : menu (Continuer / Nouvelle campagne), écran intermédiaire, tuto sautable, achats, perte et reprise, enchaînement, sauvegarde, fiches, fin
     def wait_phase(pg, want, secs):
         t0 = time.time()
         while time.time() - t0 < secs and ev(pg, 'window.__vdd.phase') != want: pg.wait_for_timeout(100)
@@ -187,75 +185,66 @@ with sync_playwright() as p:
         return ev(pg, 'window.__vdd.state')
     b = p.chromium.launch(args=['--allow-file-access-from-files', '--autoplay-policy=no-user-gesture-required']); pg = b.new_page(viewport={'width': 1280, 'height': 720})
     errs = []; pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append('console.' + m.type + ': ' + m.text) if m.type == 'error' else None)
-    pg.goto('file://' + D + FILE); pg.wait_for_timeout(1200); ev(pg, 'window.__vdd.resetCamp()')
-    pg.click('#startBtn'); pg.wait_for_timeout(400)
-    ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]
-    check(ev(pg, 'window.__vdd.state') == 'map' and ev(pg, 'window.__vdd.camp.unlocked') == 2, '« Lancer la campagne » ouvre la carte ; tuto et niveau 1 ouverts (%d chapitres)' % ev(pg, 'window.__vdd.camp.unlocked'))
-    check('play:0' in ids and 'ch:1' in ids and 'ch:-1' not in ids and 'info:0' in ids, 'carte : un chapitre à la fois, le tuto d\'abord, flèche suivante (%s)' % ids)
-    ev(pg, 'window.__vdd.tap("ch:1")'); pg.wait_for_timeout(120); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; check(ev(pg, 'window.__vdd.chap') == 1 and 'play:1' in ids, 'flèche : chapitre 1 jouable')
-    ev(pg, 'window.__vdd.tap("ch:1")'); pg.wait_for_timeout(120); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; check(ev(pg, 'window.__vdd.chap') == 2 and 'locked' in ids and 'play:2' not in ids, 'chapitre 2 verrouillé'); pg.screenshot(path=D + 'p3_map_locked.png'); ev(pg, 'window.__vdd.showChapter(1)')
-    pg.screenshot(path=D + 'p3_map.png')
-    # fiche « i » du niveau 1 : volte-face puis scandale, sources
-    ev(pg, 'window.__vdd.tap("info:1")'); pg.wait_for_timeout(200); io = ev(pg, 'window.__vdd.infoOpen'); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]
-    check(io and io['n'] == 1 and io['page'] == 'level' and 'infoPage' in ids and 'infoClose' in ids and 'src:0' in ids, 'fiche du niveau 1 : volte-face, sources cliquables, bouton vers le scandale')
-    pg.screenshot(path=D + 'p3_info.png'); ev(pg, 'window.__vdd.tap("infoPage")'); pg.wait_for_timeout(200)
-    check(ev(pg, 'window.__vdd.infoOpen.page') == 'scandal', 'la fiche passe au scandale'); pg.screenshot(path=D + 'p3_info_scandal.png')
-    ev(pg, 'window.__vdd.tap("play:1")'); check(ev(pg, 'window.__vdd.state') == 'map', 'fiche ouverte : les boutons de la carte sont inactifs')
-    ev(pg, 'window.__vdd.tap("infoClose")'); check(ev(pg, 'window.__vdd.infoOpen') is None, 'fermeture de la fiche')
-    # le tuto : pas de boutique, vol court, pas de tempête, course facile
-    ev(pg, 'window.__vdd.P.tutoFlight = 8; window.__vdd.showChapter(0)'); ev(pg, 'window.__vdd.tap("play:0")'); pg.wait_for_timeout(300)
-    check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.levelN') == 0 and ev(pg, 'window.__vdd.mode') == 'camp', 'le tuto démarre directement (sans boutique)')
+    pg.goto('file://' + D + FILE); pg.wait_for_timeout(1200); ev(pg, 'window.__vdd.resetCamp()'); pg.reload(); pg.wait_for_timeout(1200)
+    check(ev(pg, 'document.getElementById("continueBtn").hidden') and not ev(pg, 'document.getElementById("newBtn").hidden'), 'menu : sans campagne en cours, seulement « Nouvelle campagne »')
+    pg.click('#newBtn'); pg.wait_for_timeout(400); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]
+    check(ev(pg, 'window.__vdd.state') == 'inter' and ev(pg, 'window.__vdd.levelN') == 0 and 'go' in ids and 'skipTuto' in ids and 'info:0' in ids and 'buy:votes' not in ids, 'nouvelle campagne : écran du tuto (C’est parti, Passer, i), sans boutique')
+    pg.screenshot(path=D + 'p3_inter0.png')
+    # fiche « i » depuis l'écran intermédiaire
+    ev(pg, 'window.__vdd.tap("info:0")'); pg.wait_for_timeout(200); io = ev(pg, 'window.__vdd.infoOpen'); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]
+    check(io and io['n'] == 0 and 'infoClose' in ids and 'src:0' in ids and 'infoPage' not in ids, 'fiche du tuto : volte-face et sources, pas de page scandale'); pg.screenshot(path=D + 'p3_info.png')
+    ev(pg, 'window.__vdd.tap("go")'); check(ev(pg, 'window.__vdd.state') == 'inter', 'fiche ouverte : les boutons de l’écran sont inactifs'); ev(pg, 'window.__vdd.tap("infoClose")')
+    # le tuto : vol court, pas de tempête, course facile ; puis l'écran du chapitre 1 porte le résultat
+    ev(pg, 'window.__vdd.P.tutoFlight = 8; window.__vdd.tap("go")'); pg.wait_for_timeout(300)
+    check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.levelN') == 0 and ev(pg, 'window.__vdd.mode') == 'camp', 'le tuto démarre')
     pg.screenshot(path=D + 'p3_tuto.png'); bot(pg, 9, False)
     check(ev(pg, 'window.__vdd.phase') == 'chase' and ev(pg, 'window.__vdd.emitter') is None, 'au tuto, le vol enchaîne sur la course sans tempête')
-    ev(pg, TRAIL_BOT); c = ev(pg, 'window.__vdd.chase'); check(c['caught'], 'course du tuto attrapée par le bot (%.1f s)' % c['t'])
-    st = wait_state(pg, ('recap',), 4); r = ev(pg, 'window.__vdd.camp.levels[0]'); coins0 = ev(pg, 'window.__vdd.camp.coins')
-    check(st == 'recap' and r and r['done'] and r['gold'] and coins0 > 0, 'tuto terminé : résultat enregistré, pièces en réserve (%d)' % coins0)
-    ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; check('map' in ids and 'again' in ids and 'next' in ids, 'récap de campagne : Niveau suivant, Carte et Rejouer'); pg.screenshot(path=D + 'p3_recap_done.png')
-    ev(pg, 'window.__vdd.tap("map")'); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.state') == 'map' and ev(pg, 'window.__vdd.camp.unlocked') == 2 and ev(pg, 'window.__vdd.chap') == 1, 'retour à la carte sur le chapitre 1 ; le tuto ne débloque rien de plus')
-    # niveau 1 : boutique, prix en rouge si on ne peut pas, achat, bonus actif
-    ev(pg, 'window.__vdd.tap("play:1")'); pg.wait_for_timeout(200); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]
-    check(ev(pg, 'window.__vdd.state') == 'shop' and 'nobonus' in ids, 'niveau 1 : la boutique s\'ouvre (%s)' % ids)
-    check(ev(pg, 'window.__vdd.camp.coins') < 100 and 'buy:pump' not in ids and 'buy:votes' not in ids and ids.count('locked') == 4, 'sans assez de pièces, les trois bonus et les voix sont grisés')
-    pg.screenshot(path=D + 'p3_shop_poor.png'); ev(pg, 'window.__vdd.camp.coins += 500; window.__vdd.saveCamp()'); pg.wait_for_timeout(100); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]
-    check('buy:pump' in ids and 'buy:kevlar' in ids and 'buy:fire' not in ids and 'buy:votes' in ids, 'avec des pièces : pompe, kevlar et voix achetables, contre-feu grisé (rien à éteindre)'); pg.screenshot(path=D + 'p3_shop.png')
+    ev(pg, RING_BOT); c = ev(pg, 'window.__vdd.chase'); check(c['caught'], 'course du tuto attrapée par le bot (%.1f s)' % c['t'])
+    st = wait_state(pg, ('inter',), 4); r = ev(pg, 'window.__vdd.camp.levels[0]'); coins0 = ev(pg, 'window.__vdd.camp.coins'); R = ev(pg, 'window.__vdd.lastResult')
+    check(st == 'inter' and ev(pg, 'window.__vdd.levelN') == 1 and ev(pg, 'window.__vdd.camp.cur') == 1 and r and r['done'] and r['gold'] and coins0 > 0 and R and R['n'] == 0 and R['gold'], 'tuto terminé : l’écran du chapitre 1 s’affiche avec le résultat du tuto, pièces en réserve (%d)' % coins0)
+    ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; check('go' in ids and 'buy:votes' not in ids and ids.count('locked') >= 1, 'chapitre 1 sans assez de pièces : voix et bonus grisés'); pg.screenshot(path=D + 'p3_inter1.png')
+    ev(pg, 'window.__vdd.camp.coins += 500; window.__vdd.saveCamp()'); pg.wait_for_timeout(150); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]
+    check('buy:pump' in ids and 'buy:kevlar' in ids and 'buy:fire' not in ids and 'buy:votes' in ids, 'avec des pièces : pompe, kevlar et voix achetables, contre-feu grisé (rien à éteindre)')
     e0 = ev(pg, 'window.__vdd.camp.levels[1] ? window.__vdd.camp.levels[1].entry.poll : window.__vdd.P.pollStart'); c1 = ev(pg, 'window.__vdd.camp.coins'); pr = ev(pg, 'window.__vdd.votePrice'); ev(pg, 'window.__vdd.tap("buy:votes")'); pg.wait_for_timeout(150)
-    check(ev(pg, 'window.__vdd.state') == 'shop' and ev(pg, 'window.__vdd.camp.coins') == c1 - pr and abs(ev(pg, 'window.__vdd.camp.levels[1].entry.poll') - e0 - ev(pg, 'window.__vdd.P.voteGain')) < 0.001 and ev(pg, 'window.__vdd.votePrice') > pr, 'acheter des voix : −%d pièces, +%.0f pt à l\'entrée du niveau, prix suivant %d' % (pr, ev(pg, 'window.__vdd.P.voteGain'), ev(pg, 'window.__vdd.votePrice')))
+    check(ev(pg, 'window.__vdd.state') == 'inter' and ev(pg, 'window.__vdd.camp.coins') == c1 - pr and abs(ev(pg, 'window.__vdd.camp.levels[1].entry.poll') - e0 - ev(pg, 'window.__vdd.P.voteGain')) < 0.001 and ev(pg, 'window.__vdd.votePrice') > pr, 'acheter des voix : −%d pièces, +%.0f pt à l’entrée du chapitre, prix suivant %d' % (pr, ev(pg, 'window.__vdd.P.voteGain'), ev(pg, 'window.__vdd.votePrice')))
+    pg.screenshot(path=D + 'p3_inter1_rich.png')
     c0 = ev(pg, 'window.__vdd.camp.coins'); ev(pg, 'window.__vdd.P.flight = 8; window.__vdd.tap("buy:kevlar")'); pg.wait_for_timeout(300)
-    check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.bonus') == 'kevlar' and ev(pg, 'window.__vdd.kevlarLeft') == 3 and ev(pg, 'window.__vdd.camp.coins') == c0 - 200, 'veste en kevlar achetée (200), niveau 1 lancé, 3 journalistes gratuits')
+    check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.bonus') == 'kevlar' and ev(pg, 'window.__vdd.kevlarLeft') == 3 and ev(pg, 'window.__vdd.camp.coins') == c0 - 200, 'veste en kevlar achetée (200), chapitre 1 lancé, 3 journalistes gratuits')
     # perdre : coulée -> on recommence depuis l'état d'entrée, le bonus reste, les pièces ramassées restent
     pg.wait_for_timeout(8300); ap = ev(pg, 'window.__vdd.phase'); ex0 = ev(pg, 'window.__vdd.emitter && window.__vdd.emitter.x'); pg.wait_for_timeout(2200)
-    check(ap == 'approach' and ev(pg, 'window.__vdd.phase') == 'intro' and ex0 >= ev(pg, 'window.__vdd.world.VWW0') - 240, 'après le vol, le bateau du scandale approche à vue (x %.0f) puis la carte s\'affiche' % ex0)
+    check(ap == 'approach' and ev(pg, 'window.__vdd.phase') == 'intro' and ex0 >= ev(pg, 'window.__vdd.world.VWW0') - 240, 'après le vol, le bateau du scandale approche à vue (x %.0f) puis la carte s’affiche' % ex0)
     pg.screenshot(path=D + 'p3_intro.png')
     ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; check('sinfo' in ids, 'la carte du scandale a son bouton i')
     ev(pg, 'window.__vdd.tap("sinfo")'); check(ev(pg, 'window.__vdd.infoOpen.page') == 'scandal', 'bouton i de la tempête : fiche du scandale'); pg.screenshot(path=D + 'p3_intro_info.png'); ev(pg, 'window.__vdd.tap("infoClose")')
     ev(pg, 'window.__vdd.beginStormPlay(); window.__vdd.setCass(9)'); st = wait_state(pg, ('recap',), 25)
-    check(st == 'recap' and ev(pg, 'window.__vdd.endReason') == 'sunk', 'coulée pendant la tempête')
+    check(st == 'recap' and ev(pg, 'window.__vdd.endReason') == 'sunk', 'coulée pendant la tempête'); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; check('again' in ids and 'title' in ids, 'écran de défaite : Recommencer et Menu')
     ev(pg, 'window.__vdd.tap("again")'); pg.wait_for_timeout(300)
-    check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.cass') == 0 and ev(pg, 'window.__vdd.bonus') == 'kevlar' and ev(pg, 'window.__vdd.levelN') == 1, 'Recommencer : niveau 1 depuis son état d\'entrée (0 casserole), bonus conservé')
-    # réussir : tempête écourtée, course suivie -> niveau 2 débloqué, état d'entrée transmis
-    ev(pg, 'window.__vdd.P.stormMax = 3'); wait_phase(pg, 'intro', 14); ev(pg, 'window.__vdd.beginStormPlay()'); t0 = time.time()
-    while time.time() - t0 < 12 and ev(pg, 'window.__vdd.phase') != 'chase': pg.wait_for_timeout(100)
-    ev(pg, TRAIL_BOT); st = wait_state(pg, ('recap',), 5); r = ev(pg, 'window.__vdd.camp'); l1 = r['levels'][1]; l2 = r['levels'][2]
-    check(st == 'recap' and l1['done'] and r['unlocked'] == 3 and l2 and abs(l2['entry']['poll'] - l1['poll']) < 0.01 and l2['entry']['cass'] == l1['cass'], 'niveau 1 réussi : niveau 2 débloqué, sondages et casseroles transmis (%.1f %%, %d)' % (l1['poll'], l1['cass']))
-    check(ev(pg, 'window.__vdd.bonus') is None, 'le bonus est consommé à la fin du niveau')
-    # sauvegarde : rechargement de la page
+    check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.cass') == 0 and ev(pg, 'window.__vdd.bonus') == 'kevlar' and ev(pg, 'window.__vdd.levelN') == 1, 'Recommencer : chapitre 1 depuis son état d’entrée (0 casserole), bonus conservé')
+    # réussir : tempête écourtée, cercles passés -> écran du chapitre 2 avec le résultat, état d'entrée transmis
+    ev(pg, 'window.__vdd.P.stormMax = 3'); wait_phase(pg, 'intro', 14); ev(pg, 'window.__vdd.beginStormPlay()'); wait_phase(pg, 'chase', 12)
+    ev(pg, RING_BOT); st = wait_state(pg, ('inter',), 5); r = ev(pg, 'window.__vdd.camp'); l1 = r['levels'][1]; l2 = r['levels'][2]
+    check(st == 'inter' and ev(pg, 'window.__vdd.levelN') == 2 and r['cur'] == 2 and l1['done'] and l2 and abs(l2['entry']['poll'] - l1['poll']) < 0.01 and l2['entry']['cass'] == l1['cass'], 'chapitre 1 réussi : écran du chapitre 2, sondages et casseroles transmis (%.1f %%, %d)' % (l1['poll'], l1['cass']))
+    check(ev(pg, 'window.__vdd.bonus') is None and ev(pg, 'window.__vdd.lastResult.n') == 1, 'le bonus est consommé ; le bandeau porte le résultat du chapitre 1'); pg.screenshot(path=D + 'p3_inter2.png')
+    # sauvegarde : rechargement de la page, « Continuer » reprend au chapitre 2
     pg.reload(); pg.wait_for_timeout(1200); r = ev(pg, 'window.__vdd.camp')
-    check(r['unlocked'] == 3 and r['levels'][1]['done'] and r['coins'] > 0, 'la campagne est rechargée depuis l\'appareil (%d chapitres, %d pièces)' % (r['unlocked'], r['coins']))
-    # fin de campagne : niveau 5 (tout débloqué), bureau de vote, bilan final
-    ev(pg, 'window.__vdd.unlockAll(); window.__vdd.goShop(5)'); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.state') == 'shop' and ev(pg, 'window.__vdd.levelN') == 5, 'tout débloquer -> boutique du niveau 5')
-    ev(pg, 'window.__vdd.P.flight = 6; window.__vdd.P.stormMax = 3; window.__vdd.tap("nobonus")'); wait_phase(pg, 'intro', 12); ev(pg, 'window.__vdd.beginStormPlay()'); t0 = time.time()
-    while time.time() - t0 < 12 and ev(pg, 'window.__vdd.phase') != 'chase': pg.wait_for_timeout(100)
-    ev(pg, TRAIL_BOT); st = wait_state(pg, ('final',), 4); check(st == 'final', 'niveau 5 fini : séquence finale (atterrissage, bureau de vote)')
+    check(r['cur'] == 2 and r['levels'][1]['done'] and r['coins'] > 0 and not ev(pg, 'document.getElementById("continueBtn").hidden'), 'la campagne est rechargée (chapitre %d, %d pièces), « Continuer » proposé' % (r['cur'], r['coins']))
+    pg.click('#continueBtn'); pg.wait_for_timeout(300); check(ev(pg, 'window.__vdd.state') == 'inter' and ev(pg, 'window.__vdd.levelN') == 2, '« Continuer » reprend à l’écran du chapitre 2')
+    # passer le tuto depuis une nouvelle campagne
+    ev(pg, 'window.__vdd.resetCamp(); window.__vdd.goInter(0, null); window.__vdd.tap("skipTuto")'); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.levelN') == 1 and ev(pg, 'window.__vdd.camp.cur') == 1, '« Passer le tuto » mène au chapitre 1')
+    # fin de campagne : chapitre 5, bureau de vote, bilan final
+    ev(pg, 'window.__vdd.setCur(5); window.__vdd.goInter(5, null)'); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.state') == 'inter' and ev(pg, 'window.__vdd.levelN') == 5, 'écran du chapitre 5')
+    ev(pg, 'window.__vdd.P.flight = 6; window.__vdd.P.stormMax = 3; window.__vdd.tap("go")'); wait_phase(pg, 'intro', 12); ev(pg, 'window.__vdd.beginStormPlay()'); wait_phase(pg, 'chase', 12)
+    ev(pg, RING_BOT); st = wait_state(pg, ('final',), 4); check(st == 'final', 'chapitre 5 fini : séquence finale (atterrissage, bureau de vote)')
     pg.wait_for_timeout(1500); pg.screenshot(path=D + 'p3_final_booth.png'); st = wait_state(pg, ('finalRecap',), 8)
-    bo = ev(pg, 'window.__vdd.booth'); check(st == 'finalRecap' and bo and bo['reached'] and ev(pg, 'window.__vdd.onWater'), 'Marine posée, bureau de vote atteint -> bilan final (%.1f s)' % ev(pg, 'window.__vdd.finalT'))
-    pg.screenshot(path=D + 'p3_final.png'); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; check('map' in ids and 'title' in ids, 'bilan final : Carte et Menu')
-    ev(pg, 'window.__vdd.tap("map")'); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.state') == 'map' and ev(pg, 'window.__vdd.camp.levels[5].done'), 'retour à la carte, niveau 5 enregistré'); pg.screenshot(path=D + 'p3_map_done.png')
-    # mobile : tap réel sur une carte de la carte de campagne (cadre pivoté)
+    bo = ev(pg, 'window.__vdd.booth'); check(st == 'finalRecap' and bo and bo['reached'] and ev(pg, 'window.__vdd.onWater') and ev(pg, 'window.__vdd.camp.cur') == 6, 'Marine posée, bureau de vote atteint -> bilan final, campagne terminée (%.1f s)' % ev(pg, 'window.__vdd.finalT'))
+    pg.screenshot(path=D + 'p3_final.png'); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; check('newCamp' in ids and 'title' in ids, 'bilan final : Nouvelle campagne et Menu')
+    ev(pg, 'window.__vdd.tap("title")'); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.state') == 'title' and ev(pg, 'document.getElementById("continueBtn").hidden'), 'menu après la fin : plus de « Continuer »')
+    # mobile : tap réel sur « C'est parti » de l'écran du tuto (cadre pivoté)
     ctx2 = b.new_context(viewport={'width': 390, 'height': 844}, device_scale_factor=2, is_mobile=True, has_touch=True); pm = ctx2.new_page(); pm.goto('file://' + D + FILE); pm.wait_for_timeout(1200)
-    ev(pm, 'window.__vdd.goMap()'); pm.wait_for_timeout(300); bt = [x for x in ev(pm, 'window.__vdd.btns') if x['id'] == 'play:0'][0]
+    ev(pm, 'window.__vdd.resetCamp(); window.__vdd.goInter(0, null)'); pm.wait_for_timeout(300); bt = [x for x in ev(pm, 'window.__vdd.btns') if x['id'] == 'go'][0]
     sc = ev(pm, 'document.getElementById("wrap").getBoundingClientRect().width/390'); r = ev(pm, 'JSON.parse(JSON.stringify(document.getElementById("wrap").getBoundingClientRect()))')
     lx, ly = (bt['x'] + bt['w']/2)*sc, (bt['y'] + bt['h']/2)*sc; pm.touchscreen.tap(r['right'] - ly, r['top'] + lx); pm.wait_for_timeout(400)
-    check(ev(pm, 'window.__vdd.state') == 'play' and ev(pm, 'window.__vdd.levelN') == 0, 'mobile (cadre pivoté) : le tap sur « Jouer » du tuto lance le tuto'); ctx2.close()
+    check(ev(pm, 'window.__vdd.state') == 'play' and ev(pm, 'window.__vdd.levelN') == 0, 'mobile (cadre pivoté) : le tap sur « C’est parti » lance le tuto'); ctx2.close()
     check(not errs, 'aucune erreur JS (campagne) ' + str(errs[:3]))
     b.close()
 print('RESULT', 'PASS' if ok else 'FAIL')
