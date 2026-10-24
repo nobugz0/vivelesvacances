@@ -157,7 +157,7 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
       <img src="start.jpg" alt="Marine Le Pen en kitesurf tend la main vers une actu ailée">
       <div class="scard s-start" style="left:24.16%;top:36.34%;width:69.5%;height:55.69%">
         <h1 id="tName">Marine la maline</h1>
-        <p id="tSub">Proto 3 · Six positions à retourner d’une traite, jusqu’à la présidentielle de mai 2027.</p>
+        <p id="tSub">Proto 3 · Cinq positions à retourner d’une traite, jusqu’à la présidentielle de mai 2027.</p>
         <div class="srow">
           <button class="sbtn go" id="continueBtn" type="button">Continuer</button>
           <button class="sbtn" id="newBtn" type="button">Nouvelle campagne</button>
@@ -186,7 +186,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.18', BUILD = '21/10/2026 à 19h28';
+const VERSION = 'proto 3 · 0.19', BUILD = '24/10/2026 à 18h40';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -379,11 +379,11 @@ const VSHORT = [['Entente avec Poutine', 'Stop aux opérations russes'], ['Quitt
 // Les positions courtes (old/neu) servent aux cartes et au bilan final ; les fiches détaillées et sourcées sont dans INFO.
 const LEVELS = [
   {n: 0, title: 'Retour au franc', theme: 'Monnaie', old: 'Retour au franc', neu: 'L’euro n’est « plus une priorité » (janvier 2019)', per: '2012 → janvier 2019', scandal: null},
-  {n: 1, title: 'On sort de l’Europe', theme: 'Europe', old: 'On sort de l’Europe', neu: '« Le Frexit n’est nullement notre projet » (avril 2022)', per: '2016 → avril 2022', scandal: {title: 'Kits de campagne', sub: 'Législatives 2012 · condamnation définitive du RN', date: '19 juin 2024', emitter: 'justice', short: 'En 2012, Jeanne, le micro-parti de Marine Le Pen, vend aux candidats FN des kits de campagne surfacturés, remboursés par l’État. En mars 2023, la cour d’appel condamne le RN pour recel d’abus de biens sociaux ; le 19 juin 2024, la Cour de cassation rend la condamnation définitive.'}},
-  {n: 2, title: 'La retraite à 60 ans', theme: 'Retraites', old: 'La retraite à 60 ans', neu: '60 ans pour les carrières longues, 62 pour les autres (février 2022)', per: '2017 → février 2022', scandal: {title: 'Les tracts Poutine', sub: 'Poignée de main mise au rebut', date: '1er mars 2022', emitter: 'rn', short: '1,2 million de livrets de campagne montrent Marine Le Pen serrant la main de Vladimir Poutine. Une semaine après l’invasion de l’Ukraine, selon Libération, des délégués reçoivent la consigne de se débarrasser des exemplaires restants ; le parti dément toute consigne nationale.'}},
-  {n: 3, title: 'Le nucléaire, on arrête', theme: 'Énergie', old: 'Le nucléaire, on arrête', neu: 'Une vingtaine de réacteurs (avril 2022)', per: '2011-2012 → avril 2022', scandal: {title: '« Brebis galeuses »', sub: 'Candidats RN des législatives', date: 'juin-juillet 2024', emitter: 'bard', short: 'Aux législatives de 2024, plusieurs candidats RN dérapent : les Maghrébins qui « n’ont pas leur place dans les hauts lieux », les chambres à gaz, une casquette nazie. Jordan Bardella parle de « quatre ou cinq brebis galeuses » qui « seront mis à la porte ».'}},
-  {n: 4, title: 'Non à l’IVG dans la Constitution', theme: 'IVG', old: 'Non à l’IVG dans la Constitution', neu: 'Votée le 30 janvier 2024', per: 'novembre 2022 → janvier 2024', scandal: {title: 'Assistants parlementaires', sub: '1re instance, appel, pourvoi en cassation', date: '31 mars 2025 · 7 juillet 2026', emitter: 'justice', short: 'Le 31 mars 2025, le tribunal correctionnel de Paris condamne Marine Le Pen pour détournement de fonds publics (assistants parlementaires européens), avec inéligibilité à exécution provisoire. Le 7 juillet 2026, la cour d’appel confirme la condamnation ; elle se pourvoit en cassation : la condamnation n’est pas définitive.'}},
-  {n: 5, title: 'Non à la règle d’or, oui à la dette', theme: 'Budget', old: 'Non à la règle d’or, oui à la dette', neu: 'Règle d’or constitutionnelle (août 2026)', per: '2012 → août 2026', scandal: {title: 'Écrits attribués à Bardella', sub: 'Révélations Mediapart · attribués, contestés, non jugés', date: '28 septembre 2026', emitter: 'bard', short: 'Le 28 septembre 2026, Mediapart publie des écrits antisémites datés de 2013 qu’il attribue à Jordan Bardella. Il conteste « formellement », dénonce une « opération de barbouzerie » et annonce une plainte en diffamation. Aucune décision de justice n’est intervenue.'}},
+  {n: 1, title: 'On sort de l’Europe', theme: 'Europe', old: 'On sort de l’Europe', neu: '« Le Frexit n’est nullement notre projet » (avril 2022)', per: '2016 → avril 2022', scandal: {title: 'Kits de campagne', line: 'Des kits de campagne surfacturés, remboursés par l’État. Condamnation définitive en 2024.', sub: 'Législatives 2012 · condamnation définitive du RN', date: '19 juin 2024', emitter: 'justice', short: 'En 2012, Jeanne, le micro-parti de Marine Le Pen, vend aux candidats FN des kits de campagne surfacturés, remboursés par l’État. En mars 2023, la cour d’appel condamne le RN pour recel d’abus de biens sociaux ; le 19 juin 2024, la Cour de cassation rend la condamnation définitive.'}},
+  {n: 2, title: 'La retraite à 60 ans', theme: 'Retraites', old: 'La retraite à 60 ans', neu: '60 ans pour les carrières longues, 62 pour les autres (février 2022)', per: '2017 → février 2022', scandal: {title: 'Les tracts Poutine', line: '1,2 million de tracts avec Poutine, mis au rebut après l’invasion de l’Ukraine.', sub: 'Poignée de main mise au rebut', date: '1er mars 2022', emitter: 'rn', short: '1,2 million de livrets de campagne montrent Marine Le Pen serrant la main de Vladimir Poutine. Une semaine après l’invasion de l’Ukraine, selon Libération, des délégués reçoivent la consigne de se débarrasser des exemplaires restants ; le parti dément toute consigne nationale.'}},
+  {n: 3, title: 'Le nucléaire, on arrête', theme: 'Énergie', old: 'Le nucléaire, on arrête', neu: 'Une vingtaine de réacteurs (avril 2022)', per: '2011-2012 → avril 2022', scandal: {title: '« Brebis galeuses »', line: 'Des candidats RN dérapent ; Bardella parle de « quatre ou cinq brebis galeuses ».', sub: 'Candidats RN des législatives', date: 'juin-juillet 2024', emitter: 'bard', short: 'Aux législatives de 2024, plusieurs candidats RN dérapent : les Maghrébins qui « n’ont pas leur place dans les hauts lieux », les chambres à gaz, une casquette nazie. Jordan Bardella parle de « quatre ou cinq brebis galeuses » qui « seront mis à la porte ».'}},
+  {n: 4, title: 'Non à l’IVG dans la Constitution', theme: 'IVG', old: 'Non à l’IVG dans la Constitution', neu: 'Votée le 30 janvier 2024', per: 'novembre 2022 → janvier 2024', scandal: {title: 'Assistants parlementaires', line: 'Condamnée pour détournement de fonds publics, confirmée en appel. Pourvoi en cassation.', sub: '1re instance, appel, pourvoi en cassation', date: '31 mars 2025 · 7 juillet 2026', emitter: 'justice', short: 'Le 31 mars 2025, le tribunal correctionnel de Paris condamne Marine Le Pen pour détournement de fonds publics (assistants parlementaires européens), avec inéligibilité à exécution provisoire. Le 7 juillet 2026, la cour d’appel confirme la condamnation ; elle se pourvoit en cassation : la condamnation n’est pas définitive.'}},
+  {n: 5, title: 'Non à la règle d’or, oui à la dette', theme: 'Budget', old: 'Non à la règle d’or, oui à la dette', neu: 'Règle d’or constitutionnelle (août 2026)', per: '2012 → août 2026', scandal: {title: 'Écrits attribués à Bardella', line: 'Mediapart lui attribue des écrits antisémites ; Bardella conteste et porte plainte.', sub: 'Révélations Mediapart · attribués, contestés, non jugés', date: '28 septembre 2026', emitter: 'bard', short: 'Le 28 septembre 2026, Mediapart publie des écrits antisémites datés de 2013 qu’il attribue à Jordan Bardella. Il conteste « formellement », dénonce une « opération de barbouzerie » et annonce une plainte en diffamation. Aucune décision de justice n’est intervenue.'}},
 ];
 // Fiches du bouton « i ». Chaque fait vient du corpus du Project (claude/corpus-declarations-LePen-Bardella.md), du relevé des votes (claude/votes_cles_RN_assemblee.md) ou des fiches sourcées du proto v2 (BIGS).
 // Quand le corpus ne couvre pas un fait affiché (surtout les positions anciennes, 2011-2017), la fiche le dit : « source à compléter ».
@@ -429,6 +429,15 @@ const QUESTIONS = [['Et le franc ?', 'On sort de l’euro ?', 'Et la BCE ?'], ['
 const FLAGS = [['Retour au franc', 'On garde l’euro'], ['Frexit !', 'Dans l’UE'], ['60 ans pour tous', '62 ans (60 si carrière longue)'], ['Stop nucléaire', '20 réacteurs'], ['IVG : non', 'IVG : pour'], ['Non à la règle d’or', 'Règle d’or !']];
 const LINES = [null, 'Recel d’abus de biens sociaux. Définitif.', 'Oups. La photo avec Poutine est page 6.', 'Quatre ou cinq brebis galeuses, pas plus !', 'Quatre ans dont deux ferme. Confirmé en appel.', 'Une barbouzerie ! Je porte plainte.'];
 const questions = () => QUESTIONS[clamp(levelN, 0, 5)];
+// Les répliques de Marine quand elle saute une barque restée muette (répertoire de la version en ligne)
+const PHRASES = ['Je parle pas aux journaleux.', 'C’est des dingueries !', 'Je peux pas, j’ai piscine.', 'Mon chat est malade.', 'Ça capte mal, désolée !', 'Mes chats ont rendez-vous chez le véto.', 'Il y a du vent, j’entends rien !', 'Posez la question à Jordan.', 'Ferme-la, islamo-gauchiste !', 'Encore la presse de gauche !', 'Fake news !', 'Vous êtes payés par qui, au juste ?', 'Quelle indignité !', 'Cause toujours !', 'Voyez ça avec mon avocat.', 'Carte de presse ou carte du PS ?'];
+// Progression : les réglages du menu valent pour le chapitre 4. Durée (vol et tempête) et difficulté (cadence, vitesse et visée des tirs, densité des journalistes, cercles) suivent ces tables, index 0 = tuto.
+const LVL_DUR = [1, 0.75, 0.85, 0.92, 1, 1.1], LVL_DIFF = [0.5, 0.55, 0.7, 0.85, 1, 1.15];
+const lvlDur = () => LVL_DUR[clamp(levelN, 0, 5)], lvlDiff = () => LVL_DIFF[clamp(levelN, 0, 5)];
+// une réplique jamais identique à la précédente
+let lastQ = null, lastPhrase = null, qLog = [];   // qLog : les questions dans l'ordre d'apparition (null = muet), pour les tests
+function nextLine(pool, last){ const c = pool.filter(t => t !== last); return c.length ? pick(c) : pick(pool); }
+function journoQ(){ const q = rnd()*100 >= P.qShare ? null : nextLine(questions(), lastQ); if (q) lastQ = q; qLog.push(q); return q; }
 // Les bonus de début de niveau (achetés avec la réserve de pièces, valables pour le niveau)
 const BONUS = [
   {id: 'fire', name: 'Contre-feu', price: 300, d: 'Éteint 5 casseroles accrochées, au début du niveau.'},
@@ -453,6 +462,10 @@ const PSPEC = [
   {k:'flight', g:'Commun', l:'Durée du vol', u:'s', d:'Longueur de la phase de vol d’un niveau.', min:30, max:120, step:5},
   {k:'ceil', g:'Commun', l:'Plafond', u:'px monde', d:'Marge sous le bord haut du monde : Marine ne monte pas plus haut (sans sanction).', min:20, max:200, step:5},
   {k:'level', g:'Commun', l:'Niveau de test', u:'1 à 5', d:'Niveau joué par les boutons de test du menu (thème et scandale). La campagne, elle, suit la carte.', min:1, max:5, step:1},
+  {k:'qShare', g:'Commun', l:'Journalistes qui parlent', u:'%', d:'Part des journalistes qui crient une question (jamais deux fois la même d’affilée). Les barques muettes que Marine saute lui valent une réplique.', min:0, max:100, step:5},
+  {k:'approachT', g:'Tempête', l:'Arrivée de l’émetteur', u:'s', d:'Temps que met le bateau (ou le palais, ou Bardella) à arriver par la droite ; le ciel se gâte pendant ce temps, on joue encore.', min:1, max:8, step:0.5},
+  {k:'cruiseT', g:'Course', l:'Navigation après la course', u:'s', d:'Vol libre (pièces) entre la fin de la course et l’écran des bonus.', min:0, max:8, step:0.5},
+  {k:'ringStep', g:'Course', l:'Avance par cercle', u:'% de la distance', d:'À chaque cercle passé, Marine comble cette part de la distance à la girouette ; au compte, elle fonce dessus.', min:0, max:40, step:1},
   {k:'tutoFlight', g:'Commun', l:'Durée du vol du tuto', u:'s', d:'Longueur de la phase de vol du tuto (pas de tempête, course facile).', min:15, max:90, step:5},
   {k:'stormRate', g:'Tempête', l:'Cadence des lancers', u:'s', d:'Temps moyen entre deux casseroles (±30 %).', min:0.2, max:3, step:0.1},
   {k:'panSpeed', g:'Tempête', l:'Vitesse des tirs', u:'px monde/s', d:'Vitesse des tirs tendus (horizontaux). Fixe le temps de réaction : distance émetteur-Marine ÷ vitesse.', min:300, max:1500, step:25},
@@ -500,7 +513,7 @@ const PSPEC = [
   {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
 ];
 // valeurs par défaut = réglages sauvegardés par Pierre le 18/10 au soir (caméra loin, vol vif)
-const PDEF = {cam: 0.5, camFly: 1.3, camChase: 1.4, camRate: 0.6, speed: 340, flight: 35, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, shotArc: 150, ringEvery: 1.5, ringTotal: 8, ringNeed: 5, ringR: 60, chaseX0: 55, chaseX1: 92, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseGain: 3, tutoFlight: 30, votePrice: 100, voteGain: 3, lineT: 2.5, jetFollow: 3, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0,  hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
+const PDEF = {cam: 0.5, camFly: 1.3, camChase: 1.4, camRate: 0.6, speed: 340, flight: 35, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, shotArc: 150, ringEvery: 1.5, ringTotal: 8, ringNeed: 5, ringR: 60, chaseX0: 55, chaseX1: 92, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseGain: 3, tutoFlight: 30, qShare: 40, approachT: 4, cruiseT: 3, ringStep: 8, votePrice: 100, voteGain: 3, lineT: 2.5, jetFollow: 3, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, cassMax: 10, useBubbles: 0,  hitPoll: 1, windCap: 4, windRefill: 1.5, windMin: 15,
   vUp: 400, tUp: 0.25, vDown: 520, tDown: 0.5, glide: 0, tTurn: 0.05,
   windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
 const P = Object.assign({}, PDEF, {
@@ -535,15 +548,20 @@ let chase = null, trail = [];
 let phase = 'fly', stormT = 0, emitter = null, pans = [], bubbles = [], cass = 0, chain = [], nextSalvo = 0, nextBubble = 0, dark = 0, bannerT = 0, flash = 0, cassInv = 0;
 let coinsList, journos, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
 let keyUp = false, keyDown = false, pointerY = null, pointerDown = false;
+// la carte : un écran posé sur le jeu (en pause) ; kind = msg (tuto), scandal, vane (girouette), position (volte-face)
+let card = null, cardT = 0, mBubble = null, cruiseT = 0, tutoSeen = {};
+function showCard(kind, o){ card = Object.assign({kind}, o || {}); cardT = 0; pointerDown = false; keyUp = false; holding = false; }
+function closeCard(){ const c = card; if (!c) return; card = null; sfxP3('click'); if (c.kind === 'scandal') beginStormPlay(); else if (c.kind === 'vane') startChase(); else if (c.kind === 'position') startCruise(); }
 
 // ---------- campagne : progression, sauvegarde, bonus ----------
 // mode 'camp' = la campagne (carte, niveaux, sauvegarde) ; 'test' = les boutons de test du menu (niveau P.level, rien n'est sauvegardé)
-let mode = 'test', levelN = 1, testMode = '', bonus = null, kevlarLeft = 0, infoOpen = null, shopMsg = '';
+let mode = 'test', levelN = 1, testMode = '', kevlarLeft = 0, infoOpen = null, shopMsg = '';
+const hasBonus = id => mode === 'camp' && !!(camp.bonuses && camp.bonuses[id]);   // les bonus activés valent pour le niveau en cours (gardés si on le recommence)
 const curLevel = () => LEVELS[clamp(levelN, 0, 5)];
 const isTuto = () => levelN === 0;
-const flightDur = () => isTuto() ? P.tutoFlight : P.flight;
+const flightDur = () => isTuto() ? P.tutoFlight : P.flight*lvlDur();
 // camp.levels[n] = {entry: {poll, cass} (état à l'entrée du niveau), done, poll, cass, gold, hits} ; unlocked = nombre de chapitres jouables (tuto compris)
-function newCampaign(){ return {v: 1, ts: 0, unlocked: 2, coins: 0, cur: 0, votes: 0, levels: []}; }
+function newCampaign(){ return {v: 1, ts: 0, unlocked: 2, coins: 0, cur: 0, votes: 0, levels: [], bonuses: {}}; }
 let camp = newCampaign();
 const levelEntry = n => (camp.levels[n] && camp.levels[n].entry) || {poll: P.pollStart, cass: 0};
 const playable = n => n < camp.unlocked;
@@ -557,7 +575,7 @@ async function saveCamp(){
   try { localStorage.setItem('p3-campaign', JSON.stringify(j)); } catch(e){}
   if (campDoc){ try { await campDoc.set(j); } catch(e){} }
 }
-function resetCamp(){ camp = newCampaign(); bonus = null; saveCamp(); }
+function resetCamp(){ camp = newCampaign(); saveCamp(); }
 function unlockAll(){ camp.unlocked = 6; saveCamp(); }   // (sans effet sur l'enchaînement ; gardé pour les tests)
 const votePrice = () => Math.round(P.votePrice*Math.pow(1.5, camp.votes || 0));
 function buyVotes(){
@@ -569,23 +587,25 @@ function buyVotes(){
 function buyBonus(id){
   const b = BONUS.find(x => x.id === id); if (!b) return false;
   if (id === 'fire' && levelEntry(levelN).cass === 0) return false;
-  if (camp.coins < b.price) return false;
-  camp.coins -= b.price; bonus = id; saveCamp(); return true;
+  if (!camp.bonuses) camp.bonuses = {};
+  if (camp.bonuses[id] || camp.coins < b.price) return false;
+  camp.coins -= b.price; camp.bonuses[id] = true; saveCamp(); return true;
 }
 
 function start(){
   camFx = 1; camGoal = 1; applyCam(); seed = 7; realT = 0; tFlight = 0; py = P.yMax; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0; onWater = true; endReason = ''; wind = 1; windEmptyT = -9;
-  phase = 'fly'; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chain = []; chase = null; trail = []; marineX = null; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; cassInv = 0; booth = null; infoOpen = null;
+  phase = 'fly'; card = null; mBubble = null; cruiseT = 0; tutoSeen = {}; lastQ = null; lastPhrase = null; qLog = []; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chain = []; chase = null; trail = []; marineX = null; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; cassInv = 0; booth = null; infoOpen = null;
   poll = P.pollStart; coins = 0; stats = {hits: 0, coins: 0, cass: 0, bubbles: 0, gold: false, kevlar: 0};
   coinsList = []; journos = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0; patOrder = [];
   pointerY = null; pointerDown = false; keyUp = keyDown = false;
   if (mode === 'camp'){
     // on repart de l'état d'entrée du niveau (sondages et casseroles accumulés), avec le bonus choisi
     const e = levelEntry(levelN); poll = e.poll; cass = e.cass;
-    if (bonus === 'fire') cass = Math.max(0, cass - FIRE_PANS);
+    if (hasBonus('fire')) cass = Math.max(0, cass - FIRE_PANS);
     for (let i=0;i<cass;i++) attachPan({w: 'pan' + Math.floor(rnd()*16), s: 0.8});
-    kevlarLeft = bonus === 'kevlar' ? KEVLAR_HITS : 0;
-  } else { bonus = null; kevlarLeft = 0; }
+    kevlarLeft = hasBonus('kevlar') ? KEVLAR_HITS : 0;
+    if (isTuto()) showCard('msg', {text: 'Appuie pour monter, relâche pour descendre.', skip: true});
+  } else kevlarLeft = 0;
   state = 'play'; paused = false;
   document.getElementById('titleScreen').hidden = true;
   ensureAudio(); musicStart();
@@ -596,14 +616,14 @@ function startTest(){ mode = 'test'; levelN = clamp(Math.round(P.level), 1, 5); 
 function startTestChase(){ mode = 'test'; levelN = clamp(Math.round(P.level), 1, 5); testMode = 'chase'; start(); startChase(); }
 function replay(){ if (mode === 'camp') startLevel(levelN); else if (testMode === 'storm') startTest(); else if (testMode === 'chase') startTestChase(); else startTestFly(); }
 function toTitle(){ if (mode === 'camp' && state !== 'title') saveCamp(); state = 'title'; infoOpen = null; musicStop(); syncTitle(); document.getElementById('titleScreen').hidden = false; }
-// l'écran intermédiaire : le résultat du chapitre qui vient de finir (s'il y en a un), la nouvelle position à retourner, les achats, « C'est parti »
-let lastResult = null;
-function goInter(n, result){
-  mode = 'camp'; levelN = clamp(n, 0, 5); camp.cur = levelN; lastResult = result || null; shopMsg = ''; infoOpen = null; bonus = null;
+// l'écran des bonus, entre deux chapitres : réserve, voix, bonus à activer, « C'est parti ». Le tuto démarre sans écran.
+function goInter(n){
+  mode = 'camp'; levelN = clamp(n, 0, 5); camp.cur = levelN; shopMsg = ''; infoOpen = null;
+  if (levelN === 0){ startLevel(0); return; }
   state = 'inter'; musicStop(); document.getElementById('titleScreen').hidden = true; saveCamp();
 }
-const goMap = () => goInter(camp.cur <= 5 ? camp.cur : 5, null);
-const goShop = n => goInter(n, null);
+const goMap = () => goInter(camp.cur <= 5 ? camp.cur : 5);
+const goShop = n => goInter(n);
 
 // ---------- commandes ----------
 function inputFromPointer(ly){ const raw = clamp((H/2 - ly)/(H*P.windRange/200), -1, 1); return Math.sign(raw)*Math.pow(Math.abs(raw), P.windCurve); }
@@ -650,7 +670,7 @@ function applyInput(dt){
   } else if (onWater && py < P.yMax - 2) onWater = false;
 }
 
-cv.addEventListener('pointerdown', e => { ensureAudio(); if (state !== 'play' || phase === 'intro') return; e.preventDefault(); const l = toLocal(e); pointerDown = true; pointerY = l.y; });
+cv.addEventListener('pointerdown', e => { ensureAudio(); if (state !== 'play' || card) return; e.preventDefault(); const l = toLocal(e); pointerDown = true; pointerY = l.y; });
 cv.addEventListener('pointermove', e => { if (!pointerDown) return; const l = toLocal(e); pointerY = l.y; });
 const up = () => { pointerDown = false; };
 cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up); window.addEventListener('blur', up);
@@ -658,10 +678,10 @@ window.addEventListener('keydown', e => {
   if (e.repeat) return;
   if (e.code === 'ArrowUp' || e.code === 'KeyW') keyUp = true;
   if (e.code === 'ArrowDown' || e.code === 'KeyS') keyDown = true;
-  if (e.code === 'Space'){ if (state === 'play' && phase !== 'intro') keyUp = true; e.preventDefault(); }
-  if (e.code === 'Enter' && state === 'title') goInter(camp.cur <= 5 ? camp.cur : 5, null);
+  if (e.code === 'Space'){ if (state === 'play' && !card) keyUp = true; e.preventDefault(); }
+  if (e.code === 'Enter' && state === 'title') goInter(camp.cur <= 5 ? camp.cur : 5);
   if (e.code === 'Enter' && state === 'recap') replay();
-  if ((e.code === 'Enter' || e.code === 'Space') && state === 'play' && phase === 'intro' && introT > 0.4 && !infoOpen) beginStormPlay();
+  if ((e.code === 'Enter' || e.code === 'Space') && state === 'play' && card && cardT > 0.4 && !infoOpen) closeCard();
   if (e.code === 'Escape' && infoOpen) infoOpen = null;
   if (e.code === 'KeyP' && state === 'play') togglePause();
 });
@@ -690,15 +710,15 @@ function coinLines(x0, y, n, b, rows){ const r = rows || nRows(); for (let k = 0
 const sec = t => t*worldSpeed();   // secondes de vol -> px monde
 const BANDS = () => ({low: [WATER - 110, WATER - 70], mid: [lerp(P.ceil, WATER, 0.5) - 40, lerp(P.ceil, WATER, 0.5) + 40], high: [COIN_TOP() + 30, COIN_TOP() + 110], bait: [COIN_TOP(), COIN_TOP() + 16]});
 const bandY = k => { const b = BANDS()[k]; return lerp(b[0], b[1], rnd()); };
-function addBoat(x){ journos.push({kind: 'boat', x, y: WATER - 2, w: 140, h: 80, fr: Math.floor(rnd()*6), bob: rnd()*6, q: pick(questions())}); }
+function addBoat(x){ journos.push({kind: 'boat', x, y: WATER - 2, w: 140, h: 80, fr: Math.floor(rnd()*6), bob: rnd()*6, q: journoQ()}); }
 // archétypes disponibles selon le chapitre : barques toujours, puis deltaplanes (1), hélicos (2), trampolinistes (3), jet-skis (4)
 const allowed = kind => kind === 'boat' || (kind === 'glider' && levelN >= 1) || (kind === 'heli' && levelN >= 2) || (kind === 'tramp' && levelN >= 3) || (kind === 'jet' && levelN >= 4);
-function addGlider(x, y){ if (!allowed('glider')) return addBoat(x); journos.push({kind: 'glider', x, y, w: 92, h: 44, bob: rnd()*6, col: pick(['#d63b3b', '#2563eb', '#f2b630']), q: pick(questions())}); }
+function addGlider(x, y){ if (!allowed('glider')) return addBoat(x); journos.push({kind: 'glider', x, y, w: 92, h: 44, bob: rnd()*6, col: pick(['#d63b3b', '#2563eb', '#f2b630']), q: journoQ()}); }
 // le trampoliniste : une barque avec un trampoline ; il s'accroupit (préavis) puis saute haut, à période fixe
-function addTramp(x){ journos.push({kind: 'tramp', x, y: WATER - 2, w: 44, h: 50, fr: Math.floor(rnd()*6), bob: rnd()*6, ph: rnd()*2.4, jy: 0, q: pick(questions())}); }
+function addTramp(x){ journos.push({kind: 'tramp', x, y: WATER - 2, w: 44, h: 50, fr: Math.floor(rnd()*6), bob: rnd()*6, ph: rnd()*2.4, jy: 0, q: journoQ()}); }
 // le jet-ski : arrive vite au ras de l'eau, se cale sous Marine pendant jetFollow s (interdit la pose), puis file
-function addJet(x){ journos.push({kind: 'jet', x, y: WATER - 8, w: 100, h: 44, bob: rnd()*6, alert: 1.1, st: 'in', vx: 520, holdT: 0, q: pick(questions())}); }
-function addHeli(x, y, track){ if (!allowed('heli')) return addGlider(x, y); journos.push({kind: 'heli', x, y, w: 78, h: 40, bob: rnd()*6, track: track ? 3.2 : 0, alert: track ? 1.1 : 0, vx: track ? worldSpeed()*0.65 : 0, q: pick(questions())}); }
+function addJet(x){ journos.push({kind: 'jet', x, y: WATER - 8, w: 100, h: 44, bob: rnd()*6, alert: 1.1, st: 'in', vx: 520, holdT: 0, q: journoQ()}); }
+function addHeli(x, y, track){ if (!allowed('heli')) return addGlider(x, y); journos.push({kind: 'heli', x, y, w: 78, h: 40, bob: rnd()*6, track: track ? 3.2 : 0, alert: track ? 1.1 : 0, vx: track ? worldSpeed()*0.65 : 0, q: journoQ()}); }
 const worldSpeed = () => P.speed/Z;   // la vitesse se règle en px écran/s ; en px monde elle dépend de la caméra
 // Chaque motif reçoit x (bord droit du monde) et renvoie sa longueur en px monde. Les durées sont en secondes de vol, les altitudes relatives à la limite et à l'eau.
 const PATTERNS = [
@@ -743,7 +763,7 @@ function spawn(){
   if (!patOrder.length){ patOrder = PATTERNS.map((_, i) => i).filter(i => !PAT_NEED[i] || allowed(PAT_NEED[i])); for (let i = patOrder.length - 1; i > 0; i--){ const j = Math.floor(rnd()*(i + 1)); [patOrder[i], patOrder[j]] = [patOrder[j], patOrder[i]]; } }
   const w = PATTERNS[patOrder.pop()](x);   // chaque motif passe une fois avant qu'un ne revienne
   spawnI++;
-  nextSpawn = (w + sec(0.5 + rnd()*0.4))/worldSpeed();
+  nextSpawn = (w + sec(0.5 + rnd()*0.4 + (1 - lvlDiff())*1.2))/worldSpeed();   // chapitres faciles : plus d'espace entre les motifs
 }
 
 // ---------- mise à jour ----------
@@ -751,7 +771,7 @@ function pop(t, color, x, y, big){ pops.push({t, color, x, y, life: big ? 1.6 : 
 function addPoll(v){ poll = clamp(poll + v, 0, 100); }
 function camStep(dt){
   if (state === 'play' || state === 'final'){
-    camGoal = phase === 'fly' ? P.camFly : phase === 'chase' && chase ? (chase.leaving ? 0.82 : lerp(1, P.camChase, chaseProg())) : phase === 'final' ? 1 : 1;
+    camGoal = phase === 'fly' || phase === 'cruise' ? P.camFly : phase === 'chase' && chase ? (chase.leaving ? 0.82 : lerp(1, P.camChase, chaseProg())) : 1;
     camFx += clamp(camGoal - camFx, -P.camRate*dt, P.camRate*dt);
   }
   updateView();
@@ -760,20 +780,25 @@ function update(dt){
   realT += dt; camStep(dt);
   if (state === 'final'){ updateFinal(dt); return; }
   if (state !== 'play' || paused) return;
+  if (card){ cardT += dt; if (emitter){ emitter.frT += dt; if (emitter.frT > 0.5){ emitter.frT = 0; emitter.fr = (emitter.fr + 1) % emitter.E.frames.length; } } return; }   // une carte est affichée : le jeu attend
   tFlight += dt; lastDt = dt;
-  if (phase === 'fly' && tFlight >= flightDur()){ if (isTuto()) startChase(); else startStorm(false); }
-  if (phase === 'intro'){ introT += dt; if (emitter){ emitter.frT += dt; if (emitter.frT > 0.5){ emitter.frT = 0; emitter.fr = (emitter.fr + 1) % emitter.E.frames.length; } } return; }
+  if (phase === 'fly' && tFlight >= flightDur()){ if (isTuto()) showVane(); else startStorm(false); }
+  if (mBubble){ mBubble.life -= dt; if (mBubble.life <= 0) mBubble = null; }
   applyInput(dt); if (state !== 'play') return;
   const mx = PX(), my = py, dx = worldSpeed()*dt;
   inv = Math.max(0, inv - dt);
-  if (phase === 'fly'){ nextSpawn -= dt; if (nextSpawn <= 0) spawn(); }   // les sondages ne montent plus tout seuls : contacts en moins, girouette et argent en plus
+  if (phase === 'fly'){ nextSpawn -= dt; if (nextSpawn <= 0) spawn();   // les sondages ne montent plus tout seuls : contacts en moins, girouette et argent en plus
+    if (isTuto() && mode === 'camp'){   // les messages du tuto, au moment où la chose apparaît
+      if (!tutoSeen.coins && coinsList.some(c => c.x < VWW - 60)){ tutoSeen.coins = true; showCard('msg', {text: 'Ramasse les pièces d’or : elles remplissent la caisse noire du parti.'}); return; }
+      if (!tutoSeen.journo && journos.some(j => !(j.alert > 0) && j.x < VWW - 80)){ tutoSeen.journo = true; showCard('msg', {text: 'Touche un journaliste : tu perds des points de sondage.'}); return; } } }
   else if (phase === 'approach') updateApproach(dt);
   else if (phase === 'storm') updateStorm(dt);
   else if (phase === 'chase') updateChase(dt);
+  else if (phase === 'cruise') updateCruise(dt);
   updateChain(dt);
   // pièces
   for (const c of coinsList){ c.x -= dx;
-    if (bonus === 'pump' && !c.got){ const d = Math.hypot(c.x - mx, c.y - my); if (d < MAGNET_R && d > 1){ c.x += (mx - c.x)/d*MAGNET_V*dt; c.y += (my - c.y)/d*MAGNET_V*dt; } }   // la pompe à fric attire les pièces proches
+    if (hasBonus('pump') && !c.got){ const d = Math.hypot(c.x - mx, c.y - my); if (d < MAGNET_R && d > 1){ c.x += (mx - c.x)/d*MAGNET_V*dt; c.y += (my - c.y)/d*MAGNET_V*dt; } }   // la pompe à fric attire les pièces proches
     if (!c.got && Math.hypot(c.x - mx, c.y - my) < 30*coinK()){ c.got = true; c.block.got++; coins++; stats.coins++;
       coinChain = (realT - coinChainT < 0.4) ? coinChain + 1 : 0; coinChainT = realT; sfxP3('coin', Math.min(coinChain, 10));
       fx.push({kind: 'spark', x: c.x, y: c.y, t: 0}); } }
@@ -787,7 +812,7 @@ function update(dt){
     if (j.kind === 'tramp'){ const tt = (realT + j.ph) % 2.4; j.crouch = tt < 0.5; j.jy = tt < 0.5 ? 0 : 240*Math.sin(Math.PI*(tt - 0.5)/1.9); }
     if (j.track > 0){ j.track -= dt; j.y += clamp(my - j.y, -130*dt, 130*dt); }
     const cy = j.kind === 'boat' ? j.y - 48 : j.kind === 'tramp' ? j.y - 78 - j.jy : j.kind === 'jet' ? j.y - 30 : j.y;
-    if (!j.passed && j.x + j.w/2 < mx - 40) j.passed = true;
+    if (!j.passed && j.x + j.w/2 < mx - 40){ j.passed = true; if (j.kind === 'boat' && !j.q && !j.hitDone && phase === 'fly') marineSays(); }   // une barque muette sautée : Marine a le dernier mot
     const hull = j.kind === 'tramp' && Math.abs(j.x - mx) < 70 + 22 && Math.abs(j.y - 48 - my) < 40 + 28;
     if (inv <= 0 && !j.hitDone && (hull || (Math.abs(j.x - mx) < j.w/2 + 22 && Math.abs(cy - my) < j.h/2 + 28))){
       j.hitDone = true; inv = P.hitInv; stats.hits++; sfxP3('hit'); fx.push({kind: 'flash', x: j.x, y: cy, t: 0});
@@ -800,52 +825,58 @@ function update(dt){
   for (const f of fx) f.t += dt; fx = fx.filter(f => f.t < 0.5);
 }
 
+// Marine répond : une bulle au-dessus d'elle, jamais la même deux fois de suite, jamais par-dessus une question de journaliste
+function marineSays(){
+  if (mBubble) return; const mx = PX(); if (journos.some(j => j.q && !j.passed && j.x - mx < worldSpeed()*1.1 && j.x - mx > -30)) return;
+  const t = nextLine(PHRASES, lastPhrase); lastPhrase = t; mBubble = {t, life: 2.0}; sfxP3('tick');
+}
 // ---------- la tempête : le scandale du niveau ----------
 function startStorm(direct){
   const L = curLevel(), E = EMITTERS[L.scandal.emitter];
   stormT = 0; bannerT = 0; nextSalvo = 1.2; nextBubble = 2.2; nextStormCoin = 1.5; pans = []; bubbles = []; introT = 0;
   // l'émetteur arrive de la droite à vue (le jeu continue), se met en place, puis la carte du scandale s'affiche ; direct = tout de suite en place (boutons de test)
   const edge = PX() + (VW - Z*PX())/Z;   // bord droit à zoom 1 (la caméra y revient pendant la tempête)
-  emitter = {kind: L.scandal.emitter, E, x: direct ? edge - 230 : VWW0 + 380, tx: edge - 230, y: E.y(), hits: 0, recoil: 0, pause: 0, fled: false, fr: 0, frT: 0};
-  if (direct){ phase = 'intro'; dark = 1; camFx = 1; pointerDown = false; keyUp = false; sfxP3('wall'); } else { phase = 'approach'; dark = Math.max(dark, 0.01); sfxP3('gust'); }
+  const x0 = direct ? edge - 230 : VWW0 + 380;
+  emitter = {kind: L.scandal.emitter, E, x: x0, tx: edge - 230, v: (x0 - (edge - 230))/Math.max(0.5, P.approachT), y: E.y(), hits: 0, recoil: 0, pause: 0, fled: false, fr: 0, frT: 0};
+  if (direct){ phase = 'intro'; dark = 1; camFx = 1; sfxP3('wall'); showCard('scandal'); } else { phase = 'approach'; dark = Math.max(dark, 0.01); sfxP3('gust'); }
 }
+// l'émetteur arrive par la droite en approachT s ; le ciel se gâte à mesure ; on joue encore (plus de journalistes)
 function updateApproach(dt){
-  const e = emitter; dark = Math.min(1, dark + dt/1.6);
-  e.x += clamp(e.tx - e.x, -420*dt, 420*dt); e.frT += dt; if (e.frT > 0.5){ e.frT = 0; e.fr = (e.fr + 1) % e.E.frames.length; }
-  if (Math.abs(e.x - e.tx) < 1){ phase = 'intro'; introT = 0; pointerDown = false; keyUp = false; holding = false; sfxP3('wall'); }
+  const e = emitter; dark = Math.min(1, dark + dt/Math.max(0.5, P.approachT));
+  e.x += clamp(e.tx - e.x, -e.v*dt, e.v*dt); e.frT += dt; if (e.frT > 0.5){ e.frT = 0; e.fr = (e.fr + 1) % e.E.frames.length; }
+  if (Math.abs(e.x - e.tx) < 1){ phase = 'intro'; introT = 0; dark = 1; sfxP3('wall'); showCard('scandal'); }
 }
 let introT = 0, nextStormCoin = 1.5;
-function beginStormPlay(){ if (phase !== 'intro') return; phase = 'storm'; lineT = P.lineT; nextSalvo = P.lineT + 0.6; sfxP3('click'); }
+function beginStormPlay(){ if (phase !== 'intro') return; card = null; phase = 'storm'; lineT = P.lineT; nextSalvo = P.lineT + 0.6; sfxP3('click'); }
 let lineT = 0;
 function updateStorm(dt){
-  stormT += dt; const mx = PX(), my = py, e = emitter; lineT = Math.max(0, lineT - dt);
-  // des pièces continuent d'arriver pendant la tempête (sans journalistes) : rubans et vagues
-  nextStormCoin -= dt; if (nextStormCoin <= 0 && !e.fled){ nextStormCoin = 2.2 + rnd()*1.2; const b = newBlock(); if (rnd() < 0.5) coinLines(VWW + 60, bandY(pick(['low', 'mid', 'high'])), 8 + Math.floor(rnd()*8), b, 2); else { const pts = simPath(lerp(COIN_TOP(), WATER, 0.3 + rnd()*0.4), [[true, 0.35], [false, 0.5], [true, 0.35], [false, 0.5]]); coinPath(VWW + 60, pts, b, 0, undefined, 2); } }
+  stormT += dt; const mx = PX(), my = py, e = emitter, D = lvlDiff(), PS = P.panSpeed*(0.6 + 0.4*D); lineT = Math.max(0, lineT - dt);
+  if (!e.fled) stormCoins(dt);   // des pièces continuent d'arriver pendant la tempête (sans journalistes)
   dark = Math.min(1, dark + dt/2); flash = Math.max(0, flash - dt*3); if (rnd() < dt*0.12) flash = 1;
   if (bannerT > 0) bannerT -= dt;
   cassInv = Math.max(0, cassInv - dt);
   // l'émetteur entre, recule aux touches, fuit à la fin
-  if (e.fled){ e.x += 700*dt; if (e.x > VWW + 400){ startChase(); return; } }
+  if (e.fled){ e.x += 700*dt; if (e.x > VWW + 400){ if (mode === 'camp') showVane(); else startChase(); return; } }
   else { e.x += clamp(e.tx + e.recoil - e.x, -500*dt, 500*dt); e.recoil = Math.max(0, e.recoil - 80*dt); e.pause = Math.max(0, e.pause - dt); }
   e.frT += dt; if (e.frT > 0.5){ e.frT = 0; e.fr = (e.fr + 1) % e.E.frames.length; }
   if (e.kind === 'bard') e.y += clamp(lerp(P.ceil, WATER, 0.45) + Math.sin(realT*0.8)*60 - e.y, -120*dt, 120*dt);   // Bardella se balade
-  if (!e.fled && stormT >= P.stormMax){ e.fled = true; pop('Il s’en va…', '#e8edf5', e.x - 60, e.y - 120, true); }
+  if (!e.fled && stormT >= P.stormMax*lvlDur()){ e.fled = true; pop('Il s’en va…', '#e8edf5', e.x - 60, e.y - 120, true); }
   // les salves : des casseroles en arc vers Marine, étalées en hauteur
   // les lancers, un par un : tirs tendus horizontaux dans un couloir d'altitude (visé ou au hasard), ou retombées verticales sur la position de Marine ; chacun est annoncé par un repère pendant `telegraph` s
-  if (!e.fled && e.pause <= 0){ nextSalvo -= dt; if (nextSalvo <= 0){ nextSalvo = P.stormRate*(0.75 + rnd()*0.5);
+  if (!e.fled && e.pause <= 0){ nextSalvo -= dt; if (nextSalvo <= 0){ nextSalvo = P.stormRate/D*(0.75 + rnd()*0.5);
     const n = Math.round(P.stormLanes), laneY = k => lerp(P.ceil + 50, P.yMax, k/(n - 1)), myLane = Math.round((my - (P.ceil + 50))/(P.yMax - (P.ceil + 50))*(n - 1));
     const w = rnd() < 0.3 ? 'coc' + Math.floor(rnd()*4) : 'pan' + Math.floor(rnd()*16);
-    const ox = e.x - 60, oy = e.y - e.E.h*0.6, r = rnd()*100;
-    if (r < P.lobShare || r < P.lobShare + P.curveShare){
+    const ox = e.x - 60, oy = e.y - e.E.h*0.6, r = rnd()*100, lob = P.lobShare*D, curve = P.curveShare*D;   // chapitres faciles : moins de tirs visés, plus de hasard
+    if (r < lob + curve){
       // cloche depuis l'émetteur : retombe sur Marine (lob) ou croise sa colonne à une autre hauteur (incurvée)
       let ty = my;
-      if (r >= P.lobShare){ let k = Math.floor(rnd()*(n - 1)); if (k >= clamp(myLane, 0, n - 1)) k++; ty = laneY(k); if (onWater && ty > P.yMax - 40) ty = laneY(Math.max(0, k - 2)); }
-      const t = (ox - mx)/P.panSpeed*1.15, g = P.lobGrav, vx = -(ox - mx)/t, vy0 = (ty - oy)/t - 0.5*g*t;
-      pans.push({kind: r < P.lobShare ? 'lob' : 'curve', x: ox, y: oy, vx, vy: vy0, g, delay: P.telegraph, rot: rnd()*6.3, spin: 1.2 + rnd()*0.8, w, s: 0.75 + rnd()*0.25});
+      if (r >= lob){ let k = Math.floor(rnd()*(n - 1)); if (k >= clamp(myLane, 0, n - 1)) k++; ty = laneY(k); if (onWater && ty > P.yMax - 40) ty = laneY(Math.max(0, k - 2)); }
+      const t = (ox - mx)/PS*1.15, g = P.lobGrav, vx = -(ox - mx)/t, vy0 = (ty - oy)/t - 0.5*g*t;
+      pans.push({kind: r < lob ? 'lob' : 'curve', x: ox, y: oy, vx, vy: vy0, g, delay: P.telegraph, rot: rnd()*6.3, spin: 1.2 + rnd()*0.8, w, s: 0.75 + rnd()*0.25});
     } else {
-      const lane = rnd()*100 < P.aimShare ? clamp(myLane, 0, n - 1) : Math.floor(rnd()*n);
-      const ts = (ox - mx)/P.panSpeed;   // temps jusqu'à la colonne de Marine : la parabole y repasse exactement par le couloir
-      pans.push({kind: 'shot', x: ox, y: laneY(lane) + (rnd() - 0.5)*10, vx: -P.panSpeed, vy: -0.5*P.shotArc*ts, g: P.shotArc, delay: P.telegraph, rot: rnd()*6.3, spin: 0.5, w, s: 0.75 + rnd()*0.25});
+      const lane = rnd()*100 < P.aimShare*D ? clamp(myLane, 0, n - 1) : Math.floor(rnd()*n);
+      const ts = (ox - mx)/PS;   // temps jusqu'à la colonne de Marine : la parabole y repasse exactement par le couloir
+      pans.push({kind: 'shot', x: ox, y: laneY(lane) + (rnd() - 0.5)*10, vx: -PS, vy: -0.5*P.shotArc*ts, g: P.shotArc, delay: P.telegraph, rot: rnd()*6.3, spin: 0.5, w, s: 0.75 + rnd()*0.25});
     } } }
   for (const c of pans){ if (c.delay > 0){ c.delay -= dt; if (c.delay <= 0) sfxP3(e.E.sfx); continue; }
 c.vy += c.g*dt; c.x += c.vx*dt; c.y += c.vy*dt; c.rot += c.spin*dt;
@@ -862,6 +893,8 @@ c.vy += c.g*dt; c.x += c.vx*dt; c.y += c.vy*dt; c.rot += c.spin*dt;
   }
   bubbles = bubbles.filter(b => !b.done && b.x > -200 && b.x < VWW + 600);
 }
+// rubans et vagues de pièces, sans journalistes (tempête et navigation)
+function stormCoins(dt){ nextStormCoin -= dt; if (nextStormCoin > 0) return; nextStormCoin = 2.2 + rnd()*1.2; const b = newBlock(); if (rnd() < 0.5) coinLines(VWW + 60, bandY(pick(['low', 'mid', 'high'])), 8 + Math.floor(rnd()*8), b, 2); else { const pts = simPath(lerp(COIN_TOP(), WATER, 0.3 + rnd()*0.4), [[true, 0.35], [false, 0.5], [true, 0.35], [false, 0.5]]); coinPath(VWW + 60, pts, b, 0, undefined, 2); } }
 // La chaîne : chaque casserole est un maillon qui suit le précédent à distance fixe, avec gravité et traînée (pas de vraie simulation, juste des contraintes)
 const LINK = 28;
 function attachPan(c){ const last = chain.length ? chain[chain.length - 1] : {x: PX() - 34, y: py + 68}; chain.push({x: last.x - LINK, y: last.y + 4, ox: last.x - LINK, oy: last.y + 4, w: c.w, s: Math.min(c.s, 0.85), rot: 0}); }
@@ -883,35 +916,37 @@ function updateChain(dt){
 // ---------- la course : l'actu d'or et sa traîne ----------
 // Positions en référence monde : l'orbe part à chaseX0 % de la largeur d'écran et dérive à droite jusqu'à chaseX1 % quand le temps s'écoule ;
 // Marine part de sa position normale (22 %) et avance vers l'orbe à mesure que la jauge se remplit : jauge pleine = contact.
+// la carte de la girouette : le vent tourne, on explique (tuto) ou on rappelle (chapitres) ; au tap, la course
+function showVane(){ phase = 'vane'; emitter = null; pans = []; bubbles = []; dark = Math.min(dark, 0.5); showCard('vane'); }
 function startChase(){
-  phase = 'chase'; emitter = null; pans = []; bubbles = []; trail = []; nextStormCoin = 1.5;
+  phase = 'chase'; card = null; emitter = null; pans = []; bubbles = []; trail = []; nextStormCoin = 1.5;
   chase = {t: 0, gauge: 0, y: P.yMax - 30, vy: 0, target: 0, nextTurn: 1.2, rings: [], dropped: 0, passed: 0, nextDrop: 1.0, caught: false, leaving: false, catchT: 0, flash: 0, x0: PX()};
   chase.target = chase.y; marineX = chase.x0; sfxP3('orb');
 }
 // la girouette dérive vers la droite au fil des cercles lâchés ; en largeur de base, indépendante du zoom
 const orbX = () => chase ? lerp(P.chaseX0, P.chaseX1, clamp(chase.dropped/Math.max(1, P.ringTotal - 1), 0, 1))/100*VWW0 : 0;
 const chaseDist = () => chase ? orbX() - PX() : 0;
-const ringR = () => P.ringR*(isTuto() ? 1.5 : 1);
+const ringR = () => P.ringR*(isTuto() ? 1.5 : 1 + 0.5*(1 - lvlDiff()));   // plus larges aux premiers chapitres
 const chaseProg = () => chase ? clamp(chase.passed/Math.max(1, P.ringNeed), 0, 1) : 0;   // part des cercles passés : Marine avance et la caméra se rapproche avec
 function updateChase(dt){
   const c = chase, my = py, vs = worldSpeed();
   c.t += dt; dark = Math.max(0, dark - dt/1.5); c.flash = Math.max(0, c.flash - dt);
-  if (c.caught){ c.catchT += dt; if (c.catchT > 0.9) endLevel('done'); return; }
-  if (c.leaving){ c.catchT += dt; if (c.catchT > 2.4) endLevel('done'); return; }   // la girouette monte au ciel, la caméra recule, Marine retombe
+  if (c.caught){ c.catchT += dt; marineX += clamp(orbX() - 30 - marineX, -900*dt, 900*dt); if (c.catchT > 1.0 && !c.shown){ c.shown = true; showCard('position'); } return; }   // au compte, Marine fonce sur la girouette, puis la carte de la volte-face
+  if (c.leaving){ c.catchT += dt; if (c.catchT > 2.4) startCruise(); return; }   // la girouette monte au ciel, la caméra recule, Marine retombe
   // la girouette : un cap qui change à intervalles (plus courts à mesure qu'on avance) ; vitesse et accélération bornées par celles de Marine
-  const top = P.ceil + 70, bot = P.yMax, pr = chaseProg(), vmax = Math.min(P.vUp, P.vDown)*P.chaseAgil/100/(isTuto() ? 1.4 : 1);
+  const top = P.ceil + 70, bot = P.yMax, pr = chaseProg(), vmax = Math.min(P.vUp, P.vDown)*P.chaseAgil/100*(0.7 + 0.3*lvlDiff())/(isTuto() ? 1.4 : 1);
   c.nextTurn -= dt; if (c.nextTurn <= 0){ c.nextTurn = lerp(P.chaseStep0, P.chaseStep1, pr)*(0.8 + rnd()*0.4); const span = (bot - top)*lerp(0.45, 0.8, pr); c.target = clamp(c.y + (rnd() - 0.5)*2*span, top, bot - 20); }
   const want = clamp((c.target - c.y)*4, -vmax, vmax), acc = vmax/0.3; c.vy += clamp(want - c.vy, -acc*dt, acc*dt); c.y = clamp(c.y + c.vy*dt, top, bot);
   // les cercles : lâchés derrière la girouette à sa hauteur, fixes dans le monde, ils défilent vers Marine
   const ox = orbX();
   if (c.dropped < P.ringTotal){ c.nextDrop -= dt; if (c.nextDrop <= 0){ c.nextDrop = P.ringEvery; c.dropped++; c.rings.push({x: ox - 20, y: c.y, n: c.dropped, state: 'wait'}); sfxP3('tick'); } }
-  // Marine avance vers la girouette à chaque cercle passé (elle reste 40 px derrière jusqu'au dernier)
-  const want_x = lerp(c.x0, ox - 40, pr); marineX += clamp(want_x - marineX, -500*dt, 500*dt);
+  // Marine avance d'un petit cran vers la girouette à chaque cercle passé (ringStep % de la distance) ; au compte, elle fonce
+  const want_x = lerp(c.x0, ox - 40, clamp(c.passed*P.ringStep/100, 0, 1)); marineX += clamp(want_x - marineX, -500*dt, 500*dt);
   const mx = PX();
   for (const r of c.rings){ r.x -= vs*dt;
     if (r.state === 'wait' && r.x <= mx){   // le cercle arrive à la colonne de Marine : passé ou manqué, une fois pour toutes
       if (Math.abs(r.y - my) < ringR()){ r.state = 'ok'; c.passed++; c.flash = 0.6; sfxP3('orbB', c.passed); pop(c.passed + ' / ' + Math.round(P.ringNeed), '#bdf5c9', mx + 10, my - 70, true);
-        if (c.passed >= P.ringNeed){ c.caught = true; c.catchT = 0; stats.gold = true; addPoll(P.chaseGain); pop('Volte-face ! +' + P.chaseGain.toFixed(1).replace('.', ',') + ' pt', '#f2b630', mx + 10, my - 100, true); sfxP3('fanfare'); return; } }
+        if (c.passed >= P.ringNeed){ c.caught = true; c.catchT = 0; c.xCatch = marineX; c.oxCatch = ox; stats.gold = true; addPoll(P.chaseGain); pop('Volte-face ! +' + P.chaseGain.toFixed(1).replace('.', ',') + ' pt', '#f2b630', mx + 10, my - 100, true); sfxP3('fanfare'); return; } }
       else { r.state = 'miss'; sfxP3('miss'); } } }
   c.rings = c.rings.filter(r => r.x > -120);
   // particules décoratives derrière la girouette
@@ -927,22 +962,26 @@ function drawChase(){
   for (const q of trail){ const k = clamp(1 - q.age/4, 0, 1), tw = 0.7 + 0.3*Math.sin(realT*8 + q.ph), r = q.r*(1 + q.age*0.35); ctx.fillStyle = 'rgba(255,45,149,' + (0.85*k*tw) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, r, 0, 7); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,' + (0.9*k*tw) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, r*0.45, 0, 7); ctx.fill(); }
   // l'orbe d'or
   let ox = orbX(), oy = c.y;
-  if (c.caught){ const k = clamp(c.catchT/0.5, 0, 1); ox = lerp(ox, mx + 20, k); oy = lerp(oy, py, k); }
+  if (c.caught){ const k = clamp((c.catchT - 0.6)/0.4, 0, 1); ox = lerp(ox, mx + 20, k); oy = lerp(oy, py, k); }
   if (c.leaving){ ox += c.catchT*c.catchT*500; oy -= c.catchT*c.catchT*600; }
   const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, 70); g.addColorStop(0, 'rgba(255,226,120,.6)'); g.addColorStop(1, 'rgba(255,200,80,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ox, oy, 70, 0, 7); ctx.fill();
   // la girouette d'or : une flèche qui pointe dans son sens de vol, et la banderole de la nouvelle position accrochée derrière
   { const ang = Math.atan2(c.vy, -worldSpeed()*0.6), k = 1/Z, F = FLAGS[curLevel().n];
-    ctx.save(); ctx.translate(ox, oy); ctx.rotate(ang); ctx.scale(1.9, 1.9); ctx.fillStyle = '#f2b630'; ctx.strokeStyle = '#8a5a00'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(-34, 0); ctx.lineTo(-14, -6); ctx.lineTo(-14, 6); ctx.closePath(); ctx.fill(); ctx.stroke();   // empennage
-    ctx.beginPath(); ctx.moveTo(-16, -3); ctx.lineTo(16, -3); ctx.lineTo(16, 3); ctx.lineTo(-16, 3); ctx.closePath(); ctx.fill(); ctx.stroke();   // hampe
-    ctx.beginPath(); ctx.moveTo(14, -10); ctx.lineTo(34, 0); ctx.lineTo(14, 10); ctx.closePath(); ctx.fill(); ctx.stroke();   // pointe
-    ctx.restore();
-    ctx.fillStyle = '#f2b630'; ctx.beginPath(); ctx.arc(ox, oy, 12, 0, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#8a5a00'; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(ox, oy - 30); ctx.lineTo(ox - 8, oy - 44); ctx.lineTo(ox + 8, oy - 44); ctx.closePath(); ctx.fill(); ctx.moveTo(ox - 7, oy + 30); ctx.lineTo(ox + 7, oy + 30); ctx.lineTo(ox, oy + 16); ctx.closePath(); ctx.fill();   // N / S
+    drawVaneIcon(ox, oy, ang, 1.9);
     if (!c.caught){ font(15*k, 900); const txt = F[1], bw = ctx.measureText(txt).width + 18*k, bh = 24*k, bx = ox + 50, by = oy - 70 + Math.sin(realT*4)*3;
       ctx.strokeStyle = 'rgba(255,230,120,.9)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(ox + 14, oy - 14); ctx.lineTo(bx, by + bh/2); ctx.stroke();
       ctx.fillStyle = '#fde68a'; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + bw, by + Math.sin(realT*7)*3); ctx.lineTo(bx + bw, by + bh + Math.sin(realT*7)*3); ctx.lineTo(bx, by + bh); ctx.closePath(); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#8a5a00'; ctx.stroke();
       text(txt, bx + bw/2, by + bh/2 + 1, 15*k, 900, '#14213d', 'center'); } }
+}
+// la girouette d'or : une flèche qui pointe dans son sens de vol, N et S (dans le monde pendant la course, à l'écran sur les cartes)
+function drawVaneIcon(ox, oy, ang, s){
+  ctx.save(); ctx.translate(ox, oy); ctx.scale(s, s); ctx.rotate(ang); ctx.fillStyle = '#f2b630'; ctx.strokeStyle = '#8a5a00'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(-34, 0); ctx.lineTo(-14, -6); ctx.lineTo(-14, 6); ctx.closePath(); ctx.fill(); ctx.stroke();   // empennage
+  ctx.beginPath(); ctx.moveTo(-16, -3); ctx.lineTo(16, -3); ctx.lineTo(16, 3); ctx.lineTo(-16, 3); ctx.closePath(); ctx.fill(); ctx.stroke();   // hampe
+  ctx.beginPath(); ctx.moveTo(14, -10); ctx.lineTo(34, 0); ctx.lineTo(14, 10); ctx.closePath(); ctx.fill(); ctx.stroke();   // pointe
+  ctx.rotate(-ang); ctx.beginPath(); ctx.arc(0, 0, 6.3, 0, 7); ctx.fill(); ctx.lineWidth = 1; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, -16); ctx.lineTo(-4.2, -23); ctx.lineTo(4.2, -23); ctx.closePath(); ctx.fill(); ctx.moveTo(-3.7, 16); ctx.lineTo(3.7, 16); ctx.lineTo(0, 8.4); ctx.closePath(); ctx.fill();   // N / S
+  ctx.restore();
 }
 function drawRings(){   // les cercles, dessinés devant Marine : à venir en or, passés en vert, manqués en rouge (ils s'effacent)
   const c = chase; if (!c) return; const R = ringR(), k = 1/Z;
@@ -960,9 +999,15 @@ function drawChaseHud(){
   text('Girouette', x + 12, y + 17, 12, 900, '#14213d');
   for (let i=0;i<need;i++){ ctx.fillStyle = i < c.passed ? '#f2b630' : 'rgba(20,33,61,.15)'; ctx.beginPath(); ctx.arc(x + 100 + i*24, y + 17, 8, 0, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#14213d'; ctx.stroke(); }
   text(c.passed + ' / ' + need, x + w - 14, y + 17, 13, 900, '#14213d', 'right');
-  if (c.leaving) outText('Le vent est passé : Marine garde sa position', VW/2, H/2 - 40, 24, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
-  else if (!c.caught && c.t < 4) outText('Le vent tourne ! Passe ' + need + ' cercles pour attraper la girouette : « ' + FLAGS[curLevel().n][1] + ' »', VW/2, y + 50, 13, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
-  else if (!c.caught) outText(left > 0 ? (isTuto() ? 'Passe dans les cercles : à chacun, Marine se rapproche.' : 'Passe dans les cercles !') : 'Derniers cercles !', VW/2, y + 50, 13, 900, '#fff', 'center', 'rgba(20,33,61,.6)');
+  if (c.leaving) outText('La girouette s’envole : Marine garde sa position', VW/2, H/2 - 40, 22, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
+  else if (!c.caught && left === 0) outText('Derniers cercles !', VW/2, y + 50, 13, 900, '#fff', 'center', 'rgba(20,33,61,.6)');
+}
+// après la course : on navigue un peu (pièces, pas de journaliste), Marine revient à sa place, puis l'écran des bonus
+function startCruise(){ phase = 'cruise'; card = null; cruiseT = 0; chase = null; trail = []; nextStormCoin = 0.6; }
+function updateCruise(dt){
+  cruiseT += dt; dark = Math.max(0, dark - dt/1.5); stormCoins(dt);
+  if (marineX !== null){ const d = Math.max(190, VWW0*0.22); marineX += clamp(d - marineX, -300*dt, 300*dt); if (Math.abs(marineX - d) < 1) marineX = null; }
+  if (cruiseT >= P.cruiseT) endLevel('done');
 }
 function endLevel(reason){
   endReason = reason; musicStop(); if (reason === 'sunk') sfxP3('sink');
@@ -971,16 +1016,15 @@ function endLevel(reason){
   if (reason === 'done'){
     camp.levels[levelN] = Object.assign(camp.levels[levelN] || {}, {entry: levelEntry(levelN), done: true, poll, cass, gold: stats.gold, hits: stats.hits});
     if (levelN < 5){ const nx = levelN + 1; camp.levels[nx] = Object.assign(camp.levels[nx] || {}, {entry: {poll, cass}}); camp.unlocked = Math.max(camp.unlocked, nx + 1); }
-    bonus = null;   // le bonus valait pour ce niveau
-    const result = {n: levelN, gold: stats.gold, poll, cass, coins, hits: stats.hits};
+    camp.bonuses = {};   // les bonus valaient pour ce niveau
     if (levelN === 5){ camp.cur = 6; saveCamp(); startFinal(); return; }
-    goInter(levelN + 1, result); return;   // pas de récap : l'écran du chapitre suivant porte le résultat
+    goInter(levelN + 1); return;   // pas de récap : l'écran des bonus, puis le chapitre suivant
   }
   state = 'recap'; saveCamp();
 }
 // ---------- la fin : Marine se pose et rejoint le bureau de vote flottant ----------
 let booth = null, finalT = 0;
-function startFinal(){ state = 'final'; finalT = 0; phase = 'final'; chase = null; trail = []; emitter = null; pans = []; dark = 0; holding = false; pointerDown = false; keyUp = false; booth = {x: VWW + 320, reached: false, t: 0}; }
+function startFinal(){ state = 'final'; finalT = 0; phase = 'final'; card = null; marineX = null; chase = null; trail = []; emitter = null; pans = []; dark = 0; holding = false; pointerDown = false; keyUp = false; booth = {x: VWW + 320, reached: false, t: 0}; }
 function updateFinal(dt){
   finalT += dt;
   // Marine retombe sur l'eau (plus de commande), puis glisse
@@ -1081,12 +1125,15 @@ function drawReporter(x, y, sq){   // le journaliste : tête, buste, caméra ; s
   ctx.fillStyle = '#2b3550'; ctx.fillRect(-5, -10, 10, 14); ctx.fillStyle = '#111'; ctx.fillRect(6, -16, 10, 6); ctx.fillRect(14, -17, 4, 8);
   ctx.restore();
 }
+function speech(txt, x, y, fill, col){   // bulle dans le monde : pointe en (x, y), texte au-dessus
+  const k = 1/Z; font(18*k, 900); const w = ctx.measureText(txt).width + 24*k, h = 30*k, bx = x - w/2, by = y - h - 10*k;
+  ctx.fillStyle = '#14213d'; rr(bx + 3*k, by + 3*k, w, h, 10*k); ctx.fill(); ctx.fillStyle = fill || '#fff'; rr(bx, by, w, h, 10*k); ctx.fill(); ctx.lineWidth = 2*k; ctx.strokeStyle = '#14213d'; ctx.stroke();
+  ctx.fillStyle = fill || '#fff'; ctx.beginPath(); ctx.moveTo(x - 8*k, by + h - 1); ctx.lineTo(x, by + h + 9*k); ctx.lineTo(x + 8*k, by + h - 1); ctx.fill();
+  text(txt, x, by + h/2 + 1, 18*k, 900, col || '#14213d', 'center');
+}
 function drawQuestion(j, x, y){   // la question du chapitre, criée à l'approche de Marine
   if (!j.q || j.passed) return; const d = j.x - PX(); if (d > worldSpeed()*1.1 || d < -30) return;
-  const k = 1/Z; font(18*k, 900); const w = ctx.measureText(j.q).width + 24*k, h = 30*k, bx = x - w/2, by = y - h - 10*k;
-  ctx.fillStyle = '#14213d'; rr(bx + 3*k, by + 3*k, w, h, 10*k); ctx.fill(); ctx.fillStyle = '#fff'; rr(bx, by, w, h, 10*k); ctx.fill(); ctx.lineWidth = 2*k; ctx.strokeStyle = '#14213d'; ctx.stroke();
-  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x - 8*k, by + h - 1); ctx.lineTo(x, by + h + 9*k); ctx.lineTo(x + 8*k, by + h - 1); ctx.fill();
-  text(j.q, x, by + h/2 + 1, 18*k, 900, '#14213d', 'center');
+  speech(j.q, x, y);
 }
 function drawJourno(j){
   const x = j.x, bob = Math.sin(realT*2.2 + j.bob)*3;
@@ -1197,25 +1244,40 @@ function drawCass(){
   for (const l of chain) ctx.lineTo(l.x, l.y); ctx.stroke();
   for (let i=0;i<chain.length;i++){ const l = chain[i]; spr(l.w, l.x, l.y + 10, l.s*0.8, false, l.rot*0.5, blink && i === chain.length - 1 ? 0.4 : 1); }
 }
-function drawIntro(){
-  // carte de pause : le scandale (visuel dédié à venir, titre, résumé), l'émetteur et la consigne ; le jeu reprend au bouton ou au tap
-  const L = curLevel(), S = L.scandal, E = emitter.E, k = clamp(introT/0.4, 0, 1);
+// la carte : un panneau simple sur le jeu assombri ; tap n'importe où (après 0,4 s) ou bouton pour continuer
+function drawCard(){
+  const c = card, k = clamp(cardT/0.35, 0, 1), L = curLevel(), n = L.n;
   ctx.fillStyle = 'rgba(15,20,40,' + (0.45*k) + ')'; ctx.fillRect(0, 0, VW, H);
-  const w = 800, h = 348, x = VW/2 - w/2, y = H/2 - h/2 + (1 - k)*30; ctx.save(); ctx.globalAlpha = k; uiPanel(x, y, w, h);
-  // visuel du scandale : emplacement réservé (grand cadre), avec l'émetteur en attendant l'illustration dédiée
-  const vx = x + 26, vy2 = y + 26, vw = 296, vh = 232;
-  ctx.save(); ctx.beginPath(); rr(vx, vy2, vw, vh, 12); ctx.clip(); const gr = ctx.createLinearGradient(0, vy2, 0, vy2 + vh); gr.addColorStop(0, '#5b7fb5'); gr.addColorStop(1, '#2c4a7c'); ctx.fillStyle = gr; ctx.fillRect(vx, vy2, vw, vh);
-  const fr = E.frames[emitter.fr], a = ATLAS[fr], ps = Math.min(200/a[2], 190/a[3]); spr(fr, vx + vw/2, vy2 + 20 + 95 + a[5]*ps - a[3]*ps/2, ps); ctx.restore();
-  ctx.lineWidth = 3; ctx.strokeStyle = '#14213d'; rr(vx, vy2, vw, vh, 12); ctx.stroke();
-  ctx.fillStyle = 'rgba(20,33,61,.75)'; rr(vx + 8, vy2 + vh - 30, vw - 16, 22, 6); ctx.fill(); text('Visuel du scandale : à venir', vx + vw/2, vy2 + vh - 19, 11, 800, '#fff', 'center');
-  const tx = x + 346, tw = w - 372; let ty = y + 40;
-  text('SCANDALE · ' + S.date, tx, ty, 12, 900, '#d63b3b'); ty += 30;
-  text(S.title, tx, ty, 26, 900, '#14213d', 'left', UIT); ty += 26;
-  text(S.sub, tx, ty, 12.5, 700, '#5b6475'); ty += 24;
-  for (const ln of wrapText(S.short, tw, 13, 700).slice(0, 6)){ text(ln, tx, ty, 13, 700, '#1b1f2a'); ty += 17; }
-  ty += 6; for (const ln of wrapText(E.name + ' sort les casseroles : évite-les, chacune s’accroche à la planche. À ' + Math.round(P.cassMax) + ', Marine coule.', tw, 11.5, 800).slice(0, 2)){ text(ln, tx, ty, 11.5, 800, '#5b6475'); ty += 14; }
-  btn(x + w - 250, y + h - 60, 222, 44, 'Affronter la tempête', '#22a447', '#fff', 'storm');
-  iBtn(x + w - 284, y + h - 38, 'sinfo'); text('sources', x + w - 302, y + h - 38, 11, 800, '#5b6475', 'right');
+  ctx.save(); ctx.globalAlpha = k;
+  const hint = (y) => { if (cardT > 0.8 && Math.sin(realT*4) > -0.3) text('touche pour continuer', VW/2, y, 11, 800, '#5b6475', 'center'); };
+  if (c.kind === 'msg'){
+    const lines = wrapText(c.text, 560, 22, 900, UIT), h = 96 + lines.length*30 + (c.skip ? 36 : 0), w = 620, x = VW/2 - w/2, y = H/2 - h/2 + (1 - k)*20; uiPanel(x, y, w, h);
+    let ty = y + 44; for (const ln of lines){ text(ln, VW/2, ty, 22, 900, '#14213d', 'center', UIT); ty += 30; }
+    hint(ty + 10); if (c.skip) btn(VW/2 - 80, y + h - 50, 160, 36, 'Passer le tuto', '#fff', '#14213d', 'skipTuto', 13);
+  } else if (c.kind === 'scandal'){
+    const S = L.scandal, w = 640, h = 236, x = VW/2 - w/2, y = H/2 - h/2 + (1 - k)*20; uiPanel(x, y, w, h);
+    text('SCANDALE · ' + S.date, VW/2, y + 34, 12, 900, '#d63b3b', 'center');
+    text(S.title, VW/2, y + 66, 28, 900, '#14213d', 'center', UIT);
+    let ty = y + 98; for (const ln of wrapText(S.line, w - 70, 15, 700).slice(0, 2)){ text(ln, VW/2, ty, 15, 700, '#1b1f2a', 'center'); ty += 19; }
+    text('Évite les casseroles : à ' + Math.round(P.cassMax) + ', Marine coule.', VW/2, ty + 10, 12, 800, '#5b6475', 'center');
+    btn(VW/2 - 110, y + h - 60, 220, 42, 'Affronter la tempête', '#22a447', '#fff', 'card', 15);
+    iBtn(x + w - 30, y + h - 30, 'sinfo');
+  } else if (c.kind === 'vane'){
+    const w = 640, h = isTuto() ? 236 : 208, x = VW/2 - w/2, y = H/2 - h/2 + (1 - k)*20; uiPanel(x, y, w, h);
+    drawVaneIcon(x + 74, y + 78, -0.4 + Math.sin(realT*2)*0.15, 1.5);
+    text('Le vent tourne !', x + 140, y + 48, 26, 900, '#14213d', 'left', UIT);
+    let ty = y + 82; const msg = isTuto() ? 'Passe dans les cercles que lâche la girouette d’or : si tu l’attrapes, Marine change d’avis.' : 'Marine veut changer d’avis (' + L.theme + ') : attrape la girouette d’or.';
+    for (const ln of wrapText(msg, w - 170, 14, 700).slice(0, 3)){ text(ln, x + 140, ty, 14, 700, '#1b1f2a'); ty += 18; }
+    text('« ' + FLAGS[n][1] + ' »', x + 140, ty + 8, 16, 900, '#16a34a');
+    btn(VW/2 - 90, y + h - 56, 180, 40, 'C’est parti', '#22a447', '#fff', 'card', 15);
+  } else if (c.kind === 'position'){
+    const w = 680, h = 232, x = VW/2 - w/2, y = H/2 - h/2 + (1 - k)*20; uiPanel(x, y, w, h);
+    text('VOLTE-FACE · +' + P.chaseGain.toFixed(1).replace('.', ',') + ' pt de sondage', VW/2, y + 32, 12, 900, '#16a34a', 'center');
+    font(24, 900, UIT); const ow = ctx.measureText(L.old).width; text(L.old, VW/2, y + 70, 24, 900, '#9aa4b2', 'center', UIT); strike(VW/2 - ow/2, y + 71, ow);
+    let ty = y + 112; for (const ln of wrapText(L.neu, w - 80, 20, 900, UIT).slice(0, 2)){ text(ln, VW/2, ty, 20, 900, '#14213d', 'center', UIT); ty += 26; }
+    btn(VW/2 - 90, y + h - 56, 180, 40, 'Continuer', '#22a447', '#fff', 'card', 15);
+    iBtn(x + w - 30, y + h - 30, 'info:' + n);
+  }
   ctx.restore();
 }
 function drawBanner(){
@@ -1267,6 +1329,7 @@ function drawMarine(){
     for (let i=0;i<3;i++){ const a = realT*3 + i*2.1, sx = x - 70 + ((realT*60 + i*37) % 120), sy = y + 50 + Math.sin(a)*10, r = 2 + (Math.sin(a*2) + 1)*2; ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.moveTo(sx, sy - r); ctx.lineTo(sx + r*0.35, sy - r*0.35); ctx.lineTo(sx + r, sy); ctx.lineTo(sx + r*0.35, sy + r*0.35); ctx.lineTo(sx, sy + r); ctx.lineTo(sx - r*0.35, sy + r*0.35); ctx.lineTo(sx - r, sy); ctx.lineTo(sx - r*0.35, sy - r*0.35); ctx.closePath(); ctx.fill(); }
   }
   spr('airN', x, y + 60, RS, false, tilt);
+  if (mBubble){ ctx.save(); ctx.globalAlpha = clamp(mBubble.life/0.3, 0, 1); speech(mBubble.t, x + 24, y - 44, '#fde68a'); ctx.restore(); }   // la réplique de Marine
   // jauge de vent sous la planche : bleue, orange sous 50 %, rouge sous 20 %, clignote vide ; argent (infini) pendant la course
   { const k = 1/Z, gw = 76*k, gh = 9*k, gx = x - gw/2 - 6, gy = y + 84;
     const wc = phase === 'chase' ? '#c9d2dc' : wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.2 ? '#d63b3b' : wind < 0.5 ? '#f2b630' : '#2563eb';
@@ -1307,7 +1370,11 @@ function drawHud(){
   const k = clamp(tFlight/flightDur(), 0, 1);
   ctx.fillStyle = 'rgba(20,33,61,.35)'; ctx.fillRect(0, 0, VW, 6); ctx.fillStyle = '#f2b630'; ctx.fillRect(0, 0, VW*k, 6);
   const L = curLevel(); outText((isTuto() ? 'Tuto' : 'Niveau ' + L.n) + ' · ' + L.title + (mode === 'test' ? ' · test' : ''), 12, 62, 12, 900, 'rgba(255,255,255,.85)', 'left', 'rgba(20,33,61,.6)');
-  if (bonus) outText(bonus === 'kevlar' ? 'Kevlar : ' + kevlarLeft + ' journaliste' + (kevlarLeft > 1 ? 's' : '') + ' gratuit' + (kevlarLeft > 1 ? 's' : '') : bonus === 'pump' ? 'Pompe à fric' : 'Contre-feu', 12, 80, 11, 900, '#bdf5c9', 'left', 'rgba(20,33,61,.6)');
+  { const act = []; if (hasBonus('kevlar')) act.push('Kevlar : ' + kevlarLeft + ' journaliste' + (kevlarLeft > 1 ? 's' : '') + ' gratuit' + (kevlarLeft > 1 ? 's' : '')); if (hasBonus('pump')) act.push('Pompe à fric'); if (hasBonus('fire')) act.push('Contre-feu');
+    if (act.length) outText(act.join(' · '), 12, 80, 11, 900, '#bdf5c9', 'left', 'rgba(20,33,61,.6)'); }
+  // le chapitre, annoncé au départ du vol
+  if (!isTuto() && phase === 'fly' && tFlight < 3 && !card){ const a = clamp(tFlight < 0.4 ? tFlight/0.4 : (3 - tFlight)/0.5, 0, 1); ctx.save(); ctx.globalAlpha = a;
+    outText('Chapitre ' + L.n + ' · ' + L.theme, VW/2, 110, 14, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)'); outText(L.old, VW/2, 140, 24, 900, '#fff', 'center', 'rgba(20,33,61,.7)'); ctx.restore(); }
   // le bandeau est en bas à gauche
   const hy = 10;   // bandeau en haut, le bas reste libre pour Marine et sa jauge de vent
   ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(10, hy, 250, 40, 10); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
@@ -1320,11 +1387,6 @@ function drawHud(){
   if (!uiDraw('iCass', 284, hy + 10, 20)){ ctx.fillStyle = '#d63b3b'; rr(286, hy + 12, 16, 16, 3); ctx.fill(); }
   for (let i=0;i<n;i++){ ctx.fillStyle = i < cass ? (alert ? '#d63b3b' : '#f97316') : 'rgba(20,33,61,.15)'; rr(312 + i*cw, hy + 14, cw - 3, 12, 3); ctx.fill(); }
   if (wind <= 0 && !onWater) outText('Plus de vent ! Pose-toi sur l’eau', VW/2, H - 40, 14, 900, '#fff', 'center', 'rgba(214,59,59,.85)');
-}
-function drawTutoHelp(){
-  if (phase !== 'fly' || paused) return; const t = tFlight;
-  const m = t < 6 ? 'Appuie pour monter, relâche pour descendre.' : t < 12 ? 'Chaque appui consomme du vent (jauge sous la planche) : pose-toi sur l’eau pour en reprendre.' : t < 18 ? 'Ramasse les pièces (elles achètent des voix), évite les journalistes.' : t > flightDur() - 6 ? 'Le vent va tourner : passe dans les cercles que lâche la girouette.' : '';
-  if (m) outText(m, VW/2, 104, 15, 900, '#fff', 'center', 'rgba(20,33,61,.7)');
 }
 function drawPops(){ for (const p of pops){ const a = clamp(p.life/0.4, 0, 1); ctx.globalAlpha = a; outText(p.t, p.x, p.y, p.big ? 22 : 16, 900, p.color); ctx.globalAlpha = 1; } }
 function drawFx(){
@@ -1339,8 +1401,7 @@ function drawRecap(){
   const w = 620, h = lost ? 230 : 268, x = VW/2 - w/2, y = H/2 - h/2; uiPanel(x, y, w, h);
   if (lost){
     text('Coulée sous les casseroles !', VW/2, y + 44, 28, 900, '#d63b3b', 'center', UIT);
-    text(P.cassMax + ' casseroles accrochées, Marine coule. On recommence le niveau.', VW/2, y + 86, 13, 800, '#14213d', 'center');
-    if (camp$) text('Les pièces ramassées restent dans la réserve.', VW/2, y + 110, 12, 700, '#5b6475', 'center');
+    text('On recommence le chapitre.' + (camp$ ? ' Les pièces ramassées restent dans la réserve.' : ''), VW/2, y + 90, 13, 800, '#14213d', 'center');
     if (camp$){ btn(VW/2 - 190, y + 150, 180, 46, 'Recommencer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 150, 180, 46, 'Menu', '#fff', '#14213d', 'title'); }
     else { btn(VW/2 - 190, y + 150, 180, 46, 'Recommencer', '#22a447', '#fff', 'again'); btn(VW/2 + 10, y + 150, 180, 46, 'Menu', '#fff', '#14213d', 'title'); }
     return;
@@ -1368,45 +1429,33 @@ function wrapText(s, maxW, px, w, fam){
 function strike(x, y, w, color){ ctx.strokeStyle = color || '#d63b3b'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + w, y); ctx.stroke(); }
 function lockIcon(x, y){ ctx.fillStyle = '#5b6475'; rr(x - 9, y - 2, 18, 14, 3); ctx.fill(); ctx.strokeStyle = '#5b6475'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y - 4, 6, Math.PI, 0); ctx.stroke(); }
 function drawCoins(x, y, n){ drawCashbox(x, y - 14); text(String(n), x + 38, y, 18, 900, '#fff'); }
-// ---------- la carte de campagne ----------
+// ---------- l'écran des bonus, entre deux chapitres ----------
 function drawInter(){
   ctx.fillStyle = 'rgba(15,29,51,.35)'; ctx.fillRect(0, 0, VW, H);
-  const L = curLevel(), e = levelEntry(levelN), R = lastResult; let y = 10;
-  // le chapitre qui vient de finir : la position tenue, barrée ou non, et ses chiffres
-  if (R){ const PL = LEVELS[R.n]; panel(24, y, VW - 48, 44, R.gold ? '#e8f7ec' : '#fff1f1', 10);
-    text((R.n === 0 ? 'Tuto' : 'Chapitre ' + R.n) + ' traversé · ', 40, y + 16, 12, 900, '#5b6475');
-    font(12, 900); const lw = ctx.measureText((R.n === 0 ? 'Tuto' : 'Chapitre ' + R.n) + ' traversé · ').width;
-    text(PL.old, 40 + lw, y + 16, 13, 900, '#14213d'); if (R.gold){ font(13, 900); strike(40 + lw, y + 17, ctx.measureText(PL.old).width); }
-    { font(13, 900); const ow = ctx.measureText(PL.old).width; text(R.gold ? '→ volte-face : ' + FLAGS[R.n][1] : '· position maintenue', 40 + lw + ow + 10, y + 16, 12, 900, R.gold ? '#16a34a' : '#d63b3b'); }
-    text('Sondages ' + fmtPct(R.poll) + '  ·  ' + R.coins + ' pièce' + (R.coins > 1 ? 's' : '') + '  ·  ' + R.cass + ' casserole' + (R.cass > 1 ? 's' : '') + '  ·  ' + R.hits + ' journaliste' + (R.hits > 1 ? 's' : '') + ' touché' + (R.hits > 1 ? 's' : ''), 40, y + 33, 11, 700, '#5b6475');
-    y += 50; }
-  // la nouvelle position à retourner
-  outText(isTuto() ? 'TUTO · ' + L.theme : 'NOUVELLE POSITION À RETOURNER · chapitre ' + L.n + ' · ' + L.theme + ' · ' + L.per, 24, y + 14, 11, 900, '#fde68a', 'left', 'rgba(20,33,61,.7)');
-  outText(L.title, 24, y + 42, 26, 900, '#fff', 'left', 'rgba(20,33,61,.7)'); font(26, 900); iBtn(24 + ctx.measureText(L.title).width + 22, y + 42, 'info:' + levelN);
-  outText('Réserve :', VW - 350, y + 42, 13, 800, '#fff', 'right', 'rgba(20,33,61,.6)'); drawCoins(VW - 342, y + 42, camp.coins);
-  if (isTuto()){
-    outText('Apprendre à voler, puis attraper la girouette. Pas de tempête.', 24, y + 70, 13, 800, '#fff', 'left', 'rgba(20,33,61,.6)');
-    btn(VW/2 - 120, H - 70, 240, 46, 'C’est parti', '#22a447', '#fff', 'go', 16); btn(VW - 184, H - 66, 160, 40, 'Passer le tuto', '#fff', '#14213d', 'skipTuto', 13);
-    return;
-  }
-  outText('Tu arrives avec ' + fmtPct(e.poll) + ' de sondages et ' + e.cass + ' casserole' + (e.cass > 1 ? 's' : '') + '. Achète des voix, choisis un bonus, ou pars comme ça.', 24, y + 68, 12.5, 800, '#fff', 'left', 'rgba(20,33,61,.6)');
-  // acheter des voix
-  { const pr = votePrice(), can = camp.coins >= pr, bx = 24, by = y + 82, bw = VW - 48, bh = 44;
+  const e = levelEntry(levelN), B = camp.bonuses || {};
+  // en haut : les sondages à l'entrée du chapitre et la réserve
+  ctx.fillStyle = 'rgba(255,250,240,.9)'; rr(24, 16, 250, 40, 10); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#14213d'; ctx.stroke();
+  if (!uiDraw('iPoll', 30, 20, 32)){ ctx.fillStyle = '#2563eb'; rr(34, 24, 24, 24, 4); ctx.fill(); } text(fmtPct(e.poll), 68, 36, 19, 900, '#14213d');
+  drawCashbox(164, 22); text(String(camp.coins), 202, 36, 19, 900, '#14213d');
+  outText('Avant le chapitre ' + levelN, VW/2 + 60, 36, 15, 900, '#fff', 'center', 'rgba(20,33,61,.6)');
+  // acheter des voix, autant de fois qu'on peut
+  { const pr = votePrice(), can = camp.coins >= pr, bx = 24, by = 72, bw = VW - 48, bh = 46;
     panel(bx, by, bw, bh, '#fffaf0', 10);
-    text('Acheter des voix', bx + 16, by + 15, 14, 900, '#14213d', 'left', UIT); text('+' + P.voteGain + ' pt de sondage, tout de suite. Prochain achat 1,5 × plus cher.', bx + 16, by + 32, 10.5, 700, '#5b6475');
-    drawCashbox(bx + bw - 300, by + 8); text(pr + ' pièces', bx + bw - 262, by + 23, 13, 900, can ? '#14213d' : '#d63b3b');
-    btn(bx + bw - 150, by + 7, 134, 30, 'Acheter', can ? '#22a447' : '#9aa4b2', can ? '#fff' : '#e3e7ee', can ? 'buy:votes' : 'locked', 13); }
-  const w = 214, gap = 14, x0 = (VW - 3*w - 2*gap)/2, cy0 = y + 134, h = H - 70 - cy0 - 10;
+    text('Acheter des voix', bx + 16, by + 23, 15, 900, '#14213d', 'left', UIT); text('+' + P.voteGain + ' pt de sondage', bx + 190, by + 23, 12, 700, '#5b6475');
+    drawCashbox(bx + bw - 290, by + 9); text(String(pr), bx + bw - 252, by + 24, 14, 900, can ? '#14213d' : '#d63b3b');
+    btn(bx + bw - 150, by + 8, 134, 30, 'Acheter', can ? '#22a447' : '#9aa4b2', can ? '#fff' : '#e3e7ee', can ? 'buy:votes' : 'locked', 13); }
+  // les trois bonus, cumulables
+  const w = 254, gap = 14, x0 = (VW - 3*w - 2*gap)/2, cy0 = 134, h = 118;
   BONUS.forEach((b, i) => {
-    const x = x0 + i*(w + gap), can = camp.coins >= b.price, nothing = b.id === 'fire' && e.cass === 0, ok = can && !nothing;
-    panel(x, cy0, w, h, '#fffaf0', 10);
-    text(b.name, x + 14, cy0 + 18, 14, 900, '#14213d', 'left', UIT);
-    text(b.price + ' p.', x + w - 14, cy0 + 18, 13, 900, can ? '#14213d' : '#d63b3b', 'right');
-    const lines = wrapText(b.d, w - 28, 10.5, 700); let ty = cy0 + 40; for (const ln of lines.slice(0, 2)){ text(ln, x + 14, ty, 10.5, 700, '#5b6475'); ty += 13; }
-    btn(x + 14, cy0 + h - 38, w - 28, 30, nothing ? 'Rien à éteindre' : 'Choisir et partir', ok ? '#22a447' : '#9aa4b2', ok ? '#fff' : '#e3e7ee', ok ? 'buy:' + b.id : 'locked', 12);
+    const x = x0 + i*(w + gap), on = !!B[b.id], can = camp.coins >= b.price, nothing = b.id === 'fire' && e.cass === 0, ok = !on && can && !nothing;
+    panel(x, cy0, w, h, on ? '#e8f7ec' : '#fffaf0', 10);
+    text(b.name, x + 14, cy0 + 20, 15, 900, '#14213d', 'left', UIT);
+    if (!on){ drawCashbox(x + w - 76, cy0 + 6); text(String(b.price), x + w - 38, cy0 + 20, 13, 900, can ? '#14213d' : '#d63b3b'); }
+    let ty = cy0 + 44; for (const ln of wrapText(b.d, w - 28, 11, 700).slice(0, 2)){ text(ln, x + 14, ty, 11, 700, '#5b6475'); ty += 14; }
+    btn(x + 14, cy0 + h - 40, w - 28, 30, on ? 'Activé ✓' : nothing ? 'Rien à éteindre' : 'Activer', on ? '#16a34a' : ok ? '#22a447' : '#9aa4b2', on || ok ? '#fff' : '#e3e7ee', ok ? 'buy:' + b.id : 'locked', 12);
   });
-  btn(VW/2 - 120, H - 60, 240, 46, 'C’est parti', '#22a447', '#fff', 'go', 16);
-  if (shopMsg) outText(shopMsg, VW/2 + 136, H - 38, 12, 900, '#fde68a', 'left', 'rgba(20,33,61,.7)');
+  btn(VW/2 - 120, H - 64, 240, 46, 'C’est parti', '#22a447', '#fff', 'go', 16);
+  if (shopMsg) outText(shopMsg, VW/2 + 136, H - 41, 12, 900, '#fde68a', 'left', 'rgba(20,33,61,.7)');
 }
 // ---------- la fiche « i » : volte-face et scandale, avec leurs sources ----------
 function drawInfo(){
@@ -1443,17 +1492,15 @@ function drawFinalRecap(){
   // colonne gauche : le score et son seuil (fictif)
   const verdict = poll < 30 ? 'Éliminée au premier tour' : poll <= 45 ? 'Qualifiée pour le second tour' : 'Élue présidente';
   text(fmtPct(poll), x + 30, y + 92, 44, 900, poll < 30 ? '#d63b3b' : poll <= 45 ? '#c8961e' : '#16a34a', 'left', UIT);
-  text('d’intentions de vote (score du jeu)', x + 30, y + 122, 11, 800, '#5b6475');
+  text('d’intentions de vote : le score', x + 30, y + 122, 11, 800, '#5b6475');
   const vl = wrapText(verdict, 250, 17, 900); let vy2 = y + 152; for (const ln of vl){ text(ln, x + 30, vy2, 17, 900, '#14213d'); vy2 += 21; }
-  const th = wrapText('Seuils fictifs du jeu : moins de 30 % éliminée au premier tour, de 30 à 45 % second tour, plus de 45 % élue.', 250, 10, 700); vy2 += 4; for (const ln of th){ text(ln, x + 30, vy2, 10, 700, '#5b6475'); vy2 += 12.5; }
-  vy2 += 8; text(cass + ' casserole' + (cass > 1 ? 's' : '') + ' accrochée' + (cass > 1 ? 's' : '') + '  ·  ' + camp.coins + ' pièces en réserve', x + 30, vy2, 11, 800, '#14213d');
   // colonne droite : les cinq positions, l'ancienne en grand (barrée si volte-face), la nouvelle en petit
   const cx = x + 310, cw = w - 340; text('Cinq chapitres, cinq positions', cx, y + 70, 12, 900, '#d63b3b');
   for (let i=1;i<=5;i++){ const L = LEVELS[i], r = camp.levels[i], gold = !!(r && r.gold), ry = y + 94 + (i - 1)*50;
     text(L.old, cx, ry, 14, 900, '#14213d'); if (gold){ font(14, 900); strike(cx, ry + 1, ctx.measureText(L.old).width); }
     text(gold ? 'volte-face' : 'maintenue', cx + cw, ry, 10, 900, gold ? '#16a34a' : '#d63b3b', 'right');
     const nl = wrapText(L.neu, cw, 10.5, 700); text(nl[0] || '', cx, ry + 17, 10.5, 700, gold ? '#5b6475' : '#9aa4b2'); }
-  btn(x + 30, y + h - 58, 200, 40, 'Nouvelle campagne', '#22a447', '#fff', 'newCamp', 14); btn(x + 240, y + h - 58, 110, 40, 'Menu', '#fff', '#14213d', 'title', 14);
+  btn(x + 30, y + h - 58, 176, 40, 'Nouvelle campagne', '#22a447', '#fff', 'newCamp', 13); btn(x + 214, y + h - 58, 84, 40, 'Menu', '#fff', '#14213d', 'title', 13);
 }
 // ---------- boutons du canvas : un seul point d'entrée ----------
 const hit = l => { for (let i = btns.length - 1; i >= 0; i--){ const b = btns[i]; if (l.x >= b.x && l.x <= b.x + b.w && l.y >= b.y && l.y <= b.y + b.h) return b; } return null; };
@@ -1465,23 +1512,22 @@ function onBtn(id){
   if (id.startsWith('src:')){ if (!infoOpen) return; const I = INFO[infoOpen.n], s = (infoOpen.page === 'level' ? I.src : I.ssrc)[+id.slice(4)]; if (s && s[2]){ try { window.open(s[2], '_blank', 'noopener'); } catch(e){} } return; }
   if (infoOpen) return;
   if (id === 'again') replay(); else if (id === 'title') toTitle(); else if (id === 'map') goMap();
-  else if (id === 'go'){ bonus = null; startLevel(levelN); }
-  else if (id === 'skipTuto'){ camp.cur = 1; goInter(1, null); }
-  else if (id === 'newCamp'){ resetCamp(); goInter(0, null); }
+  else if (id === 'go') startLevel(levelN);
+  else if (id === 'skipTuto'){ card = null; camp.cur = 1; goInter(1); }
+  else if (id === 'newCamp'){ resetCamp(); startLevel(0); }
   else if (id.startsWith('info:')) openInfo(+id.slice(5), 'level');
-  else if (id === 'buy:votes'){ if (buyVotes()){ shopMsg = '+' + P.voteGain + ' pt de sondage. Les sondages, ça s’achète.'; sfxP3('cash'); } else shopMsg = 'Pas assez de pièces'; }
-  else if (id.startsWith('buy:')){ if (buyBonus(id.slice(4))) startLevel(levelN); else shopMsg = 'Pas assez de pièces'; }
-  else if (id === 'nobonus'){ bonus = null; startLevel(levelN); }
-  else if (id === 'storm') beginStormPlay();
+  else if (id === 'buy:votes'){ if (buyVotes()){ shopMsg = '+' + P.voteGain + ' pt. Les sondages, ça s’achète.'; sfxP3('cash'); } else shopMsg = 'Pas assez de pièces'; }
+  else if (id.startsWith('buy:')){ if (buyBonus(id.slice(4))){ shopMsg = 'Activé pour ce chapitre'; sfxP3('cash'); } else shopMsg = 'Pas assez de pièces'; }
+  else if (id === 'card' || id === 'storm') closeCard();
   else if (id === 'sinfo') openInfo(levelN, 'scandal');
 }
 cv.addEventListener('pointerdown', e => {
-  const ok = state === 'recap' || state === 'inter' || state === 'finalRecap' || (state === 'play' && phase === 'intro');
+  const ok = state === 'recap' || state === 'inter' || state === 'finalRecap' || (state === 'play' && card);
   if (!ok) return;
   const l = toLocal(e), b = hit(l);
   if (b){ if (b.id !== 'locked') sfxP3('click'); onBtn(b.id); return; }
   if (infoOpen) return;
-  if (state === 'play' && phase === 'intro' && introT > 0.4) beginStormPlay();
+  if (state === 'play' && card && cardT > 0.4) closeCard();
 });
 
 function draw(){
@@ -1506,7 +1552,7 @@ function draw(){
   drawMarine(); drawCass(); for (const c of pans) if (!(c.delay > 0)) drawPan(c); drawFx(); drawPops();
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);   // l'interface, à l'échelle de l'écran
   if (ctrl === 'wind') drawVane();
-  if (state !== 'final' && state !== 'finalRecap'){ drawHud(); if (phase === 'chase' && chase) drawChaseHud(); if (bannerT > 0) drawBanner(); if (isTuto() && state === 'play') drawTutoHelp(); if (phase === 'intro' && state === 'play') drawIntro(); }
+  if (state !== 'final' && state !== 'finalRecap'){ drawHud(); if (phase === 'chase' && chase && !card) drawChaseHud(); if (bannerT > 0) drawBanner(); if (card && state === 'play') drawCard(); }
   if (paused){ ctx.fillStyle = 'rgba(15,29,51,.4)'; ctx.fillRect(0, 0, VW, H); outText('Pause', VW/2, H/2, 40, 900, '#fff'); }
   if (state === 'final' && booth && booth.reached) outText('Mai 2027 : Marine arrive au bureau de vote', VW/2, 60, 22, 900, '#fff', 'center', 'rgba(20,33,61,.7)');
   if (state === 'recap') drawRecap(); if (state === 'finalRecap') drawFinalRecap(); if (infoOpen) drawInfo();
@@ -1514,7 +1560,7 @@ function draw(){
 let last = performance.now();
 function loop(now){
   const dt = Math.min(0.05, (now - last)/1000); last = now;
-  if (state === 'play' && !paused && phase !== 'intro' && !infoOpen) scrollX += worldSpeed()*dt;
+  if (state === 'play' && !paused && !card && !infoOpen) scrollX += worldSpeed()*dt;
   update(dt); draw(); musicSync();
   requestAnimationFrame(loop);
 }
@@ -1532,8 +1578,8 @@ function setSfxMuted(v){ sfxMuted = v; try { localStorage.setItem('vdd-sfx-mute'
 setMuted(muted); setSfxMuted(sfxMuted);
 for (const id of ['musicBtn', 'musicTitle']) document.getElementById(id).addEventListener('click', () => setMuted(!muted));
 for (const id of ['soundBtn', 'soundTitle']) document.getElementById(id).addEventListener('click', () => { ensureAudio(); setSfxMuted(!sfxMuted); });
-document.getElementById('continueBtn').addEventListener('click', () => { if (camp.cur <= 5) goInter(camp.cur, null); else goInter(5, null); });
-document.getElementById('newBtn').addEventListener('click', () => { resetCamp(); goInter(0, null); });
+document.getElementById('continueBtn').addEventListener('click', () => goInter(camp.cur <= 5 ? camp.cur : 5));
+document.getElementById('newBtn').addEventListener('click', () => { resetCamp(); startLevel(0); });
 function syncTitle(){
   const started = camp.cur > 0 || (camp.levels[0] && camp.levels[0].done), done = camp.cur > 5, golds = camp.levels.filter(l => l && l.done && l.gold).length;
   document.getElementById('continueBtn').hidden = !started || done;
@@ -1587,13 +1633,13 @@ loadLocal(); loadCampLocal(); applyCam(); debugBuild(); syncTitle(); loadShared(
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, addJourno(kind, x, y){ if (kind === 'glider') addGlider(x, y); else if (kind === 'boat') addBoat(x); else addHeli(x, y, false); }, clearField(){ journos = []; coinsList = []; nextSpawn = 999; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, y: chase.y, vy: chase.vy, passed: chase.passed, dropped: chase.dropped, rings: chase.rings.map(r => ({x: r.x, y: r.y, n: r.n, state: r.state})), ringR: ringR(), caught: chase.caught, leaving: chase.leaving, dist: chaseDist(), camFx}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, simPath, get endReason(){ return endReason; },
+  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, addJourno(kind, x, y, mute){ if (kind === 'glider') addGlider(x, y); else if (kind === 'boat') addBoat(x); else addHeli(x, y, false); if (mute) journos[journos.length - 1].q = null; }, clearField(){ journos = []; coinsList = []; nextSpawn = 999; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, y: chase.y, vy: chase.vy, passed: chase.passed, dropped: chase.dropped, rings: chase.rings.map(r => ({x: r.x, y: r.y, n: r.n, state: r.state})), ringR: ringR(), caught: chase.caught, leaving: chase.leaving, dist: chaseDist(), camFx, x0: chase.x0, xCatch: chase.xCatch, oxCatch: chase.oxCatch}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, setCass(v){ cass = v; }, simPath, get endReason(){ return endReason; },
   get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert})); },
   get world(){ return {Z, WH, WATER, HZ, VWW, VWW0, camFx, camGoal}; },
   setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,
   // campagne
-  get camp(){ return camp; }, get mode(){ return mode; }, get levelN(){ return levelN; }, get bonus(){ return bonus; }, get kevlarLeft(){ return kevlarLeft; }, get infoOpen(){ return infoOpen; }, get booth(){ return booth && {x: booth.x, reached: booth.reached}; }, get finalT(){ return finalT; },
-  get btns(){ return btns.map(b => ({x: b.x, y: b.y, w: b.w, h: b.h, id: b.id})); }, goInter, setCur(n){ camp.cur = n; saveCamp(); }, get lastResult(){ return lastResult; }, buyVotes, get votePrice(){ return votePrice(); }, tap(id){ onBtn(id); }, startLevel, startTestFly, goMap, goShop, buyBonus, unlockAll, resetCamp, openInfo, saveCamp,
+  get camp(){ return camp; }, get mode(){ return mode; }, get levelN(){ return levelN; }, get bonuses(){ return Object.assign({}, camp.bonuses || {}); }, get card(){ return card && {kind: card.kind, t: cardT, text: card.text || null}; }, closeCard, get mBubble(){ return mBubble && mBubble.t; }, get cruiseT(){ return cruiseT; }, get journoQs(){ return journos.map(j => j.q); }, get qLog(){ return qLog.slice(); }, get kevlarLeft(){ return kevlarLeft; }, get infoOpen(){ return infoOpen; }, get booth(){ return booth && {x: booth.x, reached: booth.reached}; }, get finalT(){ return finalT; },
+  get btns(){ return btns.map(b => ({x: b.x, y: b.y, w: b.w, h: b.h, id: b.id})); }, goInter, setCur(n){ camp.cur = n; saveCamp(); }, buyVotes, get votePrice(){ return votePrice(); }, tap(id){ onBtn(id); }, startLevel, startTestFly, goMap, goShop, buyBonus, unlockAll, resetCamp, openInfo, saveCamp,
   bench(n){ const t0 = performance.now(); for (let i=0;i<n;i++) draw(); const td = performance.now() - t0; const t1 = performance.now(); for (let i=0;i<n;i++) update(1/60); return {draw: td/n, update: (performance.now() - t1)/n}; },
   benchFn(name, n){ const f = {drawSky, drawFar, drawNear, drawStormSky, drawMarine, drawCass, drawHud, drawFx, drawPops}[name]; const k = dpr*scale*Z; ctx.setTransform(k, 0, 0, k, 0, 0); const t0 = performance.now(); for (let i=0;i<n;i++) f(); return (performance.now() - t0)/n; },
   setPoll(v){ poll = v; }, endLevel, startFinal,
