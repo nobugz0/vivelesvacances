@@ -164,6 +164,14 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
           <button class="sbtn ic" id="musicTitle" type="button"></button>
           <button class="sbtn ic" id="soundTitle" type="button"></button>
         </div>
+        <div class="srow tests" id="chapRow">
+          <button class="sbtn sm" data-ch="0" type="button">Tuto</button>
+          <button class="sbtn sm" data-ch="1" type="button">Ch. 1</button>
+          <button class="sbtn sm" data-ch="2" type="button">Ch. 2</button>
+          <button class="sbtn sm" data-ch="3" type="button">Ch. 3</button>
+          <button class="sbtn sm" data-ch="4" type="button">Ch. 4</button>
+          <button class="sbtn sm" data-ch="5" type="button">Ch. 5</button>
+        </div>
         <div class="srow tests">
           <button class="sbtn sm" id="flyBtn" type="button">Tester le vol</button>
           <button class="sbtn sm" id="stormBtn" type="button">Tester la tempête</button>
@@ -186,7 +194,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.20', BUILD = '01/11/2026 à 19h30';
+const VERSION = 'proto 3 · 0.21', BUILD = '01/11/2026 à 23h30';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -244,6 +252,13 @@ function panel(x, y, w, h, fill, r){ r = r || 14; ctx.fillStyle = INK; rr(x + 6,
 // claque : le repère grossit de 50 % à 100 % avec dépassement et se redresse ; à appeler entre save et restore
 function slam(k, cx, cy, tilt){ const sc = 0.5 + 0.5*backOut(k); ctx.translate(cx, cy); ctx.rotate((tilt || 0) + (1 - clamp(k, 0, 1))*-0.12); ctx.scale(sc, sc); ctx.translate(-cx, -cy); }
 function chip(txt, x, y, bg, fg, px){ px = px || 12; font(px, 900); const w = ctx.measureText(txt).width + 22, h = px*2; ctx.fillStyle = INK; rr(x - w/2 + 2, y - h/2 + 3, w, h, h/2); ctx.fill(); ctx.fillStyle = bg; rr(x - w/2, y - h/2, w, h, h/2); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; ctx.stroke(); text(txt, x, y + 1, px, 900, fg, 'center'); return w; }
+// cadre image en attendant les vrais visuels : fond clair, pointillés, pictogramme, légende « IMAGE · … »
+function imgBox(x, y, w, h, label, px){
+  ctx.save(); ctx.fillStyle = 'rgba(37,99,235,.08)'; rr(x, y, w, h, 12); ctx.fill(); ctx.setLineDash([7, 5]); ctx.lineWidth = 2.5; ctx.strokeStyle = 'rgba(20,33,61,.55)'; rr(x, y, w, h, 12); ctx.stroke(); ctx.setLineDash([]);
+  const cx = x + w/2, cy = y + h/2 - 10; ctx.fillStyle = 'rgba(20,33,61,.18)'; rr(cx - 22, cy - 16, 44, 32, 5); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.moveTo(cx - 17, cy + 11); ctx.lineTo(cx - 6, cy - 4); ctx.lineTo(cx + 2, cy + 5); ctx.lineTo(cx + 8, cy); ctx.lineTo(cx + 17, cy + 11); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.arc(cx + 9, cy - 8, 3.5, 0, 7); ctx.fill();
+  px = px || 10; let ty = y + h - 8 - (wrapText('IMAGE · ' + label, w - 20, px, 800).length - 1)*(px + 3); for (const ln of wrapText('IMAGE · ' + label, w - 20, px, 800).slice(0, 3)){ text(ln, cx, ty, px, 800, '#3d5a8a', 'center'); ty += px + 3; }
+  ctx.restore();
+}
 let pressed = null, shakeT = 0, shakeA = 0, coinBump = 0, pollShow = null, confetti = [];
 function shake(a){ shakeT = 0.35; shakeA = Math.max(shakeA, a); }
 function burst(x, y, n, cols){ for (let i=0;i<n;i++){ const a = rnd()*6.28, v = 160 + rnd()*380; confetti.push({x, y, vx: Math.cos(a)*v, vy: Math.sin(a)*v - 180, life: 1.3 + rnd()*0.9, r: 3 + rnd()*4, col: pick(cols || [GOLD, PINK, '#4ade80', '#60a5fa', '#fff']), rot: rnd()*6.28, vr: (rnd() - 0.5)*14}); } }
@@ -397,7 +412,7 @@ const LEVELS = [
   {n: 1, title: 'On sort de l’Europe', theme: 'Europe', old: 'On sort de l’Europe', neu: '« Le Frexit n’est nullement notre projet » (avril 2022)', per: '2016 → avril 2022', scandal: {title: 'Kits de campagne', line: 'Des kits de campagne surfacturés, remboursés par l’État. Condamnation définitive en 2024.', sub: 'Législatives 2012 · condamnation définitive du RN', date: '19 juin 2024', emitter: 'justice', short: 'En 2012, Jeanne, le micro-parti de Marine Le Pen, vend aux candidats FN des kits de campagne surfacturés, remboursés par l’État. En mars 2023, la cour d’appel condamne le RN pour recel d’abus de biens sociaux ; le 19 juin 2024, la Cour de cassation rend la condamnation définitive.'}},
   {n: 2, title: 'La retraite à 60 ans', theme: 'Retraites', old: 'La retraite à 60 ans', neu: '60 ans pour les carrières longues, 62 pour les autres (février 2022)', per: '2017 → février 2022', scandal: {title: 'Les tracts Poutine', line: '1,2 million de tracts avec Poutine, mis au rebut après l’invasion de l’Ukraine.', sub: 'Poignée de main mise au rebut', date: '1er mars 2022', emitter: 'rn', short: '1,2 million de livrets de campagne montrent Marine Le Pen serrant la main de Vladimir Poutine. Une semaine après l’invasion de l’Ukraine, selon Libération, des délégués reçoivent la consigne de se débarrasser des exemplaires restants ; le parti dément toute consigne nationale.'}},
   {n: 3, title: 'Le nucléaire, on arrête', theme: 'Énergie', old: 'Le nucléaire, on arrête', neu: 'Une vingtaine de réacteurs (avril 2022)', per: '2011-2012 → avril 2022', scandal: {title: '« Brebis galeuses »', line: 'Des candidats RN dérapent ; Bardella parle de « quatre ou cinq brebis galeuses ».', sub: 'Candidats RN des législatives', date: 'juin-juillet 2024', emitter: 'bard', short: 'Aux législatives de 2024, plusieurs candidats RN dérapent : les Maghrébins qui « n’ont pas leur place dans les hauts lieux », les chambres à gaz, une casquette nazie. Jordan Bardella parle de « quatre ou cinq brebis galeuses » qui « seront mis à la porte ».'}},
-  {n: 4, title: 'Non à l’IVG dans la Constitution', theme: 'IVG', old: 'Non à l’IVG dans la Constitution', neu: 'Votée le 30 janvier 2024', per: 'novembre 2022 → janvier 2024', scandal: {title: 'Assistants parlementaires', line: 'Condamnée pour détournement de fonds publics, confirmée en appel. Pourvoi en cassation.', sub: '1re instance, appel, pourvoi en cassation', date: '31 mars 2025 · 7 juillet 2026', emitter: 'justice', short: 'Le 31 mars 2025, le tribunal correctionnel de Paris condamne Marine Le Pen pour détournement de fonds publics (assistants parlementaires européens), avec inéligibilité à exécution provisoire. Le 7 juillet 2026, la cour d’appel confirme la condamnation ; elle se pourvoit en cassation : la condamnation n’est pas définitive.'}},
+  {n: 4, title: 'L’inéligibilité à vie pour les élus condamnés', theme: 'Inéligibilité', old: 'L’inéligibilité à vie pour les élus condamnés', neu: 'Sa condamnation est « une décision politique » (31 mars 2025)', per: 'avril 2013 → mars 2025', scandal: {title: 'Assistants parlementaires', line: 'Condamnée pour détournement de fonds publics, confirmée en appel. Pourvoi en cassation.', sub: '1re instance, appel, pourvoi en cassation', date: '31 mars 2025 · 7 juillet 2026', emitter: 'justice', short: 'Le 31 mars 2025, le tribunal correctionnel de Paris condamne Marine Le Pen pour détournement de fonds publics (assistants parlementaires européens), avec inéligibilité à exécution provisoire. Le 7 juillet 2026, la cour d’appel confirme la condamnation ; elle se pourvoit en cassation : la condamnation n’est pas définitive.'}},
   {n: 5, title: 'Non à la règle d’or, oui à la dette', theme: 'Budget', old: 'Non à la règle d’or, oui à la dette', neu: 'Règle d’or constitutionnelle (août 2026)', per: '2012 → août 2026', scandal: {title: 'Écrits attribués à Bardella', line: 'Mediapart lui attribue des écrits antisémites ; Bardella conteste et porte plainte.', sub: 'Révélations Mediapart · attribués, contestés, non jugés', date: '28 septembre 2026', emitter: 'bard', short: 'Le 28 septembre 2026, Mediapart publie des écrits antisémites datés de 2013 qu’il attribue à Jordan Bardella. Il conteste « formellement », dénonce une « opération de barbouzerie » et annonce une plainte en diffamation. Aucune décision de justice n’est intervenue.'}},
 ];
 // Fiches du bouton « i ». Chaque fait vient du corpus du Project (claude/corpus-declarations-LePen-Bardella.md), du relevé des votes (claude/votes_cles_RN_assemblee.md) ou des fiches sourcées du proto v2 (BIGS).
@@ -426,10 +441,10 @@ const INFO = [
    note: 'La position de 2011-2012 (sortie du nucléaire souhaitable) n’est pas documentée dans le corpus : source à compléter.',
    sd: 'Pendant la campagne des législatives de 2024, plusieurs candidats du RN sont épinglés. Le député sortant Daniel Grenon (Yonne) affirme que les Maghrébins « n’ont pas leur place dans les hauts lieux ». Laurent Gnaedig (Haut-Rhin) estime que les propos de Jean-Marie Le Pen sur les chambres à gaz, « point de détail de l’Histoire », n’étaient pas antisémites. Ludivine Daoudi (Calvados) retire sa candidature après la diffusion d’une photo d’elle coiffée d’une casquette nazie. Jordan Bardella parle de « quatre ou cinq brebis galeuses » qui « seront mis à la porte ».',
    ssrc: [['LCP, Raphaël Marchal', '04/07/2024', null]]},
-  {old: 'Pas d’IVG dans la Constitution : elle n’est « pas en danger »', oldD: 'novembre 2022', neu: 'Vote pour l’inscription de l’IVG dans la Constitution', neuD: '30 janvier 2024',
-   d: 'En novembre 2022, le RN refuse d’inscrire l’IVG dans la Constitution, au motif qu’elle n’est « pas en danger » en France ; Marine Le Pen propose plutôt d’y figer le droit en vigueur. Le 24 novembre 2022, elle vote pourtant la proposition de loi constitutionnelle (groupe RN : 38 pour, 23 contre, 13 abstentions). Le 30 janvier 2024, elle vote le projet de loi constitutionnelle tout en estimant qu’il « ne sert à rien » ; son groupe se divise (46 pour, 12 contre, 14 abstentions). Le 4 mars 2024, le Congrès adopte le texte.',
-   src: [['LCP, Soizic Bonvarlet', '22/11/2022', null], ['Europe 1', '21/06/2024', null], ['Assemblée nationale, scrutin n° 629 (16e lég.)', '24/11/2022', 'https://www.assemblee-nationale.fr/dyn/16/scrutins/629'], ['Assemblée nationale, scrutin n° 3289 (16e lég.)', '30/01/2024', 'https://www.assemblee-nationale.fr/dyn/16/scrutins/3289']],
-   note: 'Votes nominatifs de Marine Le Pen relevés dans les données ouvertes de l’Assemblée nationale (relevé du Project).',
+  {old: 'L’inéligibilité à vie pour les élus condamnés : « pourquoi pas pour détournement de fonds publics ? »', oldD: 'Public Sénat, avril 2013', neu: 'Sa propre condamnation, avec inéligibilité à exécution provisoire, est « une décision politique »', neuD: '31 mars 2025',
+   d: 'Fin 2011, elle appelle à « renforcer drastiquement » les peines d’inéligibilité pour les élus corrompus ; en 2012, dans « Pour que vive la France », elle veut « l’arme de l’inéligibilité » utilisée « avec beaucoup plus de rigueur ». En avril 2013, sur Public Sénat, après l’affaire Cahuzac, elle réclame « l’inéligibilité à vie » pour les élus condamnés : « Pourquoi pas pour favoritisme ? Pourquoi pas pour détournement de fonds publics ? » Le 31 mars 2025, condamnée pour détournement de fonds publics avec cinq ans d’inéligibilité à exécution provisoire, elle dénonce « une décision politique » et estime que « l’État de droit a été totalement violé ».',
+   src: [['Public Sénat, François Vignal', '31/03/2025', 'https://www.publicsenat.fr/actualites/politique/video-quand-marine-le-pen-demandait-lineligibilite-a-vie-pour-les-elus-condamnes-pour-detournement-de-fonds-publics'], ['AFP via Brut', '17/11/2025', 'https://www.brut.media/fr/articles/quand-marine-le-pen-plaidait-pour-des-peines-dineligibilite'], ['Public Sénat, François Vignal', '31/03/2025', 'https://www.publicsenat.fr/actualites/politique/soyons-bien-clairs-je-suis-eliminee-marine-le-pen-denonce-une-decision-politique-apres-sa-condamnation']],
+   note: 'La date exacte de l’émission de 2013 diffère selon les sources (3 ou 5 avril 2013).',
    sd: 'Le 13 novembre 2024, après les réquisitions (cinq ans dont deux ferme, inéligibilité avec exécution provisoire), Marine Le Pen dénonce la « violence » et l’« outrance » du parquet. Le 31 mars 2025, le tribunal correctionnel de Paris la condamne pour détournement de fonds publics (quatre ans dont deux ferme, 100 000 € d’amende, cinq ans d’inéligibilité avec exécution provisoire) ; elle parle de « décision politique » et fait appel. Le 7 juillet 2026, la cour d’appel confirme la condamnation (trois ans dont un ferme aménageable, 45 mois d’inéligibilité dont 30 avec sursis). Le soir même, elle annonce sa candidature et un pourvoi en cassation : la condamnation n’est pas définitive.',
    ssrc: [['Public Sénat', '14/11/2024', 'https://www.publicsenat.fr/actualites/politique/proces-du-rn-marine-le-pen-denonce-la-violence-et-loutrance-des-requisitions'], ['Public Sénat, François Vignal', '31/03/2025', 'https://www.publicsenat.fr/actualites/politique/soyons-bien-clairs-je-suis-eliminee-marine-le-pen-denonce-une-decision-politique-apres-sa-condamnation'], ['LCP, Raphaël Marchal', '07/07/2026', 'https://lcp.fr/actualites/marine-le-pen-condamnee-mais-pas-ecartee-de-la-presidentielle-le-recit-depuis-la-cour-d'], ['LCP, Soizic Bonvarlet', '07/07/2026', 'https://lcp.fr/actualites/ce-soir-je-suis-candidate-a-l-election-presidentielle-annonce-marine-le-pen-438886']]},
   {old: 'Non à la règle d’or : une « chape de plomb »', oldD: '2012', neu: 'Une règle d’or constitutionnelle de réduction de la dette', neuD: '27 août 2026',
@@ -440,10 +455,19 @@ const INFO = [
    ssrc: [['LCP, Raphaël Marchal', '28/09/2026', null], ['LCP, Maxence Kagni', '29/09/2026', null], ['Euronews, Alexander Kazakevich', '04/10/2026', 'https://fr.euronews.com/2026/10/04/jai-totalement-confiance-en-jordan-apres-trois-jours-de-silence-marine-le-pen-defend-a-nou'], ['Sud Radio avec AFP, Gabriel Bourovitch', '06/10/2026', 'https://www.sudradio.fr/societe/presidentielle-en-quete-de-credibilite-budgetaire-le-pen-promet-un-effort-radical-de-140-milliards-net']]},
 ];
 // Ce que les journalistes crient en approchant (la question du chapitre), la banderole de Marine (ancienne / nouvelle position, courte) et la réplique de l'émetteur avant les casseroles
-const QUESTIONS = [['Et le franc ?', 'On sort de l’euro ?', 'Et la BCE ?'], ['Et le Frexit ?', 'Et le référendum ?', 'On reste dans l’UE ?'], ['Et les 60 ans ?', '62 ou 60 ?', 'Et la capitalisation ?'], ['Et Fessenheim ?', 'Et les EPR ?', 'On sort du nucléaire ?'], ['Et la Constitution ?', '« Pas en danger » ?', 'Vous votez pour ?'], ['Et la règle d’or ?', '140 milliards, où ?', 'Et la dette ?']];
-const FLAGS = [['Retour au franc', 'On garde l’euro'], ['Frexit !', 'Dans l’UE'], ['60 ans pour tous', '62 ans (60 si carrière longue)'], ['Stop nucléaire', '20 réacteurs'], ['IVG : non', 'IVG : pour'], ['Non à la règle d’or', 'Règle d’or !']];
+const QUESTIONS = [['Et le franc ?', 'On sort de l’euro ?', 'Et la BCE ?'], ['Et le Frexit ?', 'Et le référendum ?', 'On reste dans l’UE ?'], ['Et les 60 ans ?', '62 ou 60 ?', 'Et la capitalisation ?'], ['Et Fessenheim ?', 'Et les EPR ?', 'On sort du nucléaire ?'], ['Et l’inéligibilité ?', 'À vie, vous disiez ?', 'Et le détournement ?'], ['Et la règle d’or ?', '140 milliards, où ?', 'Et la dette ?']];
+const FLAGS = [['Retour au franc', 'On garde l’euro'], ['Frexit !', 'Dans l’UE'], ['60 ans pour tous', '62 ans (60 si carrière longue)'], ['Stop nucléaire', '20 réacteurs'], ['Inéligibles à vie !', 'Décision politique !'], ['Non à la règle d’or', 'Règle d’or !']];
 const LINES = [null, 'Recel d’abus de biens sociaux. Définitif.', 'Oups. La photo avec Poutine est page 6.', 'Quatre ou cinq brebis galeuses, pas plus !', 'Quatre ans dont deux ferme. Confirmé en appel.', 'Une barbouzerie ! Je porte plainte.'];
 const questions = () => QUESTIONS[clamp(levelN, 0, 5)];
+// Les images à faire (cadres placeholder en attendant) : thème, volte-face (drôle), scandale, bonus, tuto, QG
+const IMG = {
+  theme: ['un franc et un euro face à face', 'le drapeau européen qui claque au vent', 'une pendule de retraite à 60 h', 'une tour de refroidissement', 'un bracelet électronique doré', 'une règle d’or sur un livre de comptes'],
+  volte: ['Marine paie en euros, un franc tombe de sa poche', 'Marine enroulée dans le drapeau européen', 'Marine croupier distribue des cartes « carrière longue »', 'Marine embrasse une tour de refroidissement', 'Marine, bracelet à la cheville, lit la Constitution', 'Marine comptable à visière verte, règle d’or en main'],
+  scandal: [null, 'des cartons de kits de campagne, étiquette « 16 650 € »', 'le tract Poutine qui part à la poubelle', 'des moutons noirs en costume cravate', 'le tribunal, Marine à la barre', 'un cahier d’écolier barré de rouge'],
+  bonus: {pump: 'une pompe à essence qui aspire des pièces', kevlar: 'une veste pare-balles brodée RN'},
+  tuto: ['un doigt qui tape, Marine qui monte', 'la caisse noire du parti qui déborde', 'une barque rouge de journalistes'],
+  qg: 'Montretout, bâtisse Second Empire sur une barge',
+};
 // Les répliques de Marine quand elle saute une barque restée muette (répertoire de la version en ligne)
 const PHRASES = ['Je parle pas aux journaleux.', 'C’est des dingueries !', 'Je peux pas, j’ai piscine.', 'Mon chat est malade.', 'Ça capte mal, désolée !', 'Mes chats ont rendez-vous chez le véto.', 'Il y a du vent, j’entends rien !', 'Posez la question à Jordan.', 'Ferme-la, islamo-gauchiste !', 'Encore la presse de gauche !', 'Fake news !', 'Vous êtes payés par qui, au juste ?', 'Quelle indignité !', 'Cause toujours !', 'Voyez ça avec mon avocat.', 'Carte de presse ou carte du PS ?'];
 // Progression : les réglages du menu valent pour le chapitre 4. Durée (vol et tempête) et difficulté (cadence, vitesse et visée des tirs, densité des journalistes, cercles) suivent ces tables, index 0 = tuto.
@@ -455,8 +479,8 @@ function nextLine(pool, last){ const c = pool.filter(t => t !== last); return c.
 function journoQ(){ const q = rnd()*100 >= P.qShare ? null : nextLine(questions(), lastQ); if (q) lastQ = q; qLog.push(q); return q; }
 // Les bonus de début de niveau (achetés avec la réserve de pièces, valables pour le niveau)
 const BONUS = [
-  {id: 'pump', name: 'Pompe à fric', price: 120, d: 'Attire les pièces proches pendant tout le niveau.'},
-  {id: 'kevlar', name: 'Veste en kevlar', price: 200, d: 'Les 3 premières touches ne coûtent rien (journaliste ou casserole).'},
+  {id: 'pump', name: 'Pompe à fric', price: 120, d: 'Aimante les pièces.'},
+  {id: 'kevlar', name: 'Veste en kevlar', price: 200, d: '3 touches gratuites.'},
 ];
 const MAGNET_R = 160, MAGNET_V = 600, KEVLAR_HITS = 3;
 // Ce que crie Marine quand un « étranger » approche (c'est elle qui les désigne ; les frapper fait monter ses sondages)
@@ -534,7 +558,7 @@ const PSPEC = [
   {k:'windRange', g:'Vent', l:'Course du doigt', u:'% écran', d:'Part de la hauteur d’écran entre pleine descente et pleine montée.', min:30, max:100, step:5},
 ];
 // valeurs par défaut = réglages sauvegardés par Pierre le 18/10 au soir (caméra loin, vol vif)
-const PDEF = {cam: 0.5, camFly: 1.3, camChase: 1.4, camRate: 0.6, speed: 340, flight: 35, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, shotArc: 150, ringEvery: 1.5, ringTotal: 8, ringNeed: 5, ringR: 60, chaseX0: 55, chaseX1: 92, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseGain: 3, tutoFlight: 30, qShare: 40, approachT: 4, cruiseT: 3, ringStep: 8, votePrice: 100, voteGain: 3, lineT: 2.5, jetFollow: 3, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, useBubbles: 0,  hitPoll: 1, panPoll: 0.5, pollOut: 15, pollFall: 17, etrGain: 1, etrEvery: 9, windCap: 4, windRefill: 1.5, windMin: 15,
+const PDEF = {cam: 0.5, camFly: 1.3, camChase: 1.4, camRate: 0.6, speed: 340, flight: 35, ceil: 105, level: 1, stormRate: 0.9, panSpeed: 750, stormLanes: 5, aimShare: 50, lobShare: 20, curveShare: 30, lobGrav: 700, telegraph: 0.5, shotArc: 150, ringEvery: 1.5, ringTotal: 8, ringNeed: 5, ringR: 60, chaseX0: 55, chaseX1: 92, chaseW0: 50, chaseGrow: 130, chaseAgil: 75, chaseStep0: 1.6, chaseStep1: 0.7, chaseGain: 3, tutoFlight: 30, qShare: 40, approachT: 4, cruiseT: 2, ringStep: 8, votePrice: 100, voteGain: 3, lineT: 2.5, jetFollow: 3, stormHits: 3, stormMax: 25, bubbleEvery: 3.5, useBubbles: 0,  hitPoll: 1, panPoll: 0.5, pollOut: 15, pollFall: 20, etrGain: 1, etrEvery: 9, windCap: 4, windRefill: 1.5, windMin: 15,
   vUp: 400, tUp: 0.25, vDown: 520, tDown: 0.5, glide: 0, tTurn: 0.05,
   windV: 340, windLag: 0.4, windDead: 7, windCurve: 1, windRange: 80};
 const P = Object.assign({}, PDEF, {
@@ -567,13 +591,14 @@ let state = 'title', paused = false, ctrl = 'tap';
 let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, stats, onWater = false, endReason = '', wind = 1, windEmptyT = -9;
 let chase = null, trail = [];
 let phase = 'fly', stormT = 0, emitter = null, pans = [], bubbles = [], cass = 0, nextSalvo = 0, nextBubble = 0, dark = 0, bannerT = 0, flash = 0, panInv = 0;
-let fallen = false, nextEtr = 0, gate = null, trans = null, interStep = 1, interT = 0;   // tombée de la planche ; prochain étranger ; la porte du QG ; la transition en iris ; l'écran du QG
+let fallen = false, nextEtr = 0, gate = null, trans = null, interStep = 1, interT = 0, breathT = 0, calmT = 0;
+const BREATH_T = 1.5, CALM_T = 2.0;   // respirations : après la volte-face avant le scandale ; après la fuite de l'émetteur avant la porte   // tombée de la planche ; prochain étranger ; la porte du QG ; la transition en iris ; l'écran du QG
 let coinsList, journos, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
 let keyUp = false, keyDown = false, pointerY = null, pointerDown = false;
 // la carte : un écran posé sur le jeu (en pause) ; kind = msg (tuto), scandal, vane (girouette), position (volte-face)
 let card = null, cardT = 0, mBubble = null, cruiseT = 0, tutoSeen = {};
 function showCard(kind, o){ card = Object.assign({kind}, o || {}); cardT = 0; pointerDown = false; keyUp = false; holding = false; sfxP3('wall'); if (kind === 'position') burst(VW/2, H/2 - 40, 90); }
-function closeCard(){ const c = card; if (!c) return; card = null; sfxP3('click'); pressed = null; if (c.kind === 'scandal') beginStormPlay(); else if (c.kind === 'vane') startChase(); else if (c.kind === 'position') startCruise(); }
+function closeCard(){ const c = card; if (!c) return; card = null; sfxP3('click'); pressed = null; if (c.kind === 'scandal') beginStormPlay(); else if (c.kind === 'vane') startChase(); else if (c.kind === 'position') afterChase(); }
 
 // ---------- campagne : progression, sauvegarde, bonus ----------
 // mode 'camp' = la campagne (carte, niveaux, sauvegarde) ; 'test' = les boutons de test du menu (niveau P.level, rien n'est sauvegardé)
@@ -623,9 +648,10 @@ function start(){
     // on repart de l'état d'entrée du niveau (sondages et casseroles accumulés), avec le bonus choisi
     const e = levelEntry(levelN); poll = e.poll;
     kevlarLeft = hasBonus('kevlar') ? KEVLAR_HITS : 0;
-    if (isTuto()) showCard('msg', {text: 'Appuie pour monter, relâche pour descendre.', skip: true});
+    if (isTuto()) showCard('msg', {text: 'Appuie : monte. Relâche : descends.', skip: true, img: IMG.tuto[0]});
   } else kevlarLeft = 0;
   fallen = poll < P.pollFall; pollShow = poll;
+  if (!isTuto()){ const w = coinWord(curLevel().theme.toUpperCase(), VWW0 + 220, lerp(P.ceil, WATER, 0.42)); nextSpawn = (220 + w + sec(0.6))/worldSpeed(); nextEtr = nextSpawn + 2; }   // le thème du chapitre, écrit en pièces, ouvre le vol
   state = 'play'; paused = false;
   document.getElementById('titleScreen').hidden = true;
   ensureAudio(); musicStart();
@@ -712,6 +738,13 @@ window.addEventListener('keyup', e => { if (e.code === 'ArrowUp' || e.code === '
 // Les pièces grossissent un peu quand la caméra recule, pour rester lisibles à l'écran
 const coinK = () => clamp(Math.sqrt(0.8/Z)*1.15, 1, 2), coinR = () => P.coinR*coinK(), coinGap = () => P.coinGap*coinK();
 const COIN_TOP = () => P.ceil + 40;   // les pièces restent un peu sous le plafond
+// le mot du chapitre écrit en pièces : on rend le mot sur un canevas, on échantillonne une grille de 6 lignes, une pièce par case pleine
+function coinWord(word, x0, yMid){
+  const c = document.createElement('canvas'); c.width = 1600; c.height = 96; const g = c.getContext('2d'); g.font = '900 112px ' + UI; g.textBaseline = 'middle'; g.fillStyle = '#000'; g.fillText(word, 6, 50);
+  const w = Math.min(c.width, Math.ceil(g.measureText(word).width) + 12), rows = 6, cell = c.height/rows, cols = Math.ceil(w/cell), d = g.getImageData(0, 0, c.width, c.height).data, b = newBlock();
+  for (let i=0;i<cols;i++) for (let j=0;j<rows;j++){ const sx = Math.min(c.width - 1, Math.floor((i + 0.5)*cell)), sy = Math.floor((j + 0.5)*cell); if (d[(sy*c.width + sx)*4 + 3] > 100) addCoin(x0 + i*coinGap(), yMid + (j - rows/2 + 0.5)*coinGap(), b); }
+  return cols*coinGap();
+}
 function addCoin(x, y, block){ if (y < COIN_TOP() || y > P.yMax + 10) return; coinsList.push({x, y, r: coinR(), block, ph: rnd()*6.3}); block.n++; }
 function newBlock(){ const b = {n: 0, got: 0, done: false}; return b; }
 function coinLine(x0, y, n, b){ for (let i=0;i<n;i++) addCoin(x0 + i*coinGap(), y, b); return x0 + n*coinGap(); }
@@ -733,14 +766,14 @@ const bandY = k => { const b = BANDS()[k]; return lerp(b[0], b[1], rnd()); };
 function addBoat(x){ journos.push({kind: 'boat', x, y: WATER - 2, w: 140, h: 80, fr: Math.floor(rnd()*6), bob: rnd()*6, q: journoQ()}); }
 // archétypes disponibles selon le chapitre : barques toujours, puis deltaplanes (1), hélicos (2), trampolinistes (3), jet-skis (4)
 const allowed = kind => kind === 'boat' || (kind === 'glider' && levelN >= 1) || (kind === 'heli' && levelN >= 2) || (kind === 'tramp' && levelN >= 3) || (kind === 'jet' && levelN >= 4);
-function addGlider(x, y){ if (!allowed('glider')) return addBoat(x); journos.push({kind: 'glider', x, y, w: 92, h: 44, bob: rnd()*6, col: pick(['#d63b3b', '#2563eb', '#f2b630']), q: journoQ()}); }
+function addGlider(x, y){ if (!allowed('glider')) return addBoat(x); journos.push({kind: 'glider', x, y, w: 110, h: 54, bob: rnd()*6, col: pick(['#e3342f', '#c81e1e', '#ff5a5f']), q: journoQ()}); }
 // le trampoliniste : une barque avec un trampoline ; il s'accroupit (préavis) puis saute haut, à période fixe
 function addTramp(x){ journos.push({kind: 'tramp', x, y: WATER - 2, w: 44, h: 50, fr: Math.floor(rnd()*6), bob: rnd()*6, ph: rnd()*2.4, jy: 0, q: journoQ()}); }
 // le jet-ski : arrive vite au ras de l'eau, se cale sous Marine pendant jetFollow s (interdit la pose), puis file
 function addJet(x){ journos.push({kind: 'jet', x, y: WATER - 8, w: 100, h: 44, bob: rnd()*6, alert: 1.1, st: 'in', vx: 520, holdT: 0, q: journoQ()}); }
-function addHeli(x, y, track){ if (!allowed('heli')) return addGlider(x, y); journos.push({kind: 'heli', x, y, w: 78, h: 40, bob: rnd()*6, track: track ? 3.2 : 0, alert: track ? 1.1 : 0, vx: track ? worldSpeed()*0.65 : 0, q: journoQ()}); }
+function addHeli(x, y, track){ if (!allowed('heli')) return addGlider(x, y); journos.push({kind: 'heli', x, y, w: 120, h: 60, bob: rnd()*6, track: track ? 3.2 : 0, alert: track ? 1.1 : 0, vx: track ? worldSpeed()*0.65 : 0, q: journoQ()}); }
 // l'étranger (dans la bouche de Marine) : un passant sur une planche de surf ou un petit bateau, au ras de l'eau ; la frapper le fait tomber à l'eau et rapporte des sondages
-function addEtr(x){ journos.push({kind: 'etr', x, y: WATER - 2, w: 70, h: 56, bob: rnd()*6, surf: rnd() < 0.6, col: pick([PINK, '#f97316', '#22c55e', '#a855f7', '#06b6d4']), q: null, cried: false, fall: -1}); }
+function addEtr(x){ journos.push({kind: 'etr', x, y: WATER - 2, w: 70, h: 70, bob: rnd()*6, surf: rnd() < 0.6, col: pick(['#2563eb', '#38bdf8', '#0ea5e9', '#1d4ed8']), q: null, cried: false, fall: -1}); }
 const worldSpeed = () => P.speed/Z;   // la vitesse se règle en px écran/s ; en px monde elle dépend de la caméra
 // Chaque motif reçoit x (bord droit du monde) et renvoie sa longueur en px monde. Les durées sont en secondes de vol, les altitudes relatives à la limite et à l'eau.
 const PATTERNS = [
@@ -750,8 +783,8 @@ const PATTERNS = [
   x => { const y0 = COIN_TOP() + 60, pts = simPath(y0, [[false, 0.7], [true, 0.45]]); const b = newBlock(); coinPath(x, pts, b); const low = pts.reduce((m, q) => Math.max(m, q[1]), 0); addGlider(x + pts[pts.length - 1][0] + sec(0.45), low); return pts[pts.length - 1][0] + sec(1.0); },
   // 3. vague : appui 0,4 s / relâche 0,5 s trois fois, depuis le milieu ; une barque sous le dernier creux
   x => { const y0 = lerp(COIN_TOP(), WATER, 0.55), pts = simPath(y0, [[true, 0.4], [false, 0.5], [true, 0.4], [false, 0.5], [true, 0.4], [false, 0.5]]); const b = newBlock(); coinPath(x, pts, b); addBoat(x + pts[pts.length - 1][0] - sec(0.2)); return pts[pts.length - 1][0] + sec(0.8); },
-  // 4. deux rubans : deux rubans de 2 lignes à 120 px d'écart en haut, il faut en choisir un ; un hélico traqueur arrive après
-  x => { const y = bandY('high'), b = newBlock(); coinLines(x, y, 14, b, 2); coinLines(x, y + 120, 14, b, 2); addHeli(x + 14*coinGap() + sec(0.6), y + 60, true); return 14*coinGap() + sec(1.6); },
+  // 4. le piège hélico : un ruban en haut, l'hélico traqueur attend juste au bout
+  x => { const y = bandY('high'), b = newBlock(); coinLines(x, y, 14, b, 2); addHeli(x + 14*coinGap() + sec(0.3), y + coinGap()/2, true); return 14*coinGap() + sec(1.6); },
   // 5. escalier : trois paliers ; l'écart entre paliers = le temps d'un appui de 0,35 s dans le modèle courant
   x => { const st = simPath(lerp(COIN_TOP(), WATER, 0.7), [[true, 0.35], [false, 0.05]]), dy = st[0][1] - st[st.length - 1][1], dx = st[st.length - 1][0]; let y = lerp(COIN_TOP(), WATER, 0.7), xx = x; const b = newBlock(), r = nRows();
     for (let k=0;k<3;k++){ coinLines(xx, y, 6, b, r); xx += 6*coinGap() + dx; y -= dy; } addBoat(x + sec(0.4)); return xx - x + sec(0.6); },
@@ -777,6 +810,10 @@ const PATTERNS = [
   x => { const b = newBlock(); coinLines(x, bandY('mid'), 18, b); addTramp(x + sec(0.5)); addTramp(x + sec(1.7)); return 18*coinGap() + sec(1.0); },
   // 16. le jet-ski (chapitre 4+) : un ruban sur l'eau qui invite à se poser, puis un jet-ski qui se cale sous Marine
   x => { const b = newBlock(); coinLines(x, P.yMax - coinGap(), 20, b, 2); addJet(x + sec(0.3)); return 20*coinGap() + sec(2.6); },
+  // 17. le piège deltaplane : un ruban au milieu, un deltaplane à sa hauteur exacte au bout (il faut lâcher les dernières pièces)
+  x => { const y = bandY('mid'), b = newBlock(); coinLines(x, y, 12, b, 2); addGlider(x + 12*coinGap() + sec(0.25), y + coinGap()/2); return 12*coinGap() + sec(1.2); },
+  // 18. le piège barque : un ruban sur l'eau, une barque juste au bout
+  x => { const b = newBlock(); coinLines(x, P.yMax - coinGap(), 14, b, 2); addBoat(x + 14*coinGap() + sec(0.25)); return 14*coinGap() + sec(1.2); },
 ];
 const PAT_NEED = {14: 'tramp', 15: 'jet'};
 let patOrder = [];
@@ -793,7 +830,7 @@ function pop(t, color, x, y, big){ const n = pops.filter(q => q.max - q.life < 0
 function addPoll(v){ poll = clamp(poll + v, 0, 100); }
 function camStep(dt){
   if (state === 'play' || state === 'final'){
-    camGoal = phase === 'fly' || phase === 'cruise' ? P.camFly : phase === 'chase' && chase ? (chase.leaving ? 0.82 : lerp(1, P.camChase, chaseProg())) : 1;
+    camGoal = phase === 'fly' || phase === 'cruise' || phase === 'breath' ? P.camFly : phase === 'chase' && chase ? (chase.leaving ? 0.82 : lerp(1, P.camChase, chaseProg())) : 1;
     camFx += clamp(camGoal - camFx, -P.camRate*dt, P.camRate*dt);
   }
   updateView();
@@ -804,20 +841,22 @@ function update(dt){
   if (state !== 'play' || paused) return;
   if (card){ cardT += dt; if (emitter){ emitter.frT += dt; if (emitter.frT > 0.5){ emitter.frT = 0; emitter.fr = (emitter.fr + 1) % emitter.E.frames.length; } } return; }   // une carte est affichée : le jeu attend
   tFlight += dt; lastDt = dt;
-  if (phase === 'fly' && tFlight >= flightDur()){ if (isTuto()) showVane(); else startStorm(false); }
+  if (phase === 'fly' && tFlight >= flightDur()) showVane();   // la course d'abord (le thème), le scandale ensuite
   if (mBubble){ mBubble.life -= dt; if (mBubble.life <= 0) mBubble = null; }
   applyInput(dt); if (state !== 'play') return;
   const mx = PX(), my = py, dx = worldSpeed()*dt;
   inv = Math.max(0, inv - dt);
   if (phase === 'fly'){ nextSpawn -= dt; if (nextSpawn <= 0) spawn();   // les sondages ne montent plus tout seuls : contacts et casseroles en moins, étrangers, girouette et argent en plus
-    nextEtr -= dt; if (nextEtr <= 0){ nextEtr = P.etrEvery*(0.7 + rnd()*0.6); addEtr(VWW + 80); }
+    nextEtr -= dt; if (nextEtr <= 0){ const ex = VWW + 80; if (journos.some(j => j.kind !== 'etr' && Math.abs(j.x - ex) < 300)) nextEtr = 0.6; else { nextEtr = P.etrEvery*(0.7 + rnd()*0.6); addEtr(ex); } }   // jamais juste derrière une barque
     if (isTuto() && mode === 'camp'){   // les messages du tuto, au moment où la chose apparaît
-      if (!tutoSeen.coins && coinsList.some(c => c.x < VWW - 60)){ tutoSeen.coins = true; showCard('msg', {text: 'Ramasse les pièces d’or : elles remplissent la caisse noire du parti.'}); return; }
-      if (!tutoSeen.journo && journos.some(j => !(j.alert > 0) && j.x < VWW - 80)){ tutoSeen.journo = true; showCard('msg', {text: 'Touche un journaliste : tu perds des points de sondage.'}); return; } } }
+      if (!tutoSeen.coins && coinsList.some(c => c.x < VWW - 60)){ tutoSeen.coins = true; showCard('msg', {text: 'Les pièces d’or remplissent la caisse noire.', img: IMG.tuto[1]}); return; }
+      if (!tutoSeen.journo && journos.some(j => !(j.alert > 0) && j.x < VWW - 80)){ tutoSeen.journo = true; showCard('msg', {text: 'Un journaliste touché : −1 pt de sondage.', img: IMG.tuto[2]}); return; } } }
   else if (phase === 'approach') updateApproach(dt);
   else if (phase === 'storm') updateStorm(dt);
   else if (phase === 'chase') updateChase(dt);
   else if (phase === 'cruise') updateCruise(dt);
+  else if (phase === 'breath') updateBreath(dt);
+  else if (phase === 'calm') updateCalm(dt);
   // pièces
   for (const c of coinsList){ c.x -= dx;
     if (hasBonus('pump') && !c.got){ const d = Math.hypot(c.x - mx, c.y - my); if (d < MAGNET_R && d > 1){ c.x += (mx - c.x)/d*MAGNET_V*dt; c.y += (my - c.y)/d*MAGNET_V*dt; } }   // la pompe à fric attire les pièces proches
@@ -833,7 +872,7 @@ function update(dt){
     if (j.kind === 'jet' && j.st === 'in' && j.x <= mx + 60){ j.st = 'hold'; j.holdT = P.jetFollow; }
     if (j.kind === 'tramp'){ const tt = (realT + j.ph) % 2.4; j.crouch = tt < 0.5; j.jy = tt < 0.5 ? 0 : 240*Math.sin(Math.PI*(tt - 0.5)/1.9); }
     if (j.track > 0){ j.track -= dt; j.y += clamp(my - j.y, -130*dt, 130*dt); }
-    const cy = j.kind === 'boat' ? j.y - 48 : j.kind === 'tramp' ? j.y - 78 - j.jy : j.kind === 'jet' ? j.y - 30 : j.kind === 'etr' ? j.y - 30 : j.y;
+    const cy = j.kind === 'boat' ? j.y - 48 : j.kind === 'tramp' ? j.y - 84 - j.jy : j.kind === 'jet' ? j.y - 36 : j.kind === 'etr' ? j.y - 38 : j.y;
     if (!j.passed && j.x + j.w/2 < mx - 40){ j.passed = true; if (j.kind === 'boat' && !j.q && !j.hitDone && phase === 'fly') marineSays(); }   // une barque muette sautée : Marine a le dernier mot
     if (j.kind === 'etr'){   // l'étranger : Marine le désigne en criant, et si elle le frappe il tombe à l'eau, les sondages montent, elle remonte sur sa planche
       if (!j.cried && j.x - mx < worldSpeed()*1.3 && j.x > mx){ j.cried = true; if (!mBubble){ const t = nextLine(ETR_CRIES, lastPhrase); lastPhrase = t; mBubble = {t, life: 1.6}; sfxP3('alert'); } }
@@ -893,7 +932,7 @@ function updateStorm(dt){
   if (bannerT > 0) bannerT -= dt;
   panInv = Math.max(0, panInv - dt);
   // l'émetteur entre, recule aux touches, fuit à la fin
-  if (e.fled){ e.x += 700*dt; if (e.x > VWW + 400){ if (mode === 'camp') showVane(); else startChase(); return; } }
+  if (e.fled){ e.x += 700*dt; if (e.x > VWW + 400){ startCalm(); return; } }
   else { e.x += clamp(e.tx + e.recoil - e.x, -500*dt, 500*dt); e.recoil = Math.max(0, e.recoil - 80*dt); e.pause = Math.max(0, e.pause - dt); }
   e.frT += dt; if (e.frT > 0.5){ e.frT = 0; e.fr = (e.fr + 1) % e.E.frames.length; }
   if (e.kind === 'bard') e.y += clamp(lerp(P.ceil, WATER, 0.45) + Math.sin(realT*0.8)*60 - e.y, -120*dt, 120*dt);   // Bardella se balade
@@ -940,7 +979,7 @@ function stormCoins(dt){ nextStormCoin -= dt; if (nextStormCoin > 0) return; nex
 function showVane(){ phase = 'vane'; emitter = null; pans = []; bubbles = []; dark = Math.min(dark, 0.5); showCard('vane'); }
 function startChase(){
   phase = 'chase'; card = null; emitter = null; pans = []; bubbles = []; trail = []; nextStormCoin = 1.5;
-  chase = {t: 0, gauge: 0, y: P.yMax - 30, vy: 0, target: 0, nextTurn: 1.2, rings: [], dropped: 0, passed: 0, nextDrop: 1.0, caught: false, leaving: false, catchT: 0, flash: 0, x0: PX()};
+  chase = {t: 0, gauge: 0, y: P.yMax - 30, vy: 0, target: 0, nextTurn: 1.2, rings: [], dropped: 0, passed: 0, nextDrop: 2.0, caught: false, leaving: false, catchT: 0, flash: 0, x0: PX()};
   chase.target = chase.y; marineX = chase.x0; sfxP3('orb');
 }
 // la girouette dérive vers la droite au fil des cercles lâchés ; en largeur de base, indépendante du zoom
@@ -951,8 +990,8 @@ const chaseProg = () => chase ? clamp(chase.passed/Math.max(1, P.ringNeed), 0, 1
 function updateChase(dt){
   const c = chase, my = py, vs = worldSpeed();
   c.t += dt; dark = Math.max(0, dark - dt/1.5); c.flash = Math.max(0, c.flash - dt);
-  if (c.caught){ c.catchT += dt; marineX += clamp(orbX() - 30 - marineX, -900*dt, 900*dt); if (c.catchT > 1.0 && !c.shown){ c.shown = true; showCard('position'); } return; }   // au compte, Marine fonce sur la girouette, puis la carte de la volte-face
-  if (c.leaving){ c.catchT += dt; if (c.catchT > 2.4) startCruise(); return; }   // la girouette monte au ciel, la caméra recule, Marine retombe
+  if (c.caught){ c.catchT += dt; marineX += clamp(orbX() - 30 - marineX, -600*dt, 600*dt); if (c.catchT > 1.4 && !c.shown){ c.shown = true; showCard('position'); } return; }   // au compte, Marine fonce sur la girouette, puis la carte de la volte-face
+  if (c.leaving){ c.catchT += dt; if (c.catchT > 2.4) afterChase(); return; }   // la girouette monte au ciel, la caméra recule, Marine retombe
   // la girouette : un cap qui change à intervalles (plus courts à mesure qu'on avance) ; vitesse et accélération bornées par celles de Marine
   const top = P.ceil + 70, bot = P.yMax, pr = chaseProg(), vmax = Math.min(P.vUp, P.vDown)*P.chaseAgil/100*(0.7 + 0.3*lvlDiff())/(isTuto() ? 1.4 : 1);
   c.nextTurn -= dt; if (c.nextTurn <= 0){ c.nextTurn = lerp(P.chaseStep0, P.chaseStep1, pr)*(0.8 + rnd()*0.4); const span = (bot - top)*lerp(0.45, 0.8, pr); c.target = clamp(c.y + (rnd() - 0.5)*2*span, top, bot - 20); }
@@ -961,7 +1000,7 @@ function updateChase(dt){
   const ox = orbX();
   if (c.dropped < P.ringTotal){ c.nextDrop -= dt; if (c.nextDrop <= 0){ c.nextDrop = P.ringEvery; c.dropped++; c.rings.push({x: ox - 20, y: c.y, n: c.dropped, state: 'wait'}); sfxP3('tick'); } }
   // Marine avance d'un petit cran vers la girouette à chaque cercle passé (ringStep % de la distance) ; au compte, elle fonce
-  const want_x = lerp(c.x0, ox - 40, clamp(c.passed*P.ringStep/100, 0, 1)); marineX += clamp(want_x - marineX, -500*dt, 500*dt);
+  const want_x = lerp(c.x0, ox - 40, clamp(c.passed*P.ringStep/100, 0, 1)); marineX += clamp((want_x - marineX)*2.2, -240, 240)*dt;   // progressif
   const mx = PX();
   for (const r of c.rings){ r.x -= vs*dt;
     if (r.state === 'wait' && r.x <= mx){   // le cercle arrive à la colonne de Marine : passé ou manqué, une fois pour toutes
@@ -969,17 +1008,17 @@ function updateChase(dt){
         if (c.passed >= P.ringNeed){ c.caught = true; c.catchT = 0; c.xCatch = marineX; c.oxCatch = ox; stats.gold = true; addPoll(P.chaseGain); remount(); burst(VW*0.4, H*0.5, 60); shake(4); pop('Volte-face ! +' + P.chaseGain.toFixed(1).replace('.', ',') + ' pt', '#f2b630', mx + 10, my - 100, true); sfxP3('fanfare'); return; } }
       else { r.state = 'miss'; sfxP3('miss'); } } }
   c.rings = c.rings.filter(r => r.x > -120);
-  // particules décoratives derrière la girouette
-  for (let i=0;i<3;i++) trail.push({x: ox - rnd()*10, y: c.y + (rnd() - 0.5)*P.chaseW0, vy: (rnd() - 0.5)*P.chaseGrow, age: 0, r: 2.5 + rnd()*3, ph: rnd()*6.3});
-  for (const q of trail){ q.age += dt; q.x -= vs*dt; q.y += q.vy*dt; }
-  trail = trail.filter(q => q.x > -40 && q.age < 4);
+  // la traînée : des particules dorées fines derrière la girouette (petits carrés, une seule couleur par passe, plafonnées)
+  if (!c.caught) for (let i=0;i<5;i++) trail.push({x: ox - 8 - rnd()*16, y: c.y + (rnd() - 0.5)*16, vy: (rnd() - 0.5)*40, age: 0, life: 1.2 + rnd()*0.8, r: 1.4 + rnd()*1.6, pale: rnd() < 0.3});
+  for (const q of trail){ q.age += dt; q.x -= vs*0.92*dt; q.y += q.vy*dt; }
+  trail = trail.filter(q => q.x > -40 && q.age < q.life); if (trail.length > 260) trail.splice(0, trail.length - 260);
   // tous les cercles lâchés et jugés sans le compte : la girouette s'envole
   if (c.dropped >= P.ringTotal && c.rings.every(r => r.state !== 'wait') && !c.caught){ c.leaving = true; c.catchT = 0; sfxP3('miss'); }
 }
 function drawChase(){
   const c = chase, mx = PX();
-  // la traîne
-  for (const q of trail){ const k = clamp(1 - q.age/4, 0, 1), tw = 0.7 + 0.3*Math.sin(realT*8 + q.ph), r = q.r*(1 + q.age*0.35); ctx.fillStyle = 'rgba(255,45,149,' + (0.85*k*tw) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, r, 0, 7); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,' + (0.9*k*tw) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, r*0.45, 0, 7); ctx.fill(); }
+  // la traînée dorée : deux passes (or, puis or pâle), des carrés, alpha par particule
+  const kz = 1/Z; for (const pale of [false, true]){ ctx.fillStyle = pale ? '#fff3c4' : GOLD; for (const q of trail){ if (q.pale !== pale) continue; const a = clamp(1 - q.age/q.life, 0, 1), r = q.r*kz*(0.6 + 0.4*a); ctx.globalAlpha = 0.9*a; ctx.fillRect(q.x - r, q.y - r, 2*r, 2*r); } } ctx.globalAlpha = 1;
   // l'orbe d'or
   let ox = orbX(), oy = c.y;
   if (c.caught){ const k = clamp((c.catchT - 0.6)/0.4, 0, 1); ox = lerp(ox, mx + 20, k); oy = lerp(oy, py, k); }
@@ -1003,15 +1042,14 @@ function drawVaneIcon(ox, oy, ang, s){
   ctx.beginPath(); ctx.moveTo(0, -16); ctx.lineTo(-4.2, -23); ctx.lineTo(4.2, -23); ctx.closePath(); ctx.fill(); ctx.moveTo(-3.7, 16); ctx.lineTo(3.7, 16); ctx.lineTo(0, 8.4); ctx.closePath(); ctx.fill();   // N / S
   ctx.restore();
 }
-function drawRings(){   // les cercles, dessinés devant Marine : à venir en or, passés en vert, manqués en rouge (ils s'effacent)
-  const c = chase; if (!c) return; const R = ringR(), k = 1/Z;
-  for (const r of c.rings){ const col = r.state === 'ok' ? '34,163,74' : r.state === 'miss' ? '214,59,59' : '242,182,48', a = r.state === 'wait' ? 0.9 : 0.6, pulse = r.state === 'wait' ? 1 + 0.05*Math.sin(realT*6 + r.n) : 1;
-    ctx.save(); ctx.translate(r.x, r.y); ctx.scale(0.35, 1);   // un anneau vu de trois quarts
-    ctx.lineWidth = 7*k; ctx.strokeStyle = 'rgba(' + col + ',' + a + ')'; ctx.beginPath(); ctx.arc(0, 0, R*pulse, 0, 7); ctx.stroke();
-    ctx.lineWidth = 2.5*k; ctx.strokeStyle = 'rgba(255,255,255,' + (a*0.8) + ')'; ctx.beginPath(); ctx.arc(0, 0, R*pulse - 6*k, 0, 7); ctx.stroke();
-    ctx.restore();
-    if (r.state === 'wait') outText(String(r.n), r.x, r.y - R - 14*k, 13*k, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
-    else outText(r.state === 'ok' ? '✓' : '✗', r.x, r.y, 22*k, 900, r.state === 'ok' ? '#bdf5c9' : '#fecaca', 'center', 'rgba(20,33,61,.6)'); }
+function drawRings(){   // les cercles : des anneaux de particules dorées (18 points qui tournent), vus de trois quarts ; verts passés, rouges manqués
+  const c = chase; if (!c) return; const R = ringR(), k = 1/Z, N = 18;
+  for (const r of c.rings){ const col = r.state === 'ok' ? '#4ade80' : r.state === 'miss' ? '#ff6b6b' : GOLD, a = r.state === 'wait' ? 1 : 0.55, pulse = r.state === 'wait' ? 1 + 0.05*Math.sin(realT*6 + r.n) : 1;
+    ctx.fillStyle = col; ctx.globalAlpha = a;
+    for (let i=0;i<N;i++){ const t = realT*1.6 + i*6.2832/N + r.n, px = r.x + Math.cos(t)*R*0.35*pulse, py2 = r.y + Math.sin(t)*R*pulse, sz = (1.6 + 1.2*(0.5 + 0.5*Math.sin(realT*9 + i)))*k; ctx.fillRect(px - sz, py2 - sz, 2*sz, 2*sz); }
+    ctx.globalAlpha = 1;
+    if (r.state === 'wait') outText(String(r.n), r.x, r.y - R - 12*k, 11*k, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
+    else outText(r.state === 'ok' ? '✓' : '✗', r.x, r.y, 20*k, 900, r.state === 'ok' ? '#bdf5c9' : '#fecaca', 'center', 'rgba(20,33,61,.6)'); }
 }
 function drawChaseHud(){
   const c = chase, w = 300, x = VW/2 - w/2, y = 54, need = Math.round(P.ringNeed), left = Math.max(0, Math.round(P.ringTotal) - c.dropped);
@@ -1022,6 +1060,12 @@ function drawChaseHud(){
   if (c.leaving) outText('La girouette s’envole : Marine garde sa position', VW/2, H/2 - 40, 22, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
   else if (!c.caught && left === 0) outText('Derniers cercles !', VW/2, y + 50, 13, 900, '#fff', 'center', 'rgba(20,33,61,.6)');
 }
+// après la volte-face : une respiration de vol libre, puis le scandale (campagne, hors tuto) ; sinon la navigation
+function afterChase(){ chase = null; trail = []; card = null; if (mode === 'camp' && !isTuto()){ phase = 'breath'; breathT = 0; } else startCruise(); }
+function updateBreath(dt){ breathT += dt; dark = Math.max(0, dark - dt); if (marineX !== null){ const d = Math.max(190, VWW0*0.22); marineX += clamp(d - marineX, -300*dt, 300*dt); if (Math.abs(marineX - d) < 1) marineX = null; } if (breathT >= BREATH_T) startStorm(false); }
+// après la tempête : l'émetteur a fui, le ciel se dégage, Marine s'en sort ; puis la navigation vers la porte
+function startCalm(){ phase = 'calm'; calmT = 0; emitter = null; pans = []; pop('Marine s’en sort !', '#bdf5c9', PX() + 10, py - 110, true); sfxP3('fanfare'); }
+function updateCalm(dt){ calmT += dt; dark = Math.max(0, dark - dt/1.2); stormCoins(dt); if (calmT >= CALM_T) startCruise(); }
 // après la course : on navigue un peu (pièces, pas de journaliste), Marine revient à sa place, puis l'écran des bonus
 function startCruise(){ phase = 'cruise'; card = null; cruiseT = 0; chase = null; trail = []; nextStormCoin = 0.6;
   gate = mode === 'camp' && levelN < 5 ? {x: PX() + worldSpeed()*Math.max(1, P.cruiseT) + 520, in: false} : null; }   // la porte arrive après cruiseT s de navigation
@@ -1045,8 +1089,9 @@ function drawGate(){
   ctx.fillStyle = 'rgba(20,33,61,.55)'; ctx.fillRect(x - 86, top + 40, 172, WATER - top - 40);   // le rideau sombre : on ne voit pas dedans
   for (let i=0;i<6;i++){ ctx.fillStyle = 'rgba(255,214,102,' + (0.25 + 0.2*Math.sin(realT*6 + i)) + ')'; ctx.fillRect(x - 70 + i*24, top + 40, 10, WATER - top - 40); }   // lamelles dorées
   ctx.fillStyle = PINK; ctx.fillRect(x - 118, top, 32, WATER - top + 8); ctx.fillRect(x + 86, top, 32, WATER - top + 8); ctx.lineWidth = 4; ctx.strokeStyle = INK; ctx.strokeRect(x - 118, top, 32, WATER - top + 8); ctx.strokeRect(x + 86, top, 32, WATER - top + 8);   // les montants
+  imgBox(x - 230, top - 150, 460, 120, IMG.qg, 10*k);   // la bâtisse, en attendant le sprite
   ctx.fillStyle = GOLD; rr(x - 150, top - 60, 300, 70, 14); ctx.fill(); ctx.stroke();   // le fronton
-  text('QG DE CAMPAGNE', x, top - 30, 24*k, 900, INK, 'center', UIT); text('entrée réservée', x, top - 6, 11*k, 800, INK, 'center');
+  text('MONTRETOUT', x, top - 30, 26*k, 900, INK, 'center', UIT); text('QG de campagne · entrée réservée', x, top - 6, 11*k, 800, INK, 'center');
   ctx.fillStyle = RED; ctx.fillRect(x - 86, WATER - 4, 172, 10);   // le tapis rouge, sur l'eau
   for (let i=0;i<8;i++){ const a = realT*4 + i*0.8, bx = x + Math.cos(a)*150, by = top - 70 + Math.sin(a*1.7)*20; ctx.fillStyle = i % 2 ? GOLD : '#fff'; ctx.beginPath(); ctx.arc(bx, by, 5 + 2*pulse, 0, 7); ctx.fill(); }   // ampoules
 }
@@ -1122,19 +1167,16 @@ function drawFar(){
   const hg = WATER - HZ + 12, tw = sa[2]*hg/sa[3];
   if (!tileRow(sa, 0, -400, VWW, HZ, tw, hg, scrollX*0.3)){ ctx.fillStyle = '#4593d6'; ctx.fillRect(0, HZ, VWW, hg); }
   const hz = ctx.createLinearGradient(0, HZ, 0, HZ + 50); hz.addColorStop(0, 'rgba(210,235,252,.45)'); hz.addColorStop(1, 'rgba(210,235,252,0)'); ctx.fillStyle = hz; ctx.fillRect(0, HZ, VWW, 50);
-  if (sea === 'cote'){
-    const sc = 0.36, tw2 = SW('houses', sc), off = scrollX*0.2;
-    ctx.save(); ctx.globalAlpha = 0.6;
-    ctx.fillStyle = '#6f9f78'; ctx.fillRect(-400, HZ - 4, VWW + 400, 6); ctx.fillStyle = '#a3b1c6'; ctx.fillRect(-400, HZ + 1, VWW + 400, 5);
-    const i0 = Math.floor(off/tw2) - 1, i1 = Math.ceil((VWW + off)/tw2) + 1, hc = farHouses(sc);
-    for (let i=i0;i<=i1;i++){ const x = i*tw2 - off; if (!hc){ spr('houses', x + tw2/2, HZ + 2, sc, hash(i) < 0.5); continue; }
-      ctx.save(); ctx.translate(x + tw2/2, 0); if (hash(i) < 0.5) ctx.scale(-1, 1); ctx.drawImage(hc, -hc.width/4, HZ + 2 - hc.height/2 + 4, hc.width/2, hc.height/2); ctx.restore(); }
-    ctx.restore();
-    const g2 = ctx.createLinearGradient(0, HZ - 70, 0, HZ + 8); g2.addColorStop(0, 'rgba(200,226,248,0)'); g2.addColorStop(0.45, 'rgba(200,226,248,.55)'); g2.addColorStop(1, 'rgba(200,226,248,.65)');
+  if (sea === 'cote'){   // paysage marin : brume d'horizon, îlots lointains, un phare, des oiseaux (pas de ville, pas de bateaux décoratifs)
+    const g2 = ctx.createLinearGradient(0, HZ - 70, 0, HZ + 8); g2.addColorStop(0, 'rgba(200,226,248,0)'); g2.addColorStop(0.45, 'rgba(200,226,248,.5)'); g2.addColorStop(1, 'rgba(200,226,248,.6)');
     ctx.fillStyle = g2; ctx.fillRect(-400, HZ - 70, VWW + 400, 78);
-    const off2 = scrollX*0.32, st = 260; ctx.save(); ctx.globalAlpha = 0.7;
-    for (let j = Math.floor(off2/st) - 1; j <= Math.ceil((VWW + off2)/st) + 1; j++){ const h = hash(j*1.7); const n = h < 0.3 ? 'mFish' : h < 0.55 ? 'mSail' : h < 0.75 ? 'mBoats' : h < 0.9 ? 'mSail2' : 'mFish2'; spr(n, j*st - off2 + hash(j)*80, HZ + 26 + hash(j+4)*8, 0.65); }
-    ctx.restore();
+    const off = scrollX*0.22, st = 900;
+    for (let j = Math.floor(off/st) - 1; j <= Math.ceil((VWW + off)/st) + 1; j++){ const h = hash(j*2.3); if (h > 0.75) continue; const ix = j*st - off + hash(j)*300, iw = 120 + hash(j+2)*160, ih = 10 + hash(j+3)*14;
+      ctx.fillStyle = 'rgba(70,110,140,.75)'; ctx.beginPath(); ctx.moveTo(ix - iw/2, HZ + 3); ctx.quadraticCurveTo(ix - iw/4, HZ + 3 - ih*1.6, ix, HZ + 3 - ih); ctx.quadraticCurveTo(ix + iw/3, HZ + 3 - ih*0.5, ix + iw/2, HZ + 3); ctx.closePath(); ctx.fill();   // îlot
+      if (hash(j+7) > 0.55){ ctx.fillStyle = '#fff'; ctx.fillRect(ix - 3, HZ - ih - 24, 6, 26); ctx.fillStyle = '#e3342f'; ctx.fillRect(ix - 3, HZ - ih - 16, 6, 6); ctx.fillRect(ix - 3, HZ - ih - 4, 6, 6); ctx.fillStyle = 'rgba(255,240,170,' + (0.5 + 0.5*Math.sin(realT*3 + j)) + ')'; ctx.beginPath(); ctx.arc(ix, HZ - ih - 26, 3.5, 0, 7); ctx.fill(); } }   // le phare
+    ctx.strokeStyle = 'rgba(20,33,61,.55)'; ctx.lineWidth = 1.5; const ob = scrollX*0.5, sb = 420;   // oiseaux
+    for (let j = Math.floor(ob/sb) - 1; j <= Math.ceil((VWW + ob)/sb) + 1; j++){ if (hash(j+11) > 0.6) continue; const bx = j*sb - ob + hash(j+5)*200, by = HZ - 180 - hash(j+6)*160 + Math.sin(realT*1.5 + j)*6, f = Math.sin(realT*7 + j)*3;
+      ctx.beginPath(); ctx.moveTo(bx - 8, by - f); ctx.quadraticCurveTo(bx - 4, by + 2, bx, by); ctx.quadraticCurveTo(bx + 4, by + 2, bx + 8, by - f); ctx.stroke(); }
   } else {
     const hs = 0.8, tw3 = SW('horizon', hs), off = scrollX*0.15;
     for (let i = Math.floor(off/tw3) - 1; i*tw3 - off < VWW; i++) spr('horizon', i*tw3 - off, HZ + 4, hs);
@@ -1161,24 +1203,24 @@ function drawCoin(c){
   ctx.fillStyle = '#f7c948'; ctx.fillRect(-1.3, -4, 2.6, 8);
   ctx.restore();
 }
-function drawReporter(x, y, sq){   // le journaliste : tête, buste, caméra ; sq = accroupi
-  ctx.save(); ctx.translate(x, y); if (sq) ctx.scale(1.15, 0.7);
+function drawReporter(x, y, sq, col){   // le journaliste (rouge) : tête, buste, caméra ; sq = accroupi ; à l'échelle de Marine (×1.5)
+  ctx.save(); ctx.translate(x, y); ctx.scale(1.5, 1.5); if (sq) ctx.scale(1.15, 0.7);
   ctx.fillStyle = '#e8b796'; ctx.beginPath(); ctx.arc(0, -16, 6, 0, 7); ctx.fill();
-  ctx.fillStyle = '#2b3550'; ctx.fillRect(-5, -10, 10, 14); ctx.fillStyle = '#111'; ctx.fillRect(6, -16, 10, 6); ctx.fillRect(14, -17, 4, 8);
+  ctx.fillStyle = col || '#d63b3b'; ctx.fillRect(-5, -10, 10, 14); ctx.fillStyle = '#111'; ctx.fillRect(6, -16, 10, 6); ctx.fillRect(14, -17, 4, 8);
   ctx.restore();
 }
 function speech(txt, x, y, fill, col){   // bulle dans le monde : pointe en (x, y), texte au-dessus
-  const k = 1/Z; font(18*k, 900); const w = ctx.measureText(txt).width + 24*k, h = 30*k, bx = x - w/2, by = y - h - 10*k;
-  ctx.fillStyle = '#14213d'; rr(bx + 3*k, by + 3*k, w, h, 10*k); ctx.fill(); ctx.fillStyle = fill || '#fff'; rr(bx, by, w, h, 10*k); ctx.fill(); ctx.lineWidth = 2*k; ctx.strokeStyle = '#14213d'; ctx.stroke();
-  ctx.fillStyle = fill || '#fff'; ctx.beginPath(); ctx.moveTo(x - 8*k, by + h - 1); ctx.lineTo(x, by + h + 9*k); ctx.lineTo(x + 8*k, by + h - 1); ctx.fill();
-  text(txt, x, by + h/2 + 1, 18*k, 900, col || '#14213d', 'center');
+  const k = 1/Z; font(12.5*k, 900); const w = ctx.measureText(txt).width + 16*k, h = 22*k, bx = x - w/2, by = y - h - 8*k;
+  ctx.fillStyle = '#14213d'; rr(bx + 2*k, by + 2*k, w, h, 8*k); ctx.fill(); ctx.fillStyle = fill || '#fff'; rr(bx, by, w, h, 8*k); ctx.fill(); ctx.lineWidth = 1.5*k; ctx.strokeStyle = '#14213d'; ctx.stroke();
+  ctx.fillStyle = fill || '#fff'; ctx.beginPath(); ctx.moveTo(x - 6*k, by + h - 1); ctx.lineTo(x, by + h + 7*k); ctx.lineTo(x + 6*k, by + h - 1); ctx.fill();
+  text(txt, x, by + h/2 + 1, 12.5*k, 900, col || '#14213d', 'center');
 }
 function drawQuestion(j, x, y){   // la question du chapitre, criée à l'approche de Marine
   if (!j.q || j.passed) return; const d = j.x - PX(); if (d > worldSpeed()*1.1 || d < -30) return;
   speech(j.q, x, y);
 }
-function drawPerson(x, y, col){   // un passant, de dos trois quarts : tête, buste coloré, bras levés
-  ctx.save(); ctx.translate(x, y);
+function drawPerson(x, y, col){   // un passant (bleu) : tête, buste coloré, bras levés ; à l'échelle de Marine (×1.5)
+  ctx.save(); ctx.translate(x, y); ctx.scale(1.5, 1.5);
   ctx.fillStyle = '#e8b796'; ctx.beginPath(); ctx.arc(0, -18, 7, 0, 7); ctx.fill();
   ctx.fillStyle = col; rr(-7, -11, 14, 18, 4); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = INK; rr(-7, -11, 14, 18, 4); ctx.stroke();
   ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-7, -8); ctx.lineTo(-15, -22); ctx.moveTo(7, -8); ctx.lineTo(15, -22); ctx.stroke();
@@ -1191,7 +1233,7 @@ function drawJourno(j){
     const fy = j.fall >= 0 ? clamp(j.fall/0.45, 0, 1) : 0, y = j.y + bob;
     if (j.surf){ ctx.save(); ctx.translate(x, y + 2); ctx.rotate(-0.05 + fy*0.35); ctx.fillStyle = j.col; rr(-44, -6, 88, 12, 6); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; ctx.stroke(); ctx.fillStyle = '#fff'; rr(-30, -3, 24, 4, 2); ctx.fill(); ctx.restore(); }
     else { ctx.save(); ctx.translate(x, y); ctx.fillStyle = j.col; ctx.beginPath(); ctx.moveTo(-50, -14); ctx.lineTo(50, -14); ctx.lineTo(38, 10); ctx.lineTo(-38, 10); ctx.closePath(); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; ctx.stroke(); ctx.fillStyle = '#fff'; ctx.fillRect(-42, -12, 84, 5); ctx.restore(); }
-    if (fy < 1 || j.fall < 1.2){ ctx.save(); ctx.translate(x - fy*44, y - 30 + fy*48); ctx.rotate(fy*1.7); ctx.globalAlpha = fy < 1 ? 1 : clamp(1 - (j.fall - 1)/0.4, 0, 1); drawPerson(0, 0, j.col); ctx.restore(); }
+    if (fy < 1 || j.fall < 1.2){ ctx.save(); ctx.translate(x - fy*44, y - 36 + fy*54); ctx.rotate(fy*1.7); ctx.globalAlpha = fy < 1 ? 1 : clamp(1 - (j.fall - 1)/0.4, 0, 1); drawPerson(0, 0, j.col); ctx.restore(); }
     return;
   }
   if (j.alert > 0){ // avertissement sur le bord droit, à la hauteur de l'arrivant
@@ -1200,14 +1242,16 @@ function drawJourno(j){
     outText('!', VWW - 34, ay + 1, 36, 900, '#fff'); return;
   }
   if (j.kind === 'boat'){
-    spr('bs' + j.fr, x, j.y + bob, 1.0); drawQuestion(j, x, j.y - 100 + bob);
+    spr('bs' + j.fr, x, j.y + bob, 1.0);
+    ctx.fillStyle = INK; ctx.fillRect(x + 30, j.y - 96 + bob, 3, 50); ctx.fillStyle = '#e3342f'; ctx.beginPath(); ctx.moveTo(x + 33, j.y - 96 + bob); ctx.lineTo(x + 62, j.y - 88 + bob); ctx.lineTo(x + 33, j.y - 80 + bob); ctx.closePath(); ctx.fill();   // fanion rouge : journalistes
+    drawQuestion(j, x, j.y - 104 + bob);
     return;
   }
   if (j.kind === 'tramp'){
     spr('bs' + j.fr, x, j.y + bob, 1.0);
-    ctx.fillStyle = '#14213d'; ctx.fillRect(x - 26, j.y - 66 + bob, 52, 5); ctx.fillRect(x - 24, j.y - 61 + bob, 4, 10); ctx.fillRect(x + 20, j.y - 61 + bob, 4, 10);   // le trampoline
-    ctx.fillStyle = '#d63b3b'; ctx.fillRect(x - 22, j.y - 68 + bob, 44, 3);
-    drawReporter(x, j.y - 70 - j.jy + bob, j.crouch); drawQuestion(j, x, j.y - 100 - j.jy + bob);
+    ctx.fillStyle = '#14213d'; ctx.fillRect(x - 34, j.y - 66 + bob, 68, 6); ctx.fillRect(x - 32, j.y - 60 + bob, 5, 12); ctx.fillRect(x + 27, j.y - 60 + bob, 5, 12);   // le trampoline
+    ctx.fillStyle = '#e3342f'; ctx.fillRect(x - 30, j.y - 69 + bob, 60, 4);
+    drawReporter(x, j.y - 76 - j.jy + bob, j.crouch); drawQuestion(j, x, j.y - 112 - j.jy + bob);
     return;
   }
   if (j.kind === 'jet'){
@@ -1217,33 +1261,35 @@ function drawJourno(j){
     ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.moveTo(-50, -4); ctx.lineTo(44, -14); ctx.lineTo(50, 0); ctx.lineTo(40, 10); ctx.lineTo(-46, 10); ctx.closePath(); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#14213d'; ctx.stroke();
     ctx.fillStyle = '#fff'; ctx.fillRect(-30, -2, 40, 6); ctx.fillStyle = '#14213d'; ctx.fillRect(10, -26, 4, 16); ctx.fillRect(2, -28, 20, 4);   // guidon
     ctx.restore();
-    drawReporter(x - 6, y - 22, false); drawQuestion(j, x, y - 60);
+    drawReporter(x - 6, y - 26, false); drawQuestion(j, x, y - 70);
     return;
   }
-  if (j.kind === 'glider'){
-    const y = j.y + bob, w = 48;
-    ctx.save(); ctx.translate(x, y); ctx.rotate(-0.08);
+  if (j.kind === 'glider'){   // perspective : il arrive de l'horizon tout petit, est à sa taille à la colonne de Marine, puis grossit au premier plan et sort ahuri
+    const mx = PX(), k = j.x > mx ? clamp((j.x - mx)/Math.max(1, VWW - mx), 0, 1) : 0, k2 = j.x < mx ? clamp((mx - j.x)/(mx + 220), 0, 1) : 0;
+    const sc = (j.x > mx ? lerp(1, 0.28, k) : 1 + 1.3*k2)*1.3, y = (j.x > mx ? lerp(j.y, HZ + 14, k*k) : j.y + 80*k2) + bob, w = 48;
+    ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); ctx.rotate(-0.08 + k2*0.25);
     ctx.fillStyle = j.col; ctx.beginPath(); ctx.moveTo(-w, 6); ctx.lineTo(0, -16); ctx.lineTo(w, 6); ctx.closePath(); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(-w*0.6, 2); ctx.lineTo(0, -10); ctx.lineTo(w*0.6, 2); ctx.closePath(); ctx.fill();
     ctx.lineWidth = 2; ctx.strokeStyle = '#14213d'; ctx.beginPath(); ctx.moveTo(-w, 6); ctx.lineTo(0, -16); ctx.lineTo(w, 6); ctx.closePath(); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(0, -4); ctx.lineTo(0, 18); ctx.stroke();
     ctx.fillStyle = '#e8b796'; ctx.beginPath(); ctx.arc(0, 12, 5, 0, 7); ctx.fill();   // le journaliste
-    ctx.fillStyle = '#2b3550'; ctx.fillRect(-4, 17, 8, 12); ctx.fillStyle = '#111'; ctx.fillRect(6, 10, 10, 6); ctx.fillRect(14, 9, 4, 8);   // sa caméra
-    ctx.restore(); drawQuestion(j, x, y - 30); return;
+    ctx.fillStyle = '#e3342f'; ctx.fillRect(-4, 17, 8, 12); ctx.fillStyle = '#111'; ctx.fillRect(6, 10, 10, 6); ctx.fillRect(14, 9, 4, 8);   // sa caméra
+    if (k2 > 0){ ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-2, 11, 2, 0, 7); ctx.arc(2.5, 11, 2, 0, 7); ctx.fill(); ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(-2, 11.3, 0.9, 0, 7); ctx.arc(2.5, 11.3, 0.9, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(0.3, 15, 1.6, 2.2, 0, 0, 7); ctx.fill(); }   // ahuri : yeux ronds, bouche ouverte
+    ctx.restore(); if (k2 === 0) drawQuestion(j, x, y - 36*sc); return;
   }
-  // hélicoptère
+  // hélicoptère (rouge), ×1.7
   const y = j.y + bob*0.5;
-  ctx.save(); ctx.translate(x, y);
+  ctx.save(); ctx.translate(x, y); ctx.scale(1.7, 1.7);
   ctx.strokeStyle = '#14213d'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-44, -2); ctx.lineTo(-18, -2); ctx.stroke();   // queue
   ctx.fillStyle = '#14213d'; ctx.fillRect(-50, -9, 7, 12);
-  ctx.fillStyle = '#e3e7ee'; ctx.beginPath(); ctx.ellipse(0, 0, 28, 14, 0, 0, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#14213d'; ctx.stroke();
+  ctx.fillStyle = '#e3342f'; ctx.beginPath(); ctx.ellipse(0, 0, 28, 14, 0, 0, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#14213d'; ctx.stroke();
   ctx.fillStyle = '#7fb6ea'; ctx.beginPath(); ctx.ellipse(10, -2, 13, 8, 0, 0, 7); ctx.fill();
-  ctx.fillStyle = '#d63b3b'; ctx.fillRect(-14, -8, 14, 16);
+  ctx.fillStyle = '#fff'; ctx.fillRect(-14, -8, 14, 16);
   ctx.strokeStyle = '#14213d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-18, 14); ctx.lineTo(-18, 20); ctx.moveTo(14, 14); ctx.lineTo(14, 20); ctx.moveTo(-26, 20); ctx.lineTo(24, 20); ctx.stroke();   // patins
   ctx.beginPath(); ctx.moveTo(0, -14); ctx.lineTo(0, -20); ctx.stroke();
   const rk = Math.cos(realT*40); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-44*rk, -20); ctx.lineTo(44*rk, -20); ctx.stroke();   // rotor
   if (j.track > 0){ ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.arc(28, -2, 3 + 1.5*Math.sin(realT*20), 0, 7); ctx.fill(); }
-  ctx.restore(); drawQuestion(j, x, y - 30);
+  ctx.restore(); drawQuestion(j, x, y - 50);
 }
 let rainPat = null;
 function rainPattern(){
@@ -1256,6 +1302,7 @@ function rainPattern(){
 function drawStormSky(){
   const a = 0.5*dark + (flash > 0 ? -0.35*flash : 0);
   ctx.fillStyle = a >= 0 ? 'rgba(15,20,40,' + a + ')' : 'rgba(255,255,255,' + (-a) + ')'; ctx.fillRect(-600, -600, VWW + 1200, WH + 1200);
+  if (flash > 0.75){ const lx = PX() + 300 + Math.sin(realT*31)*500; ctx.strokeStyle = 'rgba(255,250,210,' + flash + ')'; ctx.lineWidth = 3/Z; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(lx, -200); ctx.lineTo(lx - 40, 120); ctx.lineTo(lx + 20, 140); ctx.lineTo(lx - 50, HZ - 20); ctx.stroke(); }   // l'éclair
   // pluie oblique : le motif défile (translation du repère, remplissage unique)
   const p = rainPattern(); if (!p) return; const off = realT*900;
   ctx.save(); ctx.globalAlpha = 0.6*dark; ctx.translate(-((off*0.5) % 256), (off % 256)); ctx.fillStyle = p; ctx.fillRect(-256, -256 - (off % 256), VWW + 512, WH + 512); ctx.restore();
@@ -1296,39 +1343,35 @@ function drawBubble(b){
 }
 // la carte : un panneau simple sur le jeu assombri ; tap n'importe où (après 0,4 s) ou bouton pour continuer
 // la carte : un panneau qui claque sur le jeu assombri ; tap n'importe où (après 0,4 s) ou bouton pour continuer
+// la carte : panneau qui claque sur le jeu assombri, une image à gauche, une ligne à droite ; tap n'importe où (après 0,4 s) ou bouton
 function drawCard(){
   const c = card, k = clamp(cardT/0.45, 0, 1), L = curLevel(), n = L.n;
   ctx.fillStyle = 'rgba(15,20,40,' + (0.5*k) + ')'; ctx.fillRect(0, 0, VW, H);
-  const hint = (y) => { if (cardT > 0.8 && Math.sin(realT*4) > -0.3) text('touche pour continuer', VW/2, y, 11, 800, '#5b6475', 'center'); };
+  const w = 700, h = 236, x = VW/2 - w/2, y = H/2 - h/2 + 10, ix = x + 22, iy = y + 26, iw = 220, ih = h - 52, tx = ix + iw + 24, tw = w - iw - 70;
+  const hint = () => { if (cardT > 0.8 && Math.sin(realT*4) > -0.3) text('touche pour continuer', tx + tw/2, y + h - 22, 10.5, 800, '#5b6475', 'center'); };
+  ctx.save(); slam(k, VW/2, H/2, c.kind === 'vane' ? 0.02 : -0.02); uiPanel(x, y, w, h);
   if (c.kind === 'msg'){
-    const lines = wrapText(c.text, 560, 23, 900, UIT), h = 100 + lines.length*31 + (c.skip ? 38 : 0), w = 640, x = VW/2 - w/2, y = H/2 - h/2;
-    ctx.save(); slam(k, VW/2, H/2, -0.02); uiPanel(x, y, w, h); chip('TUTO', VW/2, y, GOLD, INK, 11);
-    let ty = y + 50; for (const ln of lines){ text(ln, VW/2, ty, 23, 900, INK, 'center', UIT); ty += 31; }
-    hint(ty + 8); if (c.skip) btn(VW/2 - 86, y + h - 52, 172, 38, 'Passer le tuto', '#fff', INK, 'skipTuto', 13); ctx.restore();
+    chip('TUTO', x + 70, y, GOLD, INK, 11); imgBox(ix, iy, iw, ih, c.img || 'le tuto');
+    let ty = y + 86; for (const ln of wrapText(c.text, tw, 22, 900, UIT)){ text(ln, tx + tw/2, ty, 22, 900, INK, 'center', UIT); ty += 29; }
+    hint(); if (c.skip) btn(tx + tw/2 - 80, y + h - 66, 160, 36, 'Passer le tuto', '#fff', INK, 'skipTuto', 13);
   } else if (c.kind === 'scandal'){
-    const S = L.scandal, w = 660, h = 246, x = VW/2 - w/2, y = H/2 - h/2;
-    ctx.save(); slam(k, VW/2, H/2, -0.025); uiPanel(x, y, w, h); chip('SCANDALE · ' + S.date.toUpperCase(), VW/2, y, RED, '#fff', 12);
-    text(S.title, VW/2, y + 64, 30, 900, INK, 'center', UIT);
-    let ty = y + 98; for (const ln of wrapText(S.line, w - 70, 15, 700).slice(0, 2)){ text(ln, VW/2, ty, 15, 700, '#1b1f2a', 'center'); ty += 19; }
-    text('Évite les casseroles : chacune coûte ' + fmtPt(P.panPoll) + ' pt de sondage.', VW/2, ty + 10, 12, 800, '#5b6475', 'center');
-    btn(VW/2 - 120, y + h - 62, 240, 44, 'Affronter la tempête', GREEN, '#fff', 'card', 16);
-    iBtn(x + w - 30, y + h - 30, 'sinfo'); ctx.restore();
+    const S = L.scandal; chip('SCANDALE · ' + S.date.toUpperCase(), x + 180, y, RED, '#fff', 11); imgBox(ix, iy, iw, ih, IMG.scandal[n] || 'le scandale');
+    text(S.title, tx + tw/2, y + 72, 27, 900, INK, 'center', UIT);
+    let ty = y + 104; for (const ln of wrapText(S.line, tw, 14, 700).slice(0, 2)){ text(ln, tx + tw/2, ty, 14, 700, '#1b1f2a', 'center'); ty += 18; }
+    btn(tx + tw/2 - 110, y + h - 66, 220, 42, 'Affronter la tempête', GREEN, '#fff', 'card', 15); iBtn(x + w - 28, y + h - 28, 'sinfo');
   } else if (c.kind === 'vane'){
-    const w = 660, h = isTuto() ? 246 : 216, x = VW/2 - w/2, y = H/2 - h/2;
-    ctx.save(); slam(k, VW/2, H/2, 0.02); uiPanel(x, y, w, h); chip('LE VENT TOURNE', VW/2, y, SKYB, '#fff', 12);
-    drawVaneIcon(x + 78, y + 92, -0.4 + Math.sin(realT*2)*0.15, 1.6);
-    let ty = y + 60; const msg = isTuto() ? 'Passe dans les cercles que lâche la girouette d’or : si tu l’attrapes, Marine change d’avis.' : 'Marine veut changer d’avis (' + L.theme + ') : attrape la girouette d’or.';
-    for (const ln of wrapText(msg, w - 180, 15, 700).slice(0, 3)){ text(ln, x + 150, ty, 15, 700, '#1b1f2a'); ty += 19; }
-    text('« ' + FLAGS[n][1] + ' »', x + 150, ty + 10, 18, 900, GREEN);
-    btn(VW/2 - 90, y + h - 58, 180, 42, 'C’est parti', GREEN, '#fff', 'card', 16); ctx.restore();
+    chip('LE VENT TOURNE', x + 120, y, SKYB, '#fff', 11); imgBox(ix, iy, iw, ih, IMG.theme[n]);
+    drawVaneIcon(tx + 30, y + 72, -0.4 + Math.sin(realT*2)*0.15, 1.1);
+    text(isTuto() ? 'Passe les cercles, attrape la girouette.' : 'Attrape la girouette : Marine change d’avis.', tx + 62, y + 76, 14, 800, INK);
+    text('« ' + FLAGS[n][1] + ' »', tx + tw/2, y + 122, 20, 900, GREEN, 'center', UIT);
+    btn(tx + tw/2 - 90, y + h - 66, 180, 42, 'C’est parti', GREEN, '#fff', 'card', 15);
   } else if (c.kind === 'position'){
-    const w = 700, h = 240, x = VW/2 - w/2, y = H/2 - h/2;
-    ctx.save(); slam(k, VW/2, H/2, -0.02); uiPanel(x, y, w, h); chip('VOLTE-FACE · +' + fmtPt(P.chaseGain) + ' PT DE SONDAGE', VW/2, y, GOLD, INK, 12);
-    font(24, 900, UIT); const ow = ctx.measureText(L.old).width; text(L.old, VW/2, y + 68, 24, 900, '#9aa4b2', 'center', UIT); strike(VW/2 - ow/2, y + 69, ow);
-    let ty = y + 112; for (const ln of wrapText(L.neu, w - 80, 21, 900, UIT).slice(0, 2)){ text(ln, VW/2, ty, 21, 900, INK, 'center', UIT); ty += 27; }
-    btn(VW/2 - 90, y + h - 58, 180, 42, 'Continuer', GREEN, '#fff', 'card', 16);
-    iBtn(x + w - 30, y + h - 30, 'info:' + n); ctx.restore();
+    chip('VOLTE-FACE · +' + fmtPt(P.chaseGain) + ' PT', x + 130, y, GOLD, INK, 11); imgBox(ix, iy, iw, ih, IMG.volte[n]);
+    font(17, 900, UIT); const ow = Math.min(tw, ctx.measureText(L.old).width); text(L.old, tx + tw/2, y + 66, 17, 900, '#9aa4b2', 'center', UIT); strike(tx + tw/2 - ow/2, y + 67, ow);
+    let ty = y + 102; for (const ln of wrapText(L.neu, tw, 17, 900, UIT).slice(0, 2)){ text(ln, tx + tw/2, ty, 17, 900, INK, 'center', UIT); ty += 22; }
+    btn(tx + tw/2 - 90, y + h - 66, 180, 42, 'Continuer', GREEN, '#fff', 'card', 15); iBtn(x + w - 28, y + h - 28, 'info:' + n);
   }
+  ctx.restore();
 }
 function drawBanner(){
   const L = curLevel(), S = L.scandal, k = clamp(bannerT > 2.7 ? (3.2 - bannerT)/0.5 : bannerT < 0.5 ? bannerT/0.5 : 1, 0, 1);
@@ -1345,14 +1388,6 @@ function drawMarine(){
   const x = PX(), y = py, blink = inv > 0 && Math.floor(realT*18) % 2 === 0;
   // sillage quand Marine est posée sur l'eau
   if (onWater){ spr('wake' + (Math.floor(realT*10) % 4), x - 10, WATER + 2, 0.9); }
-  if (state === 'play' && phase !== 'final'){   // la banderole : ce que Marine affiche derrière elle
-    const L = curLevel(), F = FLAGS[L.n], txt = stats.gold ? F[1] : F[0], k = 1/Z; font(15*k, 900); const bw = ctx.measureText(txt).width + 18*k, bh = 24*k;
-    const bx = x - 70 - bw, by = y - 30 + Math.sin(realT*3)*3, wave = Math.sin(realT*7)*3;
-    ctx.strokeStyle = 'rgba(236,241,248,.9)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x - 30, y + 8); ctx.lineTo(bx + bw, by + bh/2); ctx.stroke();
-    ctx.fillStyle = stats.gold ? '#16a34a' : '#14213d'; ctx.beginPath(); ctx.moveTo(bx, by + wave); ctx.lineTo(bx + bw, by); ctx.lineTo(bx + bw, by + bh); ctx.lineTo(bx, by + bh - wave); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#fff'; ctx.fillRect(bx + bw - 4*k, by, 4*k, bh);
-    text(txt, bx + bw/2 - 2*k, by + bh/2 + 1, 15*k, 900, '#fff', 'center');
-  }
   // feedback de course : dans la traîne, Marine rayonne doré
   if (phase === 'chase' && chase && chase.flash > 0 && !chase.caught){ const k = 0.6 + 0.4*chase.flash/0.6, g = ctx.createRadialGradient(x, y + 10, 20, x, y + 10, 110*k); g.addColorStop(0, 'rgba(255,220,100,.45)'); g.addColorStop(1, 'rgba(255,200,80,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y + 10, 110*k, 0, 7); ctx.fill();
     ctx.strokeStyle = 'rgba(255,230,120,' + (0.5 + 0.4*k) + ')'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y + 10, 80 + 10*k, 0, 7); ctx.stroke(); }
@@ -1385,10 +1420,9 @@ function drawMarine(){
   } else spr('airN', x, y + 60, RS, false, tilt);
   if (mBubble){ ctx.save(); ctx.globalAlpha = clamp(mBubble.life/0.3, 0, 1); speech(mBubble.t, x + 24, y - 44, '#fde68a'); ctx.restore(); }   // la réplique de Marine
   // jauge de vent sous la planche : bleue, orange sous 50 %, rouge sous 20 %, clignote vide ; argent (infini) pendant la course
-  { const k = 1/Z, gw = 76*k, gh = 9*k, gx = x - gw/2 - 6, gy = y + 84;
+  { const k = 1/Z, gw = 44*k, gh = 5*k, gx = x - gw/2 - 6, gy = y + 82;   // jauge de vent, petite et discrète, sous la planche
     const wc = phase === 'chase' ? '#c9d2dc' : wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.2 ? '#d63b3b' : wind < 0.5 ? '#f2b630' : '#2563eb';
-    ctx.fillStyle = 'rgba(20,33,61,.55)'; rr(gx - 2*k, gy - 2*k, gw + 4*k, gh + 4*k, 5*k); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.25)'; rr(gx, gy, gw, gh, 4*k); ctx.fill(); ctx.fillStyle = wc; rr(gx, gy, gw*wind, gh, 4*k); ctx.fill();
-    if (phase === 'chase') outText('vent infini', x - 6, gy + gh + 9*k, 9*k, 900, '#e8edf5', 'center', 'rgba(20,33,61,.6)'); }
+    ctx.save(); ctx.globalAlpha = 0.8; ctx.fillStyle = 'rgba(20,33,61,.5)'; rr(gx - 1.5*k, gy - 1.5*k, gw + 3*k, gh + 3*k, 3*k); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.25)'; rr(gx, gy, gw, gh, 2.5*k); ctx.fill(); ctx.fillStyle = wc; rr(gx, gy, gw*wind, gh, 2.5*k); ctx.fill(); ctx.restore(); }
   // filets de vent derrière Marine : vitesse
   ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 2;
   for (let i=0;i<3;i++){ const yy = y - 20 + i*30 + Math.sin(realT*9 + i)*4, l = 36 + 24*Math.abs(dir); ctx.beginPath(); ctx.moveTo(x - 60 - i*14, yy); ctx.lineTo(x - 60 - i*14 - l, yy - dir*l*0.6); ctx.stroke(); }
@@ -1445,10 +1479,12 @@ function drawHud(){
   if (!isTuto() && phase === 'fly' && tFlight < 3 && !card){ const a = clamp((3 - tFlight)/0.4, 0, 1); ctx.save(); ctx.globalAlpha = a; slam(tFlight/0.5, VW/2, 128, -0.03);
     chip('CHAPITRE ' + L.n + ' · ' + L.theme.toUpperCase(), VW/2, 106, GOLD, INK, 12); outText(L.old, VW/2, 146, 30, 900, '#fff', 'center', INK); ctx.restore(); }
   // « SCANDALE ! » déboule de la droite avec le bateau
-  if (phase === 'approach' && emitter){ const kk = clamp(dark*1.5, 0, 1), pulse = 1 + 0.04*Math.sin(realT*10); ctx.save(); ctx.translate(VW/2 + (1 - backOut(kk))*600, 108); ctx.rotate(-0.05); ctx.scale(pulse, pulse);
-    ctx.fillStyle = INK; rr(-214 + 6, -34 + 6, 428, 68, 14); ctx.fill(); ctx.fillStyle = RED; rr(-214, -34, 428, 68, 14); ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = INK; ctx.stroke();
-    text('SCANDALE !', 0, 2, 40, 900, '#fff', 'center', UIT); ctx.restore(); }
-  if (fallen && phase !== 'chase') outText('À l’eau ! Frappe un étranger ou attrape la girouette pour remonter', VW/2, H - 40, 13, 900, '#fff', 'center', 'rgba(227,52,47,.85)');
+  if (phase === 'approach' && emitter){ const kk = clamp(dark*1.5, 0, 1), pulse = 1 + 0.03*Math.sin(realT*10), zap = Math.sin(realT*13) > 0.55; ctx.save(); ctx.translate(VW/2 + (1 - backOut(kk))*600, 112); ctx.rotate(-0.04); ctx.scale(pulse, pulse);
+    ctx.fillStyle = INK; rr(-240 + 6, -32 + 6, 480, 64, 14); ctx.fill(); ctx.fillStyle = RED; rr(-240, -32, 480, 64, 14); ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = INK; ctx.stroke();
+    text('UN SCANDALE APPROCHE', 0, 2, 30, 900, '#fff', 'center', UIT);
+    if (zap){ ctx.strokeStyle = '#fde68a'; ctx.lineWidth = 4; ctx.lineJoin = 'round'; for (const sx of [-262, 262]){ ctx.beginPath(); ctx.moveTo(sx, -46); ctx.lineTo(sx - 10, -14); ctx.lineTo(sx + 6, -14); ctx.lineTo(sx - 6, 24); ctx.stroke(); } }   // éclairs
+    ctx.restore(); }
+  if (fallen && phase !== 'chase') outText('À l’eau ! Un étranger ou la girouette pour remonter', VW/2, H - 40, 13, 900, '#fff', 'center', 'rgba(227,52,47,.85)');
   else if (wind <= 0 && !onWater) outText('Plus de vent ! Pose-toi sur l’eau', VW/2, H - 40, 14, 900, '#fff', 'center', 'rgba(214,59,59,.85)');
 }
 function drawPops(){ for (const p of pops){ const a = clamp(p.life/0.4, 0, 1), age = p.max - p.life, sc = age < 0.18 ? 1 + 0.9*(1 - age/0.18) : 1; ctx.save(); ctx.globalAlpha = a; ctx.translate(p.x, p.y); ctx.scale(sc, sc); ctx.rotate(-0.04); outText(p.t, 0, 0, p.big ? 24 : 17, 900, p.color); ctx.restore(); } }
@@ -1465,7 +1501,7 @@ function drawRecap(){
   if (lost){
     chip('SOUS ' + fmtPt(P.pollOut) + ' % D’INTENTIONS DE VOTE', VW/2, y, RED, '#fff', 12);
     text('Éliminée !', VW/2, y + 70, 40, 900, RED, 'center', UIT);
-    text('La campagne s’arrête là. On recommence le chapitre' + (camp$ ? ', les pièces ramassées restent dans la réserve.' : '.'), VW/2, y + 112, 13, 800, INK, 'center');
+    text('On recommence le chapitre.', VW/2, y + 112, 13, 800, INK, 'center');
     btn(VW/2 - 190, y + h - 70, 180, 46, 'Recommencer', GREEN, '#fff', 'again'); btn(VW/2 + 10, y + h - 70, 180, 46, 'Menu', '#fff', INK, 'title');
     ctx.restore(); return;
   }
@@ -1498,47 +1534,44 @@ function lockIcon(x, y){ ctx.fillStyle = '#5b6475'; rr(x - 9, y - 2, 18, 14, 3);
 function drawCoins(x, y, n){ drawCashbox(x, y - 14); text(String(n), x + 38, y, 18, 900, '#fff'); }
 // ---------- l'écran des bonus, entre deux chapitres ----------
 // ---------- dans le QG de campagne : étape 1 les bonus, étape 2 les voix ----------
+// ---------- dans le QG (Montretout) : étape 1 les bonus, étape 2 les voix. Zone réservée : rien en haut à droite (boutons du coin) ----------
 function drawInter(){
   const e = levelEntry(levelN), B = camp.bonuses || {}, k = clamp(interT/0.5, 0, 1);
-  // le mur du QG, avec la porte ouverte sur la mer à gauche
-  ctx.fillStyle = '#1b2a4a'; ctx.fillRect(0, 0, VW, 70); ctx.fillRect(0, 70, 40, H - 70); ctx.fillRect(190, 70, VW - 190, H - 70);   // (la porte, de 40 à 190, laisse voir la mer)
-  ctx.fillStyle = 'rgba(255,255,255,.04)'; for (let i=0;i<9;i++) ctx.fillRect(220 + i*70, 0, 2, H);   // lambris
-  ctx.lineWidth = 6; ctx.strokeStyle = GOLD; rr(40, 70, 150, H - 60, 16); ctx.stroke(); ctx.lineWidth = 3; ctx.strokeStyle = INK; rr(36, 66, 158, H - 52, 18); ctx.stroke();   // le chambranle
+  ctx.fillStyle = '#1b2a4a'; ctx.fillRect(0, 0, VW, 70); ctx.fillRect(0, 70, 40, H - 70); ctx.fillRect(190, 70, VW - 190, H - 70);   // le mur ; la porte (40 à 190) laisse voir la mer
+  ctx.fillStyle = 'rgba(255,255,255,.04)'; for (let i=0;i<9;i++) ctx.fillRect(220 + i*70, 0, 2, H);
+  ctx.lineWidth = 6; ctx.strokeStyle = GOLD; rr(40, 70, 150, H - 60, 16); ctx.stroke(); ctx.lineWidth = 3; ctx.strokeStyle = INK; rr(36, 66, 158, H - 52, 18); ctx.stroke();
   ctx.fillStyle = RED; ctx.fillRect(40, H - 14, 150, 14);
-  ctx.save(); ctx.translate(115, 46); ctx.rotate(-0.03); panel(-100, -22, 200, 44, GOLD, 10); text('QG DE CAMPAGNE', 0, 2, 15, 900, INK, 'center', UIT); ctx.restore();
-  // en haut à droite : la réserve
-  { const cx = VW - 150, bump = coinBump > 0 ? 1 + 0.28*Math.sin(coinBump/0.25*Math.PI) : 1; panel(cx, 14, 124, 46, PAPER, 12);
-    ctx.save(); ctx.translate(cx + 24, 40); ctx.scale(bump, bump); ctx.translate(-cx - 24, -40); drawCashbox(cx + 8, 22); ctx.restore(); text(String(camp.coins), cx + 52, 39, 21, 900, INK, 'left', UIT); }
-  const x0 = 230, cw = VW - x0 - 170;
-  ctx.save(); slam(k, x0 + cw/2, H/2, -0.015);
+  ctx.save(); ctx.translate(115, 40); ctx.rotate(-0.03); panel(-96, -20, 192, 40, GOLD, 10); text('MONTRETOUT', 0, 2, 16, 900, INK, 'center', UIT); ctx.restore();
+  // la réserve, à gauche de la zone réservée
+  { const cx = 220, bump = coinBump > 0 ? 1 + 0.28*Math.sin(coinBump/0.25*Math.PI) : 1; panel(cx, 14, 124, 44, PAPER, 12);
+    ctx.save(); ctx.translate(cx + 24, 38); ctx.scale(bump, bump); ctx.translate(-cx - 24, -38); drawCashbox(cx + 8, 20); ctx.restore(); text(String(camp.coins), cx + 52, 38, 20, 900, INK, 'left', UIT); }
+  const x0 = 220, cw = VW - x0 - 28;
+  ctx.save(); slam(k, x0 + cw/2, H/2 + 20, -0.015);
   if (interStep === 1){
-    chip('ÉTAPE 1 / 2 · LES BONUS DU CHAPITRE ' + levelN, x0 + cw/2, 36, PINK, '#fff', 12);
-    text('Cumulables. Ils valent pour ce chapitre.', x0 + cw/2, 62, 12, 800, 'rgba(255,255,255,.75)', 'center');
-    const w = (cw - 20)/2, h = 170, cy0 = 84;
+    chip('1 / 2 · LES BONUS', x0 + 92, 86, PINK, '#fff', 11); text('Cumulables, pour ce chapitre.', x0 + 190, 87, 11.5, 800, 'rgba(255,255,255,.7)');
+    const w = (cw - 20)/2, h = 200, cy0 = 106;
     BONUS.forEach((b, i) => {
       const x = x0 + i*(w + 20), on = !!B[b.id], can = camp.coins >= b.price, ok = !on && can, kk = clamp((interT - 0.1 - i*0.12)/0.4, 0, 1);
-      ctx.save(); slam(kk, x + w/2, cy0 + h/2, i ? 0.02 : -0.02); panel(x, cy0, w, h, on ? '#e8f7ec' : PAPER, 14);
-      text(b.name, x + w/2, cy0 + 30, 19, 900, INK, 'center', UIT);
-      if (on) chip('ACTIVÉ ✓', x + w/2, cy0 + 58, GREEN, '#fff', 11); else { drawCashbox(x + w/2 - 36, cy0 + 42); text(String(b.price), x + w/2 + 2, cy0 + 58, 17, 900, can ? INK : RED, 'left', UIT); }
-      let ty = cy0 + 86; for (const ln of wrapText(b.d, w - 36, 11.5, 700).slice(0, 2)){ text(ln, x + w/2, ty, 11.5, 700, '#5b6475', 'center'); ty += 15; }
-      btn(x + 18, cy0 + h - 46, w - 36, 34, on ? 'Activé' : 'Activer', on ? '#9aa4b2' : ok ? GREEN : '#9aa4b2', '#fff', ok ? 'buy:' + b.id : 'locked', 13); ctx.restore();
+      ctx.save(); slam(kk, x + w/2, cy0 + h/2, i ? 0.015 : -0.015); panel(x, cy0, w, h, on ? '#e8f7ec' : PAPER, 14);
+      imgBox(x + 14, cy0 + 12, 110, h - 24, IMG.bonus[b.id], 9);
+      text(b.name, x + 136, cy0 + 34, 17, 900, INK, 'left', UIT); text(b.d, x + 136, cy0 + 58, 11.5, 700, '#5b6475');
+      if (on) chip('ACTIVÉ ✓', x + 190, cy0 + 96, GREEN, '#fff', 11); else { drawCashbox(x + 136, cy0 + 80); text(String(b.price), x + 176, cy0 + 96, 16, 900, can ? INK : RED, 'left', UIT); }
+      btn(x + 136, cy0 + h - 52, w - 150, 36, on ? 'Activé' : 'Activer', on ? '#9aa4b2' : ok ? GREEN : '#9aa4b2', '#fff', ok ? 'buy:' + b.id : 'locked', 13); ctx.restore();
     });
-    btn(x0 + cw/2 - 110, H - 68, 220, 48, 'Suivant  ›', GREEN, '#fff', 'next', 17);
+    btn(x0 + cw/2 - 110, H - 64, 220, 46, 'Suivant  ›', GREEN, '#fff', 'next', 17);
   } else {
     const pr = votePrice(), can = camp.coins >= pr;
-    chip('ÉTAPE 2 / 2 · ACHETER DES VOIX', x0 + cw/2, 36, PINK, '#fff', 12);
-    text('Les sondages, ça s’achète. Chaque achat coûte 1,5 × plus.', x0 + cw/2, 62, 12, 800, 'rgba(255,255,255,.75)', 'center');
-    panel(x0, 84, cw, 150, PAPER, 14);
-    const ps = pollShow === null ? e.poll : pollShow; text(fmtPct(ps), x0 + 30, 132, 44, 900, ps < P.pollFall ? RED : INK, 'left', UIT); text('d’intentions de vote à l’entrée du chapitre', x0 + 30, 160, 11, 800, '#5b6475');
-    { const gx = x0 + 30, gy = 178, gw = cw - 60, gh = 18, mx = 50; ctx.fillStyle = 'rgba(20,33,61,.12)'; rr(gx, gy, gw, gh, 9); ctx.fill(); ctx.fillStyle = 'rgba(227,52,47,.28)'; rr(gx, gy, gw*P.pollFall/mx, gh, 9); ctx.fill();
+    chip('2 / 2 · ACHETER DES VOIX', x0 + 120, 86, PINK, '#fff', 11); text('Chaque achat coûte 1,5 × plus.', x0 + 250, 87, 11.5, 800, 'rgba(255,255,255,.7)');
+    panel(x0, 106, cw, 150, PAPER, 14);
+    const ps = pollShow === null ? e.poll : pollShow; text(fmtPct(ps), x0 + 26, 158, 44, 900, ps < P.pollFall ? RED : INK, 'left', UIT); text('à l’entrée du chapitre', x0 + 26, 186, 11, 800, '#5b6475');
+    { const gx = x0 + 26, gy = 206, gw = cw - 52, gh = 18, mx = 50; ctx.fillStyle = 'rgba(20,33,61,.12)'; rr(gx, gy, gw, gh, 9); ctx.fill(); ctx.fillStyle = 'rgba(227,52,47,.28)'; rr(gx, gy, gw*P.pollFall/mx, gh, 9); ctx.fill();
       ctx.fillStyle = ps < P.pollFall ? RED : ps < 25 ? GOLD : GREEN; rr(gx, gy, gw*clamp(ps/mx, 0, 1), gh, 9); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; rr(gx, gy, gw, gh, 9); ctx.stroke(); }
-    drawCashbox(x0 + cw - 230, 100); text(String(pr), x0 + cw - 192, 116, 18, 900, can ? INK : RED, 'left', UIT);
-    btn(x0 + cw - 230, 128, 200, 40, 'Acheter  +' + fmtPt(P.voteGain) + ' pt', can ? GREEN : '#9aa4b2', '#fff', can ? 'buy:votes' : 'locked', 14);
-    btn(x0 + cw/2 - 110, H - 68, 220, 48, 'Repartir  ›', GREEN, '#fff', 'go', 17);
-    btn(x0, H - 60, 110, 34, '‹ Bonus', '#fff', INK, 'prev', 12);
+    btn(x0 + cw - 250, 124, 224, 48, '+' + fmtPt(P.voteGain) + ' pt · ' + pr + ' pièces', can ? GREEN : '#9aa4b2', '#fff', can ? 'buy:votes' : 'locked', 15);
+    btn(x0 + cw/2 - 110, H - 64, 220, 46, 'Repartir  ›', GREEN, '#fff', 'go', 17);
+    btn(x0, H - 58, 104, 34, '‹ Bonus', '#fff', INK, 'prev', 12);
   }
   ctx.restore();
-  if (shopMsg) outText(shopMsg, x0 + cw/2, H - 84, 12, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
+  if (shopMsg) outText(shopMsg, x0 + cw/2, H - 80, 12, 900, '#fde68a', 'center', 'rgba(20,33,61,.7)');
 }
 // ---------- la fiche « i » : volte-face et scandale, avec leurs sources ----------
 function drawInfo(){
@@ -1631,9 +1664,9 @@ function draw(){
   drawGate();
   for (const j of journos) if (j.kind === 'boat' || j.kind === 'etr') drawJourno(j);
   for (const c of coinsList) drawCoin(c);
-  for (const j of journos) if (j.kind !== 'boat' && j.kind !== 'etr') drawJourno(j);
+  for (const j of journos) if (j.kind !== 'boat' && j.kind !== 'etr' && !(j.kind === 'glider' && j.x < PX())) drawJourno(j);
   for (const b of bubbles) drawBubble(b);
-  drawMarine(); for (const c of pans) if (!(c.delay > 0)) drawPan(c); drawFx(); drawPops();
+  drawMarine(); for (const j of journos) if (j.kind === 'glider' && j.x < PX()) drawJourno(j); for (const c of pans) if (!(c.delay > 0)) drawPan(c); drawFx(); drawPops();
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);   // l'interface, à l'échelle de l'écran
   if (ctrl === 'wind') drawVane();
   if (state !== 'final' && state !== 'finalRecap'){ drawHud(); if (phase === 'chase' && chase && !card) drawChaseHud(); if (bannerT > 0) drawBanner(); if (card && state === 'play') drawCard(); }
@@ -1671,6 +1704,7 @@ function syncTitle(){
   document.getElementById('bestLine').textContent = done ? 'Campagne terminée · ' + golds + ' volte-face' + (golds > 1 ? 's' : '') : started ? 'Chapitre ' + camp.cur + ' · ' + golds + ' volte-face' + (golds > 1 ? 's' : '') : '';
 }
 document.getElementById('flyBtn').addEventListener('click', startTestFly);
+document.querySelectorAll('#chapRow button').forEach(b => b.addEventListener('click', () => startLevel(+b.dataset.ch)));   // un chapitre directement, avec l'état de la campagne en cours
 document.getElementById('chaseBtn').addEventListener('click', startTestChase);
 document.getElementById('stormBtn').addEventListener('click', startTest);
 document.querySelectorAll('#ctrlSel button').forEach(b => b.addEventListener('click', () => { ctrl = b.dataset.ctrl; syncCtrlButtons(); }));
@@ -1718,12 +1752,12 @@ loadLocal(); loadCampLocal(); applyCam(); debugBuild(); syncTitle(); loadShared(
 // ---------- points d'accès pour les tests ----------
 window.__vdd = {
   get state(){ return state; }, get ctrl(){ return ctrl; }, get y(){ return py; }, get vy(){ return vy; }, get aIn(){ return aIn; }, get aVane(){ return aVane; },
-  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, addJourno(kind, x, y, mute){ if (kind === 'glider') addGlider(x, y); else if (kind === 'boat') addBoat(x); else if (kind === 'etr') addEtr(x); else addHeli(x, y, false); if (mute) journos[journos.length - 1].q = null; }, clearField(){ journos = []; coinsList = []; nextSpawn = 999; nextEtr = 999; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, y: chase.y, vy: chase.vy, passed: chase.passed, dropped: chase.dropped, rings: chase.rings.map(r => ({x: r.x, y: r.y, n: r.n, state: r.state})), ringR: ringR(), caught: chase.caught, leaving: chase.leaving, dist: chaseDist(), camFx, x0: chase.x0, xCatch: chase.xCatch, oxCatch: chase.oxCatch}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, simPath, get endReason(){ return endReason; },
+  get poll(){ return poll; }, get coins(){ return coins; }, get t(){ return tFlight; }, get stats(){ return stats; }, get inv(){ return inv; }, get holdT(){ return holdT; }, get relT(){ return relT; }, get onWater(){ return onWater; }, addJourno(kind, x, y, mute){ if (kind === 'glider') addGlider(x, y); else if (kind === 'boat') addBoat(x); else if (kind === 'etr') addEtr(x); else if (kind === 'jet') addJet(x); else if (kind === 'tramp') addTramp(x); else addHeli(x, y, false); if (mute) journos[journos.length - 1].q = null; }, clearField(){ journos = []; coinsList = []; nextSpawn = 999; nextEtr = 999; }, get wind(){ return wind; }, setWind(v){ wind = v; }, get phase(){ return phase; }, get cass(){ return cass; }, startTest, startTestChase, get chase(){ return chase && {t: chase.t, y: chase.y, vy: chase.vy, passed: chase.passed, dropped: chase.dropped, rings: chase.rings.map(r => ({x: r.x, y: r.y, n: r.n, state: r.state})), ringR: ringR(), caught: chase.caught, leaving: chase.leaving, dist: chaseDist(), camFx, x0: chase.x0, xCatch: chase.xCatch, oxCatch: chase.oxCatch}; }, get pansList(){ return pans.map(c => ({kind: c.kind, x: c.x, y: c.y, vx: c.vx, vy: c.vy, g: c.g, delay: c.delay})); }, get chain(){ return chain.map(l => ({x: l.x, y: l.y})); }, beginStormPlay, get emitter(){ return emitter && {kind: emitter.kind, x: emitter.x, y: emitter.y, hits: emitter.hits, fled: emitter.fled}; }, get pans(){ return pans.length; }, get bubbles(){ return bubbles.map(b => ({x: b.x, y: b.y, thrown: b.thrown})); }, startStorm, simPath, get endReason(){ return endReason; },
   get px(){ return PX(); }, get input(){ return {pointerDown, pointerY, keyUp, holding}; }, get coinsList(){ return coinsList.map(c => ({x: c.x, y: c.y})); }, get journos(){ return journos.map(j => ({kind: j.kind, x: j.x, y: j.y, alert: j.alert, fall: j.fall})); },
   get world(){ return {Z, WH, WATER, HZ, VWW, VWW0, camFx, camGoal}; },
   setCtrl(c){ ctrl = c; syncCtrlButtons(); }, hold(v){ keyUp = !!v; }, start, setT(v){ tFlight = v; }, setY(v){ py = v; }, P, PSPEC, applyCam, applySettings,
   // campagne
-  get camp(){ return camp; }, get mode(){ return mode; }, get levelN(){ return levelN; }, get bonuses(){ return Object.assign({}, camp.bonuses || {}); }, get fallen(){ return fallen; }, get gate(){ return gate && {x: gate.x, in: gate.in}; }, get trans(){ return !!trans; }, get interStep(){ return interStep; }, setInterStep(n){ interStep = n; interT = 0; }, setKevlar(v){ kevlarLeft = v; }, get card(){ return card && {kind: card.kind, t: cardT, text: card.text || null}; }, closeCard, get mBubble(){ return mBubble && mBubble.t; }, get cruiseT(){ return cruiseT; }, get journoQs(){ return journos.map(j => j.q); }, get qLog(){ return qLog.slice(); }, get kevlarLeft(){ return kevlarLeft; }, get infoOpen(){ return infoOpen; }, get booth(){ return booth && {x: booth.x, reached: booth.reached}; }, get finalT(){ return finalT; },
+  get camp(){ return camp; }, get mode(){ return mode; }, get levelN(){ return levelN; }, get bonuses(){ return Object.assign({}, camp.bonuses || {}); }, get fallen(){ return fallen; }, get gate(){ return gate && {x: gate.x, in: gate.in}; }, get trans(){ return !!trans; }, get interStep(){ return interStep; }, setInterStep(n){ interStep = n; interT = 0; }, setKevlar(v){ kevlarLeft = v; }, get card(){ return card && {kind: card.kind, t: cardT, text: card.text || null}; }, closeCard, get mBubble(){ return mBubble && mBubble.t; }, get cruiseT(){ return cruiseT; }, get breathT(){ return breathT; }, get journoQs(){ return journos.map(j => j.q); }, get qLog(){ return qLog.slice(); }, get kevlarLeft(){ return kevlarLeft; }, get infoOpen(){ return infoOpen; }, get booth(){ return booth && {x: booth.x, reached: booth.reached}; }, get finalT(){ return finalT; },
   get btns(){ return btns.map(b => ({x: b.x, y: b.y, w: b.w, h: b.h, id: b.id})); }, goInter, setCur(n){ camp.cur = n; saveCamp(); }, buyVotes, get votePrice(){ return votePrice(); }, tap(id){ onBtn(id); }, startLevel, startTestFly, goMap, goShop, buyBonus, unlockAll, resetCamp, openInfo, saveCamp,
   bench(n){ const t0 = performance.now(); for (let i=0;i<n;i++) draw(); const td = performance.now() - t0; const t1 = performance.now(); for (let i=0;i<n;i++) update(1/60); return {draw: td/n, update: (performance.now() - t1)/n}; },
   benchFn(name, n){ const f = {drawSky, drawFar, drawNear, drawStormSky, drawMarine, drawHud, drawFx, drawPops}[name]; const k = dpr*scale*Z; ctx.setTransform(k, 0, 0, k, 0, 0); const t0 = performance.now(); for (let i=0;i<n;i++) f(); return (performance.now() - t0)/n; },
