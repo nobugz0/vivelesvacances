@@ -35,6 +35,8 @@ foreach ($j in $todo) {
     $out = Join-Path $PSScriptRoot ("output\{0}_{1}_v{2}.mp3" -f $j.id, $tag, $v)
     if (Test-Path -LiteralPath $out) { continue }
     Write-Host ("{0} ({1}, variante {2})..." -f $j.id, $tag, $v)
+    $err = $null
+    for ($try = 1; $try -le 4; $try++) {   # surcharge passagere (429, 5xx) : on attend et on recommence
     if ($j.type -eq 'sfx') {
       $body = [ordered]@{ text = $j.text; duration_seconds = $j.duration_seconds; prompt_influence = $j.prompt_influence; loop = [bool]$j.loop; model_id = $m }
       $err = Post 'https://api.elevenlabs.io/v1/sound-generation?output_format=mp3_44100_128' $body $out
@@ -42,6 +44,8 @@ foreach ($j in $todo) {
       $body = [ordered]@{ composition_plan = $j.composition_plan; model_id = $m }
       $err = Post 'https://api.elevenlabs.io/v1/music?output_format=mp3_44100_192' $body $out
     }
+    if ($err -and ($err -match '\(429\)|\(5\d\d\)') -and $try -lt 4) { Write-Host ("  surcharge, nouvel essai dans {0} s" -f (20*$try)); Start-Sleep -Seconds (20*$try); continue }
+    break }
     if ($err) { $ko++; Write-Host ("ECHEC {0} : {1}" -f $j.id, $err) -ForegroundColor Red; Add-Content -LiteralPath 'output\erreurs.txt' -Value ("{0} {1} {2} : {3}" -f (Get-Date -Format s), $j.id, $tag, $err) }
     else { $ok++; Write-Host ("  enregistre : {0}" -f (Split-Path $out -Leaf)) -ForegroundColor Green }
   } }
