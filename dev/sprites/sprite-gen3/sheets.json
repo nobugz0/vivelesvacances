@@ -313,7 +313,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art card illustration, square 1024x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. One satirical editorial cartoon filling a 940x780 rectangle centred in the image, with a 4 px ink frame; outside the rectangle flat chroma #FF00FF. The young man of the attached approved Bardella sheet, dressed as a shepherd with a crook, raises four fingers and smiles reassuringly at the viewer. Behind him a huge flock of black sheep overflows the frame. Among the sheep, a group of anonymous men in suits wearing French tricolour sashes and spiked Prussian helmets give a stiff straight-arm salute. No text."
  },
  {
@@ -328,5 +328,18 @@
   "n": 1,
   "batch": 1,
   "prompt": "Pixel art card illustrations, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. Satirical editorial cartoon illustrations for game cards, in the same pixel art style. Each illustration is a complete little scene with its own simple background (sky, sea, room...), filling a 470x390 rectangle centred in its cell, with a 4 px ink frame; the space outside the rectangles is flat chroma #FF00FF. Readable at small size: one clear idea per card, big simple shapes, strong silhouettes, few details. The woman is the one of the attached approved character sheet (same face, blonde hair, navy suit), the young man the one of the attached approved Bardella sheet. No speech bubbles. Layout: 2 columns x 2 rows of equal 768x512 cells, each illustration filling a 600x440 rectangle centred in its cell. 1. A big finger taps the screen; the woman on her kite board rises into the sky with a motion arrow.\n2. The party's black cash box overflows with gold coins, coins bouncing out.\n3. A red journalists' boat with a red pennant, journalists shouting questions into microphones.\n4. A holidaymaker on a surfboard in the distance; in the foreground the woman points at him, mouth open in outrage.\n"
+ },
+ {
+  "id": "cards_brebis2",
+  "name": "Carte : brebis galeuses (bras droits levés)",
+  "size": "1024x1024",
+  "uses": [
+   "bard_ref",
+   "charref"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art card illustration, square 1024x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. One satirical editorial cartoon filling a 940x780 rectangle centred in the image, with a 4 px ink frame; outside the rectangle flat chroma #FF00FF. The young man of the attached approved Bardella sheet, dressed as a shepherd with a crook, raises four fingers and smiles reassuringly at the viewer. Behind him a huge flock of black sheep overflows the frame. Among the sheep stand a few anonymous men in dark suits wearing French tricolour sashes across the chest, each raising his right arm stiffly up in the air, eyes closed, proud. No text, no symbols, no flags."
  }
 ]

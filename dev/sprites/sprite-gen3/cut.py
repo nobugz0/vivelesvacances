@@ -150,6 +150,30 @@ arr = np.array(im); lab, n = ndi.label(arr[..., 3] > 0); objs = sorted(ndi.find_
 for k, sl in enumerate(objs[:2]):
     sub = Image.fromarray(arr[sl], 'RGBA'); OUT.append((f'nGull{k}', sub, sub.size[0] / 2, sub.size[1] / 2, {}))
 
+# Bardella : il arrive de la droite, il doit regarder à gauche (la planche est sortie tournée à droite) ; en fuite, il repart à droite
+if glob.glob(os.path.join(SHEETS, 'bard_poses_*_v1.png')):
+    grid('bard_poses', 3, 2, ['bRide0', 'bRide1', 'bWind', 'bThrow', 'bHit', 'bFlee'], marine=True, flips=('bRide0', 'bRide1', 'bWind', 'bThrow', 'bHit'))
+# les illustrations des cartes : le rectangle encadré de chaque case, opaque, réduit à 240 px de large
+def cards(id_, cols, rows, names):
+    if not glob.glob(os.path.join(SHEETS, f'{id_}_*_v1.png')): return
+    a = sheet(id_); alpha = key(a)
+    for i, (x, y, w, h) in enumerate(cells(a, cols, rows)):
+        if i >= len(names) or not names[i]: continue
+        al = alpha[y:y + h, x:x + w]; lab, n = ndi.label(al > 0)
+        if n == 0: continue
+        sizes = ndi.sum(al > 0, lab, range(1, n + 1)); sl = ndi.find_objects(lab)[int(np.argmax(sizes))]
+        rgb = a[y:y + h, x:x + w][sl].clip(0, 255).astype(np.uint8)
+        im = Image.fromarray(np.dstack([rgb, np.full(rgb.shape[:2], 255, np.uint8)]), 'RGBA')
+        im = im.resize((240, round(240 * im.size[1] / im.size[0])), Image.LANCZOS)
+        OUT.append((names[i], im, im.size[0] / 2, im.size[1] / 2, {}))
+cards('cards_theme', 3, 2, ['cTheme0', 'cTheme1', 'cTheme2', 'cTheme3', 'cTheme4', 'cTheme5'])
+cards('cards_volte', 3, 2, ['cVolte0', 'cVolte1', 'cVolte2', 'cVolte3', 'cVolte4', 'cVolte5'])
+cards('cards_scandal', 3, 2, ['cScan1', 'cScan2', 'cScan4', 'cScan5', 'cPump', 'cKevlar'])
+cards('cards_tuto', 2, 2, ['cTuto0', 'cTuto1', 'cTuto2', 'cTuto3'])
+for v in (1, 2):   # la carte des brebis galeuses (une image carrée), quand elle existe
+    if glob.glob(os.path.join(SHEETS, f'cards_brebis{"2" if v == 2 else ""}_*_v1.png')):
+        cards('cards_brebis' + ('2' if v == 2 else ''), 1, 1, ['cScan3'])
+
 # assemblage : rangées, largeur 2048
 W = 2048; x = y = rowh = 0; ent = {}; meta = {}
 for nm, im, ax, ay, me in sorted(OUT, key=lambda o: -o[1].size[1]):
