@@ -464,5 +464,56 @@
   "n": 1,
   "batch": 1,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024, in exactly the pixel art style of the attached sheets (16-bit, chunky pixels, no anti-aliasing, flat cel shading, dark outline #14213d). Layout: 3 columns x 2 rows of equal 512x512 cells.\nTop row, a game prop: a rusty red oil barrel standing upright with big cartoon flames roaring out of the top and a plume of black smoke, about 300 px tall, side view, three animation frames of the flames (1, 2, 3: the flames lean and flicker differently, the smoke puffs shift). Flat solid chroma background #FF00FF around it, never use magenta inside.\nBottom row, cell 4 only: a card illustration filling a 470x390 rectangle with a 4 px ink frame, same pixel style: the woman of the attached character sheet (blonde, navy suit) kitesurfing, and hanging under her red kite a burning oil barrel whose hot air inflates the kite, big grin, blue sky. No text. Cells 5 and 6: empty flat chroma #FF00FF."
+ },
+ {
+  "id": "decor_far2",
+  "name": "Décor lointain 2 : ville, cargo, éoliennes, fort, régate, plage",
+  "size": "1536x1024",
+  "uses": [
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art sprite sheet, landscape 1536x1024, in exactly the pixel art style of the attached sheet (16-bit console-era look, chunky pixels on a clean grid, no anti-aliasing, no gradients, flat cel shading in 2 or 3 tones, 1-art-pixel dark outline #14213d, palette anchors ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues). Six distant horizon elements for a seaside parallax background, side view, seen from far away so they are flat and low, in 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred:\n1. A small seaside town on a low hill: pastel houses, a church with a pointed steeple, a harbour wall, about 460 px wide, 120 px tall.\n2. A big container ship seen from the side, dark hull, stacks of coloured containers, white bridge, about 440 px wide, 90 px tall.\n3. Three offshore wind turbines of different heights on a thin sea line, white masts, three blades each (slightly different blade angles), the tallest about 200 px.\n4. A round stone sea fort on a rock (like Fort Boyard), about 240 px wide, 150 px tall.\n5. A sailing regatta: five small triangular sails (white, red, blue) spread on a line, the whole group about 420 px wide, 70 px tall.\n6. A sandy beach with colourful parasols, a short wooden pier and a lifeguard hut, about 460 px wide, 90 px tall.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines. Never use magenta or pink inside any element."
+ },
+ {
+  "id": "decor_mid",
+  "name": "Second plan : bouée, voilier, pêcheur, rocher, paddle, baleine",
+  "size": "1536x1024",
+  "uses": [
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art sprite sheet, landscape 1536x1024, in exactly the pixel art style of the attached sheet (16-bit console-era look, chunky pixels on a clean grid, no anti-aliasing, no gradients, flat cel shading in 2 or 3 tones, 1-art-pixel dark outline #14213d, palette anchors ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues). Six mid-distance sea elements for the second plane of a kitesurf game (closer than the horizon, behind the player), side view facing left, in 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, scale logic of a rider about 300 px tall:\n1. A red and white channel buoy with a small bell and a seagull perched on top, about 160 px tall.\n2. A small sailing dinghy with a white and blue sail and one sailor in a yellow raincoat, about 300 px wide.\n3. A small wooden fishing boat with a fisherman in a cap hauling a net full of fish, about 320 px wide.\n4. A dark wet rock sticking out of the water with two cormorants drying their wings, about 240 px wide.\n5. A stand-up paddleboarder in a wetsuit, paddling, about 260 px tall.\n6. The back and tail of a whale breaking the surface with a water spout, about 360 px wide.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines. Never use magenta or pink inside any element."
+ },
+ {
+  "id": "m_pull",
+  "name": "Marine : tirée par la voile hors de l'eau (poses en l'air sans planche)",
+  "size": "1536x1024",
+  "uses": [
+   "charref"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "extra": [
+   "base_marine.png"
+  ],
+  "prompt": "Pixel art sprite sheet, landscape 1536x1024. The attached grid shows the same kitesurf rider pose six times, in 3 columns x 2 rows of equal 512x512 cells. Redraw this exact grid in the same style, scale, outfit, hair and face, same position of the figure's hips in every cell, so the frames can be swapped in a game. In every cell she has LOST her board (no board anywhere) and hangs from the bar by both hands, pulled up by the kite lines that leave the top of the cell; her face is alarmed, hair blown upward. Change only what each step needs:\n1. Base pose from the grid, unchanged (reference only).\n2. Hanging in the air, body vertical, legs together dangling, toes pointed down.\n3. Same, legs apart kicking, one knee up.\n4. Swinging: body tilted about 25 degrees to the right, legs trailing behind, jacket tails flying.\n5. Just lifted off the sea: legs still dripping big water drops, small white spray under her feet, body stretched.\n6. Spread like a parachutist: arms up on the bar, legs wide, mouth open in a scream.\nFlat solid chroma background #FF00FF, never use magenta inside the figure. No text, no borders."
+ },
+ {
+  "id": "ui_icons2",
+  "name": "Interface : icônes 2 (bonus actifs, vent, badges)",
+  "size": "1536x1024",
+  "uses": [
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Game UI icon sheet, landscape 1536x1024. The attached image is only a colour palette reference: do not copy its pixel art style.\nStyle: bold flat graphic game UI stickers, simple chunky shapes, thick dark navy outline #14213d (about 10 px), flat bright colours with one light highlight shape, no gradients, no realistic detail, no pixel art, fun and readable at small size. Palette: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, pink #ff2d95, green #22a447. Flat solid chroma background #FF00FF around every icon, at least 30 px of background around each, never use magenta inside an icon. Layout: 3 columns x 2 rows of equal 512x512 cells, one icon per cell, centred, each icon about 300 px. No text.\n1. A rusty red oil barrel with big cartoon flames coming out of the top (the counter-fire bonus).\n2. A stylised wind gust: three curling white and light blue swirls going right.\n3. A round green badge with a big white check mark.\n4. A round gold star badge (bonus active).\n5. A small white and red speedboat seen from the side (the theme boat marker).\n6. A golden weathervane rooster alone, side view, facing right."
  }
 ]

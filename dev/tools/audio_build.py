@@ -64,12 +64,12 @@ def make_loop(x2, name=None):   # x2 stéréo
     y = x2[s:s + n].copy(); pre = x2[max(0, s - fade):s]
     if len(pre) == fade: w = np.linspace(0, 1, fade)[:, None]; y[-fade:] = y[-fade:]*(1 - w) + pre*w
     rms = np.sqrt((y**2).mean()); y *= 10**(-16/20)/rms; pkk = np.abs(y).max()
-    if pkk > 0.95: y *= 0.95/pkk
+    if pkk > 0.85: y *= 0.85/pkk   # marge pour le dépassement du mp3
     return y, bpm, nbars, L
 
 def level(x2, target_db):
     rms = np.sqrt((x2**2).mean()); y = x2*10**(target_db/20)/rms; pk = np.abs(y).max()
-    return y*(0.95/pk) if pk > 0.95 else y
+    return y*(0.85/pk) if pk > 0.85 else y
 
 def trim_tail(x2):
     mono = np.abs(x2).mean(1); pk = mono.max(); env = np.convolve(mono, np.ones(int(0.02*SR))/int(0.02*SR), 'same')
@@ -97,7 +97,7 @@ for f in files:
             cands = [n for n in range(base - 6, base + 7) if n % 12 in CMAJ]; tgt = min(cands, key=lambda n: abs(n - midi))
             e['rate'] = round(float(2**((tgt - midi)/12)), 4); e['hz'] = round(hz)
         continue
-    m = re.match(r'(mus_[a-z_]+?)_music_v1_v(\d)$', b)
+    m = re.match(r'(mus_[a-z0-9_]+?)_music_v1_v(\d)$', b)
     if m:
         name, v = m.group(1), int(m.group(2))
         if PICK.get(name, 1) != v: continue

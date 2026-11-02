@@ -1216,5 +1216,261 @@
     }
    ]
   }
+ },
+ {
+  "id": "mus_vol2",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "punch",
+  "composition_plan": {
+   "positive_global_styles": [
+    "surf rock meets 80s synth-pop",
+    "twangy surf guitar lead",
+    "big gated snare",
+    "four-on-the-floor kick",
+    "slap bass",
+    "stabs of synth brass",
+    "sunny",
+    "cartoon chase energy",
+    "128 bpm",
+    "4/4",
+    "C major",
+    "instrumental",
+    "punchy mix",
+    "loud drums",
+    "tight low end"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro",
+    "ambient",
+    "soft",
+    "ballad"
+   ],
+   "sections": [
+    {
+     "section_name": "Riff A",
+     "positive_local_styles": [
+      "punchy surf guitar riff over driving drums",
+      "handclaps on 2 and 4",
+      "catchy hook from bar one"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Riff B",
+     "positive_local_styles": [
+      "same riff one octave up with synth brass answers",
+      "bass fills",
+      "more energy"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "two bar tom fill leading back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_vol2_b",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "punch",
+  "composition_plan": {
+   "positive_global_styles": [
+    "ska pop",
+    "fast upstroke guitar",
+    "bright trumpet and trombone section",
+    "driving walking bass",
+    "cheeky",
+    "fairground energy",
+    "132 bpm",
+    "4/4",
+    "C major",
+    "instrumental",
+    "punchy mix",
+    "loud drums",
+    "tight low end"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro",
+    "ambient",
+    "soft",
+    "ballad"
+   ],
+   "sections": [
+    {
+     "section_name": "Horn theme",
+     "positive_local_styles": [
+      "loud brass hook",
+      "ska offbeat guitar",
+      "snappy drums with rimshots"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Horn theme B",
+     "positive_local_styles": [
+      "trombone slides answer the trumpet",
+      "bass goes double time",
+      "brass stabs"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "two bar snare roll leading back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_vol2_c",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "punch",
+  "composition_plan": {
+   "positive_global_styles": [
+    "disco funk",
+    "slap bass",
+    "wah guitar",
+    "tight drums with open hi-hats",
+    "synth strings stabs",
+    "clavinet",
+    "glittery",
+    "TV game show energy",
+    "124 bpm",
+    "4/4",
+    "C major",
+    "instrumental",
+    "punchy mix",
+    "loud drums",
+    "tight low end"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro",
+    "ambient",
+    "soft",
+    "ballad"
+   ],
+   "sections": [
+    {
+     "section_name": "Groove A",
+     "positive_local_styles": [
+      "slap bass hook with clavinet",
+      "disco drums",
+      "string stabs on the off beats"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Groove B",
+     "positive_local_styles": [
+      "brass and strings play the hook together",
+      "bass octaves",
+      "big handclaps"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "two bar drum break leading back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
  }
 ]

@@ -244,6 +244,24 @@ for sid, base in (('theme_anim_a', 0), ('theme_anim_b', 3)):
 if glob.glob(os.path.join(SHEETS, 'bonus_fire_*_v1.png')):
     grid('bonus_fire', 3, 2, ['fire0', 'fire1', 'fire2', None, None, None], anchor='center')
     cards('bonus_fire', 3, 2, [None, None, None, 'cFire', None, None])
+# décor lointain 2 (far6..far11) et second plan (mid0..mid5)
+if glob.glob(os.path.join(SHEETS, 'decor_far2_*_v1.png')):
+    grid('decor_far2', 3, 2, ['far6', 'far7', 'far8', 'far9', 'far10', 'far11'])
+if glob.glob(os.path.join(SHEETS, 'decor_mid_*_v1.png')):
+    grid('decor_mid', 3, 2, ['mid0', 'mid1', 'mid2', 'mid3', 'mid4', 'mid5'])
+# Marine tirée par la voile, sans planche (planche m_pull, même base que m_lock) : ancre fixe sur la base
+if glob.glob(os.path.join(SHEETS, 'm_pull_*_v1.png')):
+    FP = ['mPull0', 'mPull1', 'mPull2', 'mPull3', 'mPull4', 'mPull5']
+    OUT[:] = [o for o in OUT if o[0] not in tuple(n for n in FP if n)]
+    a = sheet('m_pull'); alpha = key(a); fy = None
+    for i, (x, y, w, h) in enumerate(cells(a, 3, 2)):
+        rgb, al = a[y:y + h, x:x + w], unframe(alpha[y:y + h, x:x + w])
+        bar = bar_of(rgb, al); al = erase_lines(rgb, al, bar)
+        if i == 0: fy = int(np.nonzero(al)[0].max()) + 1
+        add(FP[i], rgb, al, 'bottom', {'bar': [bar[0], bar[1]]} if bar else {}, min_area=60, rel=False, fixed=(w * 0.5, fy))
+# icônes UI 2 : baril (contre-feu), vent, coche, étoile, bateau, coq
+if glob.glob(os.path.join(SHEETS, 'ui_icons2_*_v1.png')):
+    ui_grid('ui_icons2', 3, 2, ['iFire', 'iWind', 'iCheck', 'iStar', 'iBoat', 'iCoq'])
 
 # assemblage : rangées, largeur 2048
 W = 2048; x = y = rowh = 0; ent = {}; meta = {}
