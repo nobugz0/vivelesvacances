@@ -341,5 +341,20 @@
   "n": 1,
   "batch": 1,
   "prompt": "Pixel art card illustration, square 1024x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. One satirical editorial cartoon filling a 940x780 rectangle centred in the image, with a 4 px ink frame; outside the rectangle flat chroma #FF00FF. The young man of the attached approved Bardella sheet, dressed as a shepherd with a crook, raises four fingers and smiles reassuringly at the viewer. Behind him a huge flock of black sheep overflows the frame. Among the sheep stand a few anonymous men in dark suits wearing French tricolour sashes across the chest, each raising his right arm stiffly up in the air, eyes closed, proud. No text, no symbols, no flags."
+ },
+ {
+  "id": "m_lock",
+  "name": "Marine : poses verrouillées sur la pose de repos",
+  "size": "1536x1024",
+  "uses": [
+   "charref"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "extra": [
+   "base_marine.png"
+  ],
+  "prompt": "Pixel art sprite sheet, landscape 1536x1024. The attached grid image shows the same kitesurf rider pose six times, in 3 columns x 2 rows of equal 512x512 cells. Redraw this exact grid: same cell positions, same scale, same pixel art style, same flat chroma background #FF00FF. In every cell keep the rider IDENTICAL to the base pose (same body position, same angle, same board, same bar, same kite lines, same outfit, same hair shape, same position in the cell), and change ONLY the detail listed for that cell, as small an edit as possible so that the six frames can be swapped in a game without the figure jumping:\n1. No change: the base pose, cleaned, calm poker face.\n2. Hit: same pose, eyes squeezed shut, comic grimace with clenched teeth; nothing else changes.\n3. Dazed: same pose, eyes crossed, tongue slightly out, three small yellow stars circling above the head; nothing else changes.\n4. Climbing: same pose, the board tilted about 10 degrees nose up, knees slightly more bent, sly sideways glance.\n5. Gliding: same pose, board level, legs slightly more extended, hair and jacket tails blown back a little more, smug half-smile.\n6. Catching: same pose, the front hand leaves the bar and is raised high with a closed fist, triumphant crooked smile; the other hand stays on the bar.\nNo text, numbers or borders. Never use magenta or pink inside the figure."
  }
 ]
