@@ -41,6 +41,8 @@ def clean(alpha, min_area, rel=True):
 def cells(a, cols, rows):
     H, W = a.shape[:2]; cw, ch = W // cols, H // rows
     return [(c * cw, r * ch, cw, ch) for r in range(rows) for c in range(cols)]
+def unframe(al, m=8):
+    al = al.copy(); al[:m] = 0; al[-m:] = 0; al[:, :m] = 0; al[:, -m:] = 0; return al   # les traits de grille au bord des cases
 
 def erase_lines(rgb, alpha, bar):
     """efface les lignes de kite peintes (blanches, au-dessus et à droite de la barre) : le jeu les trace lui-même"""
@@ -95,7 +97,7 @@ def grid(id_, cols, rows, names, anchor='bottom', marine=False, flips=(), split=
     a = sheet(id_); alpha = key(a)
     for i, (x, y, w, h) in enumerate(cells(a, cols, rows)):
         if i >= len(names) or not names[i]: continue
-        rgb, al = a[y:y + h, x:x + w], alpha[y:y + h, x:x + w].copy()
+        rgb, al = a[y:y + h, x:x + w], unframe(alpha[y:y + h, x:x + w])
         al, _ = clean(al, 120)
         meta = {}
         if marine:
@@ -160,7 +162,7 @@ def cards(id_, cols, rows, names):
     a = sheet(id_); alpha = key(a)
     for i, (x, y, w, h) in enumerate(cells(a, cols, rows)):
         if i >= len(names) or not names[i]: continue
-        al = alpha[y:y + h, x:x + w]; lab, n = ndi.label(al > 0)
+        al = unframe(alpha[y:y + h, x:x + w], 4); lab, n = ndi.label(al > 0)
         if n == 0: continue
         sizes = ndi.sum(al > 0, lab, range(1, n + 1)); sl = ndi.find_objects(lab)[int(np.argmax(sizes))]
         rgb = a[y:y + h, x:x + w][sl].clip(0, 255).astype(np.uint8)
@@ -209,7 +211,7 @@ def ui_grid(id_, cols, rows, names):
     if not glob.glob(os.path.join(SHEETS, f'{id_}_*_v1.png')): return None
     a = sheet(id_); alpha = key(a); cs = cells(a, cols, rows)
     for i, (x, y, w, h) in enumerate(cs):
-        if i < len(names) and names[i]: add(names[i], a[y:y + h, x:x + w], alpha[y:y + h, x:x + w].copy(), 'center', smooth=True, min_area=200)
+        if i < len(names) and names[i]: add(names[i], a[y:y + h, x:x + w], unframe(alpha[y:y + h, x:x + w]), 'center', smooth=True, min_area=200)
     return a, alpha, cs
 ui_grid('ui_icons', 4, 3, ['iPolls', 'iCaisse', 'iCoin', 'iVolte', 'iScandale', 'iMic', 'iKevlar', 'iPump', 'iVote', 'iElysee', 'iMontretout', 'i2027'])
 r = ui_grid('ui_logos', 2, 2, ['logoTitle', 'stampVolte', 'stampScandale', 'stampElim'])
@@ -220,6 +222,28 @@ if r:
 if glob.glob(os.path.join(SHEETS, 'menu_art_*_v1.png')):   # le fond de l'écran titre, au format du cadre (845 x 390)
     m = Image.fromarray(sheet('menu_art').astype(np.uint8)); mh = round(1536 * 390 / 845); top = (1024 - mh) // 2
     m.crop((0, top, 1536, top + mh)).resize((1300, 600), Image.LANCZOS).save(os.path.join(GAME, 'menu5.jpg'), quality=86)
+
+# chute et remontée (planche m_fall2, même base que m_lock) : perd l'équilibre, tombe, traînée, remonte, se relève
+if glob.glob(os.path.join(SHEETS, 'm_fall2_*_v1.png')):
+    F2 = [None, 'mTip', 'mFall', 'mDrag0', 'mRemount', 'mStand']
+    OUT[:] = [o for o in OUT if o[0] not in ('mDrag0', 'mDrag1', 'mRemount') + tuple(n for n in F2 if n)]
+    a = sheet('m_fall2'); alpha = key(a); fy = None
+    for i, (x, y, w, h) in enumerate(cells(a, 3, 2)):
+        rgb, al = a[y:y + h, x:x + w], unframe(alpha[y:y + h, x:x + w])
+        bar = bar_of(rgb, al); al = erase_lines(rgb, al, bar)
+        if i == 0: fy = int(np.nonzero(al)[0].max()) + 1; continue
+        if F2[i] not in ('mDrag0',): al = no_spray(rgb, al)
+        add(F2[i], rgb, al, 'bottom', {'bar': [bar[0], bar[1]]} if bar else {}, min_area=60, rel=False, fixed=(w * 0.5, fy))
+# barques du thème animées : deux images chacune (tbN = image A, tbNb = image B)
+for sid, base in (('theme_anim_a', 0), ('theme_anim_b', 3)):
+    if not glob.glob(os.path.join(SHEETS, f'{sid}_*_v1.png')): continue
+    names = [f'tb{base + c}' for c in range(3)] + [f'tb{base + c}b' for c in range(3)]
+    OUT[:] = [o for o in OUT if o[0] not in names]
+    grid(sid, 3, 2, names)
+# le contre-feu : le baril en feu (3 images) et sa carte
+if glob.glob(os.path.join(SHEETS, 'bonus_fire_*_v1.png')):
+    grid('bonus_fire', 3, 2, ['fire0', 'fire1', 'fire2', None, None, None], anchor='center')
+    cards('bonus_fire', 3, 2, [None, None, None, 'cFire', None, None])
 
 # assemblage : rangées, largeur 2048
 W = 2048; x = y = rowh = 0; ent = {}; meta = {}

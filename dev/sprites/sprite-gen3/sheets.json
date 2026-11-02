@@ -451,5 +451,18 @@
    "theme_boats_ref.png"
   ],
   "prompt": "Pixel art sprite sheet, landscape 1536x1024. The attached reference sheet shows six satirical theme barges. Redraw THREE of them, one per column, in 3 columns x 2 rows of equal 512x512 cells: the top row is animation frame A (identical to the reference), the bottom row is frame B of the same barge with a small movement, so the two frames loop. Same style, same scale, same position in the cell, side view facing left. Style: exactly the pixel art style of the attached sheets: 16-bit pixel art, chunky pixels, no anti-aliasing, flat cel shading, dark outline #14213d. Flat solid chroma background #FF00FF, never use magenta inside a figure. No text. Column 1: the miniature nuclear cooling tower (frame B: the steam puff is bigger and shifted, a small warning light blinks). Column 2: the giant open handcuffs (frame B: the handcuffs bounce slightly and the chain swings). Column 3: the giant calculator with a golden ruler as a yard (frame B: the display shows different digits, the ruler tilts a little)."
+ },
+ {
+  "id": "bonus_fire",
+  "name": "Bonus contre-feu : baril en feu (sprite et carte)",
+  "size": "1536x1024",
+  "uses": [
+   "world",
+   "charref"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art sprite sheet, landscape 1536x1024, in exactly the pixel art style of the attached sheets (16-bit, chunky pixels, no anti-aliasing, flat cel shading, dark outline #14213d). Layout: 3 columns x 2 rows of equal 512x512 cells.\nTop row, a game prop: a rusty red oil barrel standing upright with big cartoon flames roaring out of the top and a plume of black smoke, about 300 px tall, side view, three animation frames of the flames (1, 2, 3: the flames lean and flicker differently, the smoke puffs shift). Flat solid chroma background #FF00FF around it, never use magenta inside.\nBottom row, cell 4 only: a card illustration filling a 470x390 rectangle with a 4 px ink frame, same pixel style: the woman of the attached character sheet (blonde, navy suit) kitesurfing, and hanging under her red kite a burning oil barrel whose hot air inflates the kite, big grin, blue sky. No text. Cells 5 and 6: empty flat chroma #FF00FF."
  }
 ]
