@@ -194,7 +194,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.22', BUILD = '02/11/2026 à 00h30';
+const VERSION = 'proto 3 · 0.23', BUILD = '02/11/2026 à 13h00';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -214,8 +214,11 @@ atlas.src = 'atlas.png';
 const atlas2 = new Image(); let atlas2Ready = false; atlas2.onload = () => { atlas2Ready = true; }; atlas2.src = 'atlas2.png';
 const atlas3 = new Image(); let atlas3Ready = false; atlas3.onload = () => { atlas3Ready = true; }; atlas3.src = 'atlas3.png';
 const atlas4 = new Image(); let atlas4Ready = false; atlas4.onload = () => { atlas4Ready = true; }; atlas4.src = 'atlas4.png';
+const atlas5 = new Image(); let atlas5Ready = false; atlas5.onload = () => { atlas5Ready = true; }; atlas5.src = 'atlas5.png';   // sprites du proto 3 (dev/sprites/sprite-gen3/cut.py)
+const sky5 = new Image(); let sky5Ready = false; sky5.onload = () => { sky5Ready = true; }; sky5.src = 'sky5.png';
+const sea5 = new Image(); let sea5Ready = false; sea5.onload = () => { sea5Ready = true; }; sea5.src = 'sea5.png';
 const uiImg = new Image(); let uiReady = false; uiImg.onload = () => { uiReady = true; }; uiImg.src = 'ui.webp';
-const atlasImg = a => a[6] === 4 ? (atlas4Ready ? atlas4 : null) : a[6] === 3 ? (atlas3Ready ? atlas3 : null) : a[6] === 2 ? (atlas2Ready ? atlas2 : null) : (atlasReady ? atlas : null);
+const atlasImg = a => a[6] === 5 ? (atlas5Ready ? atlas5 : null) : a[6] === 6 ? (sea5Ready ? sea5 : null) : a[6] === 4 ? (atlas4Ready ? atlas4 : null) : a[6] === 3 ? (atlas3Ready ? atlas3 : null) : a[6] === 2 ? (atlas2Ready ? atlas2 : null) : (atlasReady ? atlas : null);
 function spr(name, x, y, s, flip, rot, alpha){
   const a = ATLAS[name]; if (!a) return; const im = atlasImg(a); if (!im) return;
   ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); if (flip) ctx.scale(-1, 1);
@@ -225,6 +228,12 @@ function spr(name, x, y, s, flip, rot, alpha){
   ctx.restore();
 }
 const SW = (n, s) => ATLAS[n][2]*s, SH = (n, s) => ATLAS[n][3]*s;
+// ---- sprites du proto 3, générés (planches OpenAI découpées par cut.py) : ne pas éditer à la main, relancer cut.py
+Object.assign(ATLAS, {"mtHouse": [0, 0, 470, 261, 234.8, 261.0, 5], "mCatch": [472, 0, 142, 219, 71.2, 219.0, 5], "mTalk": [616, 0, 140, 209, 69.8, 209.0, 5], "mPoint": [758, 0, 185, 204, 92.5, 204.5, 5], "mHit": [945, 0, 166, 201, 83.2, 201.0, 5], "mDazed": [1113, 0, 155, 196, 77.5, 196.5, 5], "mGlide": [1270, 0, 146, 184, 72.8, 184.0, 5], "mBarge": [1418, 0, 177, 182, 88.5, 181.5, 5], "mtArch": [1597, 0, 300, 176, 150.0, 175.5, 5], "tb0": [0, 263, 197, 174, 98.5, 173.5, 5], "tb1": [199, 263, 184, 170, 92.2, 170.5, 5], "mRide0": [385, 263, 175, 169, 87.5, 169.0, 5], "tb2": [562, 263, 206, 169, 102.8, 169.0, 5], "e3s": [770, 263, 175, 166, 87.5, 166.5, 5], "e5s": [947, 263, 106, 166, 53.2, 166.5, 5], "vane3": [1055, 263, 84, 166, 41.8, 83.0, 5], "mClimb": [1141, 263, 132, 165, 66.0, 165.0, 5], "jbHit": [1275, 263, 218, 164, 109.2, 164.0, 5], "e0s": [1495, 263, 150, 163, 75.2, 163.0, 5], "e2s": [1647, 263, 160, 162, 80.2, 162.0, 5], "flagCloth": [1809, 263, 190, 161, 94.8, 80.5, 5], "mRide1": [0, 439, 177, 156, 88.5, 156.0, 5], "tb3": [179, 439, 184, 156, 91.8, 156.0, 5], "mDive": [365, 439, 166, 155, 83.2, 155.0, 5], "jb0": [533, 439, 216, 154, 107.8, 153.5, 5], "jb1": [751, 439, 197, 154, 98.5, 154.0, 5], "e3f": [950, 439, 196, 154, 97.8, 154.5, 5], "jb2": [1148, 439, 194, 153, 97.0, 153.0, 5], "mLand": [1344, 439, 188, 152, 94.2, 152.0, 5], "tb5": [1534, 439, 189, 152, 94.5, 152.0, 5], "e4s": [1725, 439, 191, 150, 95.5, 150.5, 5], "nJus1": [0, 597, 230, 148, 115.2, 148.5, 5], "e1s": [232, 597, 212, 146, 106.2, 146.5, 5], "vane2": [446, 597, 185, 146, 92.5, 73.0, 5], "e5f": [633, 597, 152, 145, 76.2, 145.0, 5], "e4f": [787, 597, 192, 144, 95.8, 144.0, 5], "nRn0": [981, 597, 180, 144, 89.8, 144.5, 5], "vane1": [1163, 597, 166, 144, 83.2, 72.0, 5], "nRn2": [1331, 597, 193, 143, 96.5, 143.0, 5], "mRemount": [1526, 597, 148, 142, 74.0, 142.0, 5], "e0f": [1676, 597, 166, 142, 83.2, 141.5, 5], "nJus3": [0, 747, 228, 142, 114.0, 141.5, 5], "nRn1": [230, 747, 196, 142, 98.0, 141.5, 5], "nJus0": [428, 747, 232, 141, 116.0, 141.0, 5], "e1f": [662, 747, 210, 140, 104.8, 140.0, 5], "nJus2": [874, 747, 259, 140, 129.5, 140.5, 5], "far5": [1135, 747, 60, 140, 30.2, 140.0, 5], "jh0": [1197, 747, 187, 138, 93.5, 69.0, 5], "tb4": [1386, 747, 218, 138, 108.8, 138.0, 5], "vane0": [1606, 747, 197, 138, 98.5, 69.0, 5], "jg0": [1805, 747, 200, 137, 100.0, 68.5, 5], "e2f": [0, 891, 176, 137, 87.8, 137.0, 5], "jg1": [178, 891, 196, 136, 98.2, 67.8, 5], "nPan2": [376, 891, 145, 134, 72.5, 67.0, 5], "far2": [523, 891, 152, 134, 76.0, 134.0, 5], "jt0": [677, 891, 199, 132, 99.5, 131.5, 5], "jh1": [878, 891, 180, 131, 89.8, 65.5, 5], "nk0": [1060, 891, 133, 130, 66.5, 65.0, 5], "far1": [1195, 891, 142, 127, 70.8, 127.0, 5], "sparkle": [1339, 891, 114, 127, 57.2, 63.5, 5], "nCloud0": [1455, 891, 223, 124, 111.5, 62.2, 5], "nk1": [1680, 891, 137, 123, 68.5, 61.5, 5], "jj0": [1819, 891, 190, 122, 95.2, 61.2, 5], "jj1": [0, 1030, 189, 122, 94.5, 61.2, 5], "nk2": [191, 1030, 134, 118, 67.2, 58.8, 5], "nPan0": [327, 1030, 168, 116, 84.0, 58.0, 5], "nPan1": [497, 1030, 160, 114, 80.0, 57.0, 5], "nSun": [659, 1030, 115, 112, 57.5, 56.2, 5], "jtBoat": [776, 1030, 198, 104, 99.0, 104.0, 5], "nk3": [976, 1030, 126, 103, 63.0, 51.5, 5], "nCloud1": [1104, 1030, 161, 100, 80.5, 49.8, 5], "jtJump": [1267, 1030, 100, 96, 50.0, 96.5, 5], "far4": [1369, 1030, 192, 94, 96.2, 94.0, 5], "mSink0": [1563, 1030, 168, 92, 84.2, 92.5, 5], "far3": [1733, 1030, 208, 83, 103.8, 83.0, 5], "nGull0": [1943, 1030, 75, 82, 37.5, 41.0, 5], "mHead": [0, 1154, 128, 73, 64.0, 73.0, 5], "mDrag0": [130, 1154, 206, 68, 102.8, 67.5, 5], "mDrag1": [338, 1154, 206, 68, 103.2, 67.5, 5], "nCloud3": [546, 1154, 182, 68, 90.8, 34.0, 5], "mSink1": [730, 1154, 161, 66, 80.5, 65.5, 5], "nCloud2": [893, 1154, 220, 56, 110.2, 28.0, 5], "nGull1": [1115, 1154, 129, 43, 64.5, 21.5, 5], "far0": [1246, 1154, 212, 40, 106.2, 40.5, 5]});
+const META5 = {"mCatch": {"bar": [16.2, -105.0]}, "mTalk": {"bar": [19.2, -106.0]}, "mPoint": {"bar": [20.5, -104.0]}, "mHit": {"bar": [9.2, -100.5]}, "mDazed": {"bar": [28.0, -98.5]}, "mGlide": {"bar": [36.2, -159.0]}, "mBarge": {"bar": [39.0, -97.0]}, "mRide0": {"bar": [16.2, -93.0]}, "mClimb": {"bar": [15.0, -101.5]}, "mRide1": {"bar": [15.5, -91.0]}, "mDive": {"bar": [58.5, -114.2]}, "mLand": {"bar": [20.8, -90.5]}, "mRemount": {"bar": [51.0, -61.5]}, "nk0": {"tips": [[-42.5, 3.0], [9.0, 64.5]]}, "nk1": {"tips": [[-54.0, 0.0], [12.5, 61.0]]}, "nk2": {"tips": [[-62.2, -2.2], [15.2, 58.2]]}, "nk3": {"tips": [[-47.0, -3.0], [25.5, 51.0]]}, "mSink0": {"bar": [63.8, -73.5]}, "mDrag0": {"bar": [85.8, -26.5]}, "mDrag1": {"bar": [91.8, -27.0]}, "mSink1": {"bar": [54.0, -28.0]}};
+Object.assign(ATLAS, {seaF5: [0, 0, 768, 190, 0, 0, 6], seaN5: [0, 170, 768, 342, 0, 0, 6]});   // la mer en deux bandes (lointaine, proche), répétées en miroir
+const has5 = n => atlas5Ready && !!ATLAS[n];
+const MS = 0.8;   // échelle de Marine (planches 1/2) : environ 135 px monde de la planche aux cheveux, la vedette de l'écran
 function uiDraw(n, x, y, w, h){
   const a = UIA[n]; if (!uiReady || !a) return false;
   if (h === undefined){ const k = Math.min(w/a[2], w/a[3]), dw = a[2]*k, dh = a[3]*k; ctx.drawImage(uiImg, a[0], a[1], a[2], a[3], x + (w - dw)/2, y + (w - dh)/2, dw, dh); }
@@ -501,8 +510,8 @@ const ETR_CRIES = ['Un étranger !', 'Un clandestin !', 'Encore un !', 'Ils sont
 const fmtPt = v => (Math.round(v*10)/10).toString().replace('.', ',');
 // Éléments de langage : ce que Marine renvoie à l'émetteur pendant la tempête (formules déjà documentées dans VSHORT, plus deux répliques du jeu)
 const BUBBLES = ['Nous verrons', 'Une décision politique', 'Le Parlement décidera', 'Pas de commentaire !', 'Négocier une dérogation', 'Seulement si forte inflation', 'Cabale !'];
-const EMITTERS = {rn: {name: 'Le bateau RN', frames: ['rn0', 'rn1', 'rn2'], s: 0.9, y: () => WATER - 6, w: 150, h: 170, sfx: 'throw'},
-  justice: {name: 'Le palais de justice', frames: ['jus0', 'jus1', 'jus2', 'jus3'], s: 1.3, y: () => WATER + 4, w: 150, h: 230, sfx: 'gavel'},
+const EMITTERS = {rn: {name: 'Le bateau RN', frames: ['rn0', 'rn1', 'rn2'], f5: ['nRn0', 'nRn1', 'nRn2'], s5: 1.15, s: 0.9, y: () => WATER - 6, w: 150, h: 170, sfx: 'throw'},
+  justice: {name: 'Le palais de justice', frames: ['jus0', 'jus1', 'jus2', 'jus3'], f5: ['nJus0', 'nJus1', 'nJus2', 'nJus3'], s5: 1.5, s: 1.3, y: () => WATER + 4, w: 150, h: 230, sfx: 'gavel'},
   bard: {name: 'Jordan Bardella', frames: ['bk0', 'bk1', 'bk2'], s: 0.5, y: () => lerp(P.ceil, WATER, 0.5), w: 90, h: 90, sfx: 'throw'}};
 
 // ---------- réglages ----------
@@ -604,6 +613,7 @@ let state = 'title', paused = false, ctrl = 'tap';
 let tFlight, realT = 0, py, vy, aIn, aVane, holding, holdT = 0, relT = 0, inv, poll, coins, stats, onWater = false, endReason = '', wind = 1, windEmptyT = -9;
 let chase = null, trail = [];
 let phase = 'fly', stormT = 0, emitter = null, pans = [], bubbles = [], cass = 0, nextSalvo = 0, nextBubble = 0, dark = 0, bannerT = 0, flash = 0, panInv = 0;
+let hitFlash = 0, hitT = 0, panT = 0, pointT = 0, bargeT = 0, landT = 0, remountT = 0, sinkAt = -1, prevOnWater = true;   // poses de Marine (s) et flash blanc au choc
 let fallen = false, nextEtr = 0, gate = null, trans = null, interStep = 1, interT = 0, breathT = 0, calmT = 0;
 const BREATH_T = 1.5, CALM_T = 2.0;   // respirations : après la volte-face avant le scandale ; après la fuite de l'émetteur avant la porte   // tombée de la planche ; prochain étranger ; la porte du QG ; la transition en iris ; l'écran du QG
 let coinsList, journos, pops, fx, nextSpawn, coinChain, coinChainT, lastDt = 0, sea = 'cote', spawnI = 0;
@@ -653,7 +663,7 @@ function buyBonus(id){
 
 function start(){
   camFx = 1; camGoal = 1; applyCam(); seed = 7; realT = 0; tFlight = 0; py = P.yMax; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0; onWater = true; endReason = ''; wind = 1; windEmptyT = -9;
-  phase = 'fly'; card = null; mBubble = null; cruiseT = 0; tutoSeen = {}; tutoStage = 0; tutoBoats = 0; boatN = 0; lastAir = null; decks = {}; lastQ = null; lastPhrase = null; qLog = []; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chase = null; trail = []; marineX = null; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; panInv = 0; booth = null; infoOpen = null; gate = null; nextEtr = 4 + rnd()*3; confetti = []; shakeT = 0;
+  phase = 'fly'; card = null; mBubble = null; sinkAt = -1; hitT = panT = pointT = bargeT = landT = remountT = hitFlash = 0; cruiseT = 0; tutoSeen = {}; tutoStage = 0; tutoBoats = 0; boatN = 0; lastAir = null; decks = {}; lastQ = null; lastPhrase = null; qLog = []; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chase = null; trail = []; marineX = null; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; panInv = 0; booth = null; infoOpen = null; gate = null; nextEtr = 4 + rnd()*3; confetti = []; shakeT = 0;
   poll = P.pollStart; coins = 0; stats = {hits: 0, coins: 0, cass: 0, etr: 0, bubbles: 0, gold: false, kevlar: 0, themeBoats: 0};
   coinsList = []; journos = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0; patOrder = [];
   pointerY = null; pointerDown = false; keyUp = keyDown = false;
@@ -777,7 +787,7 @@ const sec = t => t*worldSpeed();   // secondes de vol -> px monde
 const BANDS = () => ({low: [WATER - 110, WATER - 70], mid: [lerp(P.ceil, WATER, 0.5) - 40, lerp(P.ceil, WATER, 0.5) + 40], high: [COIN_TOP() + 30, COIN_TOP() + 110], bait: [COIN_TOP(), COIN_TOP() + 16]});
 const bandY = k => { const b = BANDS()[k]; return lerp(b[0], b[1], rnd()); };
 let boatN = 0, tutoStage = 0, tutoBoats = 0, lastAir = null;   // barques posées (une sur trois porte le thème) ; étape du tuto (0 pièces, 1 journalistes, 2 étrangers) ; barques passées au tuto ; archétype volant du dernier motif
-function addBoat(x){ boatN++; const theme = !isTuto() && boatN % 3 === 0; if (theme) stats.themeBoats++; journos.push({kind: 'boat', theme, x, y: WATER - 2, w: 140, h: 80, fr: Math.floor(rnd()*6), bob: rnd()*6, q: theme ? null : journoQ()}); }
+function addBoat(x){ boatN++; const theme = !isTuto() && boatN % 3 === 0; if (theme) stats.themeBoats++; journos.push({kind: 'boat', theme, crew: Math.floor(rnd()*3), x, y: WATER - 2, w: 140, h: 80, fr: Math.floor(rnd()*6), bob: rnd()*6, q: theme ? null : journoQ()}); }
 // archétypes disponibles selon le chapitre : barques toujours, puis deltaplanes (1), hélicos (2), trampolinistes (3), jet-skis (4)
 const allowed = kind => kind === 'boat' || (kind === 'glider' && levelN >= 1) || (kind === 'heli' && levelN >= 2) || (kind === 'tramp' && levelN >= 3) || (kind === 'jet' && levelN >= 4);
 function addGlider(x, y){ if (!allowed('glider')) return addBoat(x); journos.push({kind: 'glider', x, y, w: 110, h: 54, bob: rnd()*6, col: pick(['#e3342f', '#c81e1e', '#ff5a5f']), q: journoQ()}); }
@@ -787,7 +797,7 @@ function addTramp(x){ journos.push({kind: 'tramp', x, y: WATER - 2, w: 44, h: 50
 function addJet(x){ journos.push({kind: 'jet', x, y: WATER - 8, w: 100, h: 44, bob: rnd()*6, alert: 1.1, st: 'in', vx: 520, holdT: 0, q: journoQ()}); }
 function addHeli(x, y, track){ if (!allowed('heli')) return addGlider(x, y); journos.push({kind: 'heli', x, y, w: 120, h: 60, bob: rnd()*6, track: track ? 3.2 : 0, alert: track ? 1.1 : 0, vx: track ? worldSpeed()*0.65 : 0, q: journoQ()}); }
 // l'étranger (dans la bouche de Marine) : un passant sur une planche de surf ou un petit bateau, au ras de l'eau ; la frapper le fait tomber à l'eau et rapporte des sondages
-function addEtr(x){ journos.push({kind: 'etr', x, y: WATER - 2, w: 70, h: 70, bob: rnd()*6, surf: rnd() < 0.6, col: pick(['#2563eb', '#38bdf8', '#0ea5e9', '#1d4ed8']), q: null, cried: false, fall: -1}); }
+function addEtr(x){ journos.push({kind: 'etr', ch: Math.floor(rnd()*6), x, y: WATER - 2, w: 70, h: 70, bob: rnd()*6, surf: rnd() < 0.6, col: pick(['#2563eb', '#38bdf8', '#0ea5e9', '#1d4ed8']), q: null, cried: false, fall: -1}); }
 const worldSpeed = () => P.speed/Z;   // la vitesse se règle en px écran/s ; en px monde elle dépend de la caméra
 // Chaque motif reçoit x (bord droit du monde) et renvoie sa longueur en px monde. Les durées sont en secondes de vol, les altitudes relatives à la limite et à l'eau.
 const PATTERNS = [
@@ -865,6 +875,8 @@ function camStep(dt){
 }
 function update(dt){
   realT += dt; camStep(dt); updateFx(dt); updateTrans(dt); if (state === 'inter') interT += dt;
+  hitFlash = Math.max(0, hitFlash - dt); hitT = Math.max(0, hitT - dt); panT = Math.max(0, panT - dt); pointT = Math.max(0, pointT - dt); bargeT = Math.max(0, bargeT - dt); landT = Math.max(0, landT - dt); remountT = Math.max(0, remountT - dt);
+  if (onWater && !prevOnWater) landT = 0.3; prevOnWater = onWater;
   if (state === 'final'){ updateFinal(dt); return; }
   if (state !== 'play' || paused) return;
   if (card){ cardT += dt; if (emitter){ emitter.frT += dt; if (emitter.frT > 0.5){ emitter.frT = 0; emitter.fr = (emitter.fr + 1) % emitter.E.frames.length; } } return; }   // une carte est affichée : le jeu attend
@@ -906,15 +918,15 @@ function update(dt){
     const cy = j.kind === 'boat' ? j.y - 48 : j.kind === 'tramp' ? j.y - 84 - j.jy : j.kind === 'jet' ? j.y - 36 : j.kind === 'etr' ? j.y - 38 : j.y;
     if (!j.passed && j.x + j.w/2 < mx - 40){ j.passed = true; if (j.kind === 'boat') tutoBoats++; if (j.kind === 'boat' && !j.q && !j.theme && !j.hitDone && phase === 'fly') marineSays(); }   // une barque muette sautée : Marine a le dernier mot
     if (j.kind === 'etr'){   // l'étranger : Marine le désigne en criant, et si elle le frappe il tombe à l'eau, les sondages montent, elle remonte sur sa planche
-      if (!j.cried && j.x - mx < worldSpeed()*1.3 && j.x > mx){ j.cried = true; if (!mBubble){ const t = drawLine('etr', ETR_CRIES); lastPhrase = t; mBubble = {t, life: 1.6}; sfxP3('alert'); } }
-      if (j.fall < 0 && Math.abs(j.x - mx) < j.w/2 + 22 && Math.abs(cy - my) < j.h/2 + 28){ j.fall = 0; j.hitDone = true; stats.etr++; addPoll(P.etrGain); sfxP3('bonk'); shake(5); fx.push({kind: 'flash', x: j.x, y: cy, t: 0});
+      if (!j.cried && j.x - mx < worldSpeed()*1.3 && j.x > mx){ j.cried = true; pointT = 1.1; if (!mBubble){ const t = drawLine('etr', ETR_CRIES); lastPhrase = t; mBubble = {t, life: 1.6}; sfxP3('alert'); } }
+      if (j.fall < 0 && Math.abs(j.x - mx) < j.w/2 + 22 && Math.abs(cy - my) < j.h/2 + 28){ j.fall = 0; j.hitDone = true; bargeT = 0.4; stats.etr++; addPoll(P.etrGain); sfxP3('bonk'); shake(5); fx.push({kind: 'flash', x: j.x, y: cy, t: 0});
         pop('+' + fmtPt(P.etrGain) + ' pt · l’électorat apprécie', GOLD, mx + 10, my - 60, true); remount(); }
       if (j.fall >= 0){ j.fall += dt; if (!j.splashed && j.fall > 0.35){ j.splashed = true; fx.push({kind: 'splash', x: j.x - 30, y: WATER, t: 0, big: true}); sfxP3('plouf'); } }
       continue;
     }
     const hull = j.kind === 'tramp' && Math.abs(j.x - mx) < 70 + 22 && Math.abs(j.y - 48 - my) < 40 + 28;
     if (inv <= 0 && !j.hitDone && (hull || (Math.abs(j.x - mx) < j.w/2 + 22 && Math.abs(cy - my) < j.h/2 + 28))){
-      j.hitDone = true; inv = P.hitInv; stats.hits++; sfxP3('hit'); fx.push({kind: 'flash', x: j.x, y: cy, t: 0});
+      j.hitDone = true; inv = P.hitInv; stats.hits++; sfxP3('hit'); fx.push({kind: 'flash', x: j.x, y: cy, t: 0}); hitFlash = 0.18; hitT = 0.45;   // flash blanc et grimace
       if (kevlarLeft > 0){ kevlarLeft--; stats.kevlar++; pop('Kevlar ! (' + kevlarLeft + ' restant' + (kevlarLeft > 1 ? 's' : '') + ')', '#bdf5c9', mx + 10, my - 60, true); }   // la veste en kevlar encaisse
       else if (losePoll(P.hitPoll, mx + 10, my - 60)) return;
     }
@@ -931,7 +943,7 @@ function losePoll(v, x, y){
   if (!fallen && poll < P.pollFall){ fallen = true; sfxP3('sink'); shake(12); fx.push({kind: 'splash', x: PX() - 20, y: WATER, t: 0, big: true}); pop('À l’eau !', '#ff6b6b', PX() + 10, py - 110, true); }
   return false;
 }
-function remount(){ if (!fallen) return; fallen = false; pop('Remontée sur la planche !', '#bdf5c9', PX() + 10, py - 110, true); sfxP3('fanfare'); }
+function remount(){ if (!fallen) return; fallen = false; remountT = 0.5; pop('Remontée sur la planche !', '#bdf5c9', PX() + 10, py - 110, true); sfxP3('fanfare'); }
 // Marine répond : une bulle au-dessus d'elle, jamais la même deux fois de suite, jamais par-dessus une question de journaliste
 function marineSays(){
   if (mBubble) return; const mx = PX(); if (journos.some(j => j.q && !j.passed && j.x - mx < worldSpeed()*1.1 && j.x - mx > -30)) return;
@@ -987,7 +999,7 @@ function updateStorm(dt){
     } } }
   for (const c of pans){ if (c.delay > 0){ c.delay -= dt; if (c.delay <= 0) sfxP3(e.E.sfx); continue; }
 c.vy += c.g*dt; c.x += c.vx*dt; c.y += c.vy*dt; c.rot += c.spin*dt;
-    if (!c.hit && panInv <= 0 && Math.hypot(c.x - mx, c.y - my) < 42){ c.hit = true; cass++; stats.cass++; panInv = 0.3; sfxP3('clank'); fx.push({kind: 'flash', x: c.x, y: c.y, t: 0});
+    if (!c.hit && panInv <= 0 && Math.hypot(c.x - mx, c.y - my) < 42){ c.hit = true; cass++; stats.cass++; panInv = 0.3; panT = 0.7; sfxP3('clank'); fx.push({kind: 'flash', x: c.x, y: c.y, t: 0});
       if (kevlarLeft > 0){ kevlarLeft--; stats.kevlar++; pop('Kevlar ! (' + kevlarLeft + ')', '#bdf5c9', mx + 10, my - 60, true); }
       else if (losePoll(P.panPoll, mx + 10, my - 60)) return; } }
   for (const c of pans) if (c.kind !== 'shot' && !c.hit && c.y > WATER - 4 && !c.splashed){ c.splashed = true; fx.push({kind: 'splash', x: c.x, y: WATER, t: 0, big: false}); sfxP3('plouf'); }
@@ -1065,6 +1077,7 @@ function drawChase(){
 }
 // la girouette d'or : une flèche qui pointe dans son sens de vol, N et S (dans le monde pendant la course, à l'écran sur les cartes)
 function drawVaneIcon(ox, oy, ang, s){
+  if (has5('vane0')){ const left = Math.cos(ang) < 0; spr(left ? 'vane2' : 'vane0', ox, oy, s*0.36, false, left ? ang - Math.PI : ang); return; }   // le coq d'or ; retourné, il sursaute
   ctx.save(); ctx.translate(ox, oy); ctx.scale(s, s); ctx.rotate(ang); ctx.fillStyle = '#f2b630'; ctx.strokeStyle = '#8a5a00'; ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(-34, 0); ctx.lineTo(-14, -6); ctx.lineTo(-14, 6); ctx.closePath(); ctx.fill(); ctx.stroke();   // empennage
   ctx.beginPath(); ctx.moveTo(-16, -3); ctx.lineTo(16, -3); ctx.lineTo(16, 3); ctx.lineTo(-16, 3); ctx.closePath(); ctx.fill(); ctx.stroke();   // hampe
@@ -1115,6 +1128,7 @@ function drawTrans(){
 function drawGate(){
   if (!gate) return; const x = gate.x, top = P.ceil + 80, k = 1/Z, pulse = 0.5 + 0.5*Math.sin(realT*5), glow = ctx.createRadialGradient(x, (top + WATER)/2, 20, x, (top + WATER)/2, 420);
   glow.addColorStop(0, 'rgba(255,214,102,' + (0.35 + 0.15*pulse) + ')'); glow.addColorStop(1, 'rgba(255,214,102,0)'); ctx.fillStyle = glow; ctx.fillRect(x - 420, top - 200, 840, WATER - top + 400);
+  if (has5('mtArch')){ spr('mtHouse', x + 330, WATER + 14, 1.45); spr('mtArch', x, WATER + 12, 1.6); text('MONTRETOUT', x, WATER + 12 - 176*1.6 + 46, 15*k, 900, INK, 'center', UIT); return; }   // la bâtisse Second Empire sur sa barge, l'arche d'entrée devant
   ctx.fillStyle = 'rgba(20,33,61,.55)'; ctx.fillRect(x - 86, top, 172, WATER - top);   // le rideau sombre : on ne voit pas dedans
   for (let i=0;i<6;i++){ ctx.fillStyle = 'rgba(255,214,102,' + (0.25 + 0.2*Math.sin(realT*6 + i)) + ')'; ctx.fillRect(x - 70 + i*24, top, 10, WATER - top); }   // lamelles dorées
   ctx.fillStyle = PINK; ctx.fillRect(x - 118, top, 32, WATER - top + 8); ctx.fillRect(x + 86, top, 32, WATER - top + 8); ctx.lineWidth = 4; ctx.strokeStyle = INK; ctx.strokeRect(x - 118, top, 32, WATER - top + 8); ctx.strokeRect(x + 86, top, 32, WATER - top + 8);   // les montants
@@ -1125,6 +1139,7 @@ function drawGate(){
   for (let i=0;i<8;i++){ const a = realT*4 + i*0.8, bx = x + Math.cos(a)*150, by = top - 76 + Math.sin(a*1.7)*14; ctx.fillStyle = i % 2 ? GOLD : '#fff'; ctx.beginPath(); ctx.arc(bx, by, 5 + 2*pulse, 0, 7); ctx.fill(); }   // ampoules
 }
 function endLevel(reason){
+  if (reason === 'out') sinkAt = realT;
   endReason = reason; musicStop(); if (reason === 'out'){ sfxP3('sink'); shake(14); }
   recapT0 = realT;
   if (mode !== 'camp'){ state = 'recap'; return; }
@@ -1175,13 +1190,14 @@ function tileRow(a, inset, x0, x1, y, tw, th, off){
 function drawSky(){
   const a = ATLAS.sky, im = atlasImg(a);
   ctx.fillStyle = '#2a5fb8'; ctx.fillRect(-200, -600, VWW + 400, 600);   // au-dessus du monde (visible quand la caméra recule)
-  if (im){ ctx.imageSmoothingEnabled = true; ctx.drawImage(im, a[0] + 2, a[1], a[2] - 4, a[3], -400, 0, VWW + 400, HZ + 6); }
+  if (sky5Ready){ ctx.imageSmoothingEnabled = true; ctx.drawImage(sky5, 0, 0, 768, 500, -400, 0, VWW + 800, HZ + 6); }
+  else if (im){ ctx.imageSmoothingEnabled = true; ctx.drawImage(im, a[0] + 2, a[1], a[2] - 4, a[3], -400, 0, VWW + 400, HZ + 6); }
   else { const g = ctx.createLinearGradient(0, 0, 0, HZ); SKY.forEach((c, i) => g.addColorStop(i/(SKY.length - 1), c)); ctx.fillStyle = g; ctx.fillRect(0, 0, VWW, HZ + 6); }
-  spr('sun', VWW - 130, 70, 1);
+  if (has5('nSun')) spr('nSun', VWW - 150, 120, 0.9); else spr('sun', VWW - 130, 70, 1);
   const off = scrollX*0.12 + realT*6;
-  for (let i=0;i<9;i++){ const span = VWW + 600, cx = ((i*233 - off) % span + span) % span - 300; spr('cloud' + (i % 8), cx, 40 + (i*47) % 170, 0.5 + 0.12*(i % 3)); }
+  for (let i=0;i<9;i++){ const span = VWW + 600, cx = ((i*233 - off) % span + span) % span - 300; if (has5('nCloud0')) spr('nCloud' + (i % 4), cx, 150 + (i*47) % 150, 0.55 + 0.12*(i % 3)); else spr('cloud' + (i % 8), cx, 40 + (i*47) % 170, 0.5 + 0.12*(i % 3)); }
   const off2 = scrollX*0.45;   // nuages proches, plus rapides, pour la vitesse
-  ctx.save(); ctx.globalAlpha = 0.7; for (let i=0;i<4;i++){ const span = VWW + 800, cx = ((i*410 + 150 - off2) % span + span) % span - 400; spr('cloud' + (5 + i % 3), cx, 60 + (i*73) % 140, 0.95 + 0.15*(i % 2)); } ctx.restore();
+  ctx.save(); ctx.globalAlpha = 0.7; for (let i=0;i<4;i++){ const span = VWW + 800, cx = ((i*410 + 150 - off2) % span + span) % span - 400; if (has5('nCloud0')) spr('nCloud' + ((i + 1) % 4), cx, 170 + (i*73) % 120, 0.9 + 0.15*(i % 2)); else spr('cloud' + (5 + i % 3), cx, 60 + (i*73) % 140, 0.95 + 0.15*(i % 2)); } ctx.restore();
 }
 let FARH = null;
 function farHouses(sc){
@@ -1192,7 +1208,7 @@ function farHouses(sc){
   return (FARH = c);
 }
 function drawFar(){
-  const sa = ATLAS.seaFar;
+  const sa = sea5Ready ? ATLAS.seaF5 : ATLAS.seaFar;
   const hg = WATER - HZ + 12, tw = sa[2]*hg/sa[3];
   if (!tileRow(sa, 0, -400, VWW, HZ, tw, hg, scrollX*0.3)){ ctx.fillStyle = '#4593d6'; ctx.fillRect(0, HZ, VWW, hg); }
   const hz = ctx.createLinearGradient(0, HZ, 0, HZ + 50); hz.addColorStop(0, 'rgba(210,235,252,.45)'); hz.addColorStop(1, 'rgba(210,235,252,0)'); ctx.fillStyle = hz; ctx.fillRect(0, HZ, VWW, 50);
@@ -1200,12 +1216,15 @@ function drawFar(){
     const g2 = ctx.createLinearGradient(0, HZ - 70, 0, HZ + 8); g2.addColorStop(0, 'rgba(200,226,248,0)'); g2.addColorStop(0.45, 'rgba(200,226,248,.5)'); g2.addColorStop(1, 'rgba(200,226,248,.6)');
     ctx.fillStyle = g2; ctx.fillRect(-400, HZ - 70, VWW + 400, 78);
     const off = scrollX*0.22, st = 900;
-    for (let j = Math.floor(off/st) - 1; j <= Math.ceil((VWW + off)/st) + 1; j++){ const h = hash(j*2.3); if (h > 0.75) continue; const ix = j*st - off + hash(j)*300, iw = 120 + hash(j+2)*160, ih = 10 + hash(j+3)*14;
+    if (has5('far0')){ const F = ['far0', 'far1', 'far2', 'far4', 'far0', 'far3', 'far5']; ctx.save(); ctx.globalAlpha = 0.72;   // îlots, phare, cap : lointains, pâlis
+      for (let j = Math.floor(off/st) - 1; j <= Math.ceil((VWW + off)/st) + 1; j++){ if (hash(j*2.3) > 0.8) continue; spr(F[Math.floor(hash(j + 4)*F.length)], j*st - off + hash(j)*300, HZ + 6, 0.55); }
+      ctx.restore(); ctx.fillStyle = 'rgba(200,226,248,.35)'; ctx.fillRect(-400, HZ - 90, VWW + 800, 96); }
+    else for (let j = Math.floor(off/st) - 1; j <= Math.ceil((VWW + off)/st) + 1; j++){ const h = hash(j*2.3); if (h > 0.75) continue; const ix = j*st - off + hash(j)*300, iw = 120 + hash(j+2)*160, ih = 10 + hash(j+3)*14;
       ctx.fillStyle = 'rgba(70,110,140,.75)'; ctx.beginPath(); ctx.moveTo(ix - iw/2, HZ + 3); ctx.quadraticCurveTo(ix - iw/4, HZ + 3 - ih*1.6, ix, HZ + 3 - ih); ctx.quadraticCurveTo(ix + iw/3, HZ + 3 - ih*0.5, ix + iw/2, HZ + 3); ctx.closePath(); ctx.fill();   // îlot
       if (hash(j+7) > 0.55){ ctx.fillStyle = '#fff'; ctx.fillRect(ix - 3, HZ - ih - 24, 6, 26); ctx.fillStyle = '#e3342f'; ctx.fillRect(ix - 3, HZ - ih - 16, 6, 6); ctx.fillRect(ix - 3, HZ - ih - 4, 6, 6); ctx.fillStyle = 'rgba(255,240,170,' + (0.5 + 0.5*Math.sin(realT*3 + j)) + ')'; ctx.beginPath(); ctx.arc(ix, HZ - ih - 26, 3.5, 0, 7); ctx.fill(); } }   // le phare
     ctx.strokeStyle = 'rgba(20,33,61,.55)'; ctx.lineWidth = 1.5; const ob = scrollX*0.5, sb = 420;   // oiseaux
     for (let j = Math.floor(ob/sb) - 1; j <= Math.ceil((VWW + ob)/sb) + 1; j++){ if (hash(j+11) > 0.6) continue; const bx = j*sb - ob + hash(j+5)*200, by = HZ - 180 - hash(j+6)*160 + Math.sin(realT*1.5 + j)*6, f = Math.sin(realT*7 + j)*3;
-      ctx.beginPath(); ctx.moveTo(bx - 8, by - f); ctx.quadraticCurveTo(bx - 4, by + 2, bx, by); ctx.quadraticCurveTo(bx + 4, by + 2, bx + 8, by - f); ctx.stroke(); }
+      if (has5('nGull0')) spr(Math.floor(realT*5 + j) % 2 ? 'nGull1' : 'nGull0', bx, by, 0.3); else { ctx.beginPath(); ctx.moveTo(bx - 8, by - f); ctx.quadraticCurveTo(bx - 4, by + 2, bx, by); ctx.quadraticCurveTo(bx + 4, by + 2, bx + 8, by - f); ctx.stroke(); } }
   } else {
     const hs = 0.8, tw3 = SW('horizon', hs), off = scrollX*0.15;
     for (let i = Math.floor(off/tw3) - 1; i*tw3 - off < VWW; i++) spr('horizon', i*tw3 - off, HZ + 4, hs);
@@ -1214,7 +1233,7 @@ function drawFar(){
   }
 }
 function drawNear(){
-  const a = ATLAS.seaNear, h = WH - WATER + 30, tw = a[2]*h/a[3];
+  const a = sea5Ready ? ATLAS.seaN5 : ATLAS.seaNear, h = WH - WATER + 30, tw = a[2]*h/a[3];
   if (!tileRow(a, 0, -400, VWW, WATER - 24, tw, h, scrollX*1.15)){ ctx.fillStyle = '#2b70b8'; ctx.fillRect(-400, WATER - 10, VWW + 400, WH - WATER + 10); }
   const fa = ATLAS.foam, fh = 18, ftw = fa[2]*fh/fa[3]; ctx.save(); ctx.globalAlpha = 0.85; tileRow(fa, 0, -400, VWW, WATER - 22, ftw, fh, scrollX*1.4); ctx.restore();
   ctx.fillStyle = '#1d4f8f'; ctx.fillRect(-400, WH, VWW + 400, 400);   // sous le monde (visible quand la caméra recule)
@@ -1258,6 +1277,7 @@ function drawPerson(x, y, col){   // un passant (bleu) : tête, buste coloré, b
 }
 function drawJourno(j){
   const x = j.x, bob = Math.sin(realT*2.2 + j.bob)*3;
+  if (j.kind === 'etr' && has5('e0s')){ spr('e' + j.ch + (j.fall >= 0 ? 'f' : 's'), x, j.y + bob + 8, 0.6); return; }   // six vacanciers, debout puis renversés
   if (j.kind === 'etr'){   // l'étranger : planche de surf ou petit bateau coloré ; frappé, il bascule et tombe à l'eau, la planche reste
     const fy = j.fall >= 0 ? clamp(j.fall/0.45, 0, 1) : 0, y = j.y + bob;
     if (j.surf){ ctx.save(); ctx.translate(x, y + 2); ctx.rotate(-0.05 + fy*0.35); ctx.fillStyle = j.col; rr(-44, -6, 88, 12, 6); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; ctx.stroke(); ctx.fillStyle = '#fff'; rr(-30, -3, 24, 4, 2); ctx.fill(); ctx.restore(); }
@@ -1270,6 +1290,10 @@ function drawJourno(j){
     ctx.fillStyle = 'rgba(214,59,59,' + (0.5 + 0.5*k) + ')'; rr(VWW - 56, ay - 26, 44, 52, 8); ctx.fill();
     outText('!', VWW - 34, ay + 1, 36, 900, '#fff'); return;
   }
+  if (j.kind === 'boat' && j.theme && has5('tb0')){ spr('tb' + curLevel().n, x, j.y + bob + 10, 0.85); return; }
+  if (j.kind === 'boat' && has5('jb0')){ spr(j.hitDone ? 'jbHit' : 'jb' + (j.crew || 0), x, j.y + bob + 10, 0.8); drawQuestion(j, x, j.y - 120 + bob); return; }
+  if (j.kind === 'tramp' && has5('jt0')){ if (j.crouch) spr('jt0', x, j.y + bob + 10, 0.8); else { spr('jtBoat', x, j.y + bob + 10, 0.8); spr('jtJump', x, j.y - 48 - j.jy + bob, 0.8); } drawQuestion(j, x, j.y - 120 - j.jy + bob); return; }
+  if (j.kind === 'jet' && has5('jj0')){ const y = j.y + bob*0.6; spr(Math.floor(realT*10) % 2 ? 'jj1' : 'jj0', x, y - 18, 0.62); drawQuestion(j, x, y - 60); return; }
   if (j.kind === 'boat' && j.theme){   // la barque du thème : une coque sombre et, dessus, l'objet du thème (cadre image en attendant le sprite)
     const y = j.y + bob; ctx.save(); ctx.translate(x, y); ctx.fillStyle = INK; ctx.beginPath(); ctx.moveTo(-92, -22); ctx.lineTo(92, -22); ctx.lineTo(70, 12); ctx.lineTo(-70, 12); ctx.closePath(); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#000'; ctx.stroke(); ctx.fillStyle = GOLD; ctx.fillRect(-80, -19, 160, 5); ctx.restore();
     imgBox(x - 88, y - 126, 176, 102, IMG.boat[curLevel().n], 8/Z);
@@ -1301,6 +1325,7 @@ function drawJourno(j){
   if (j.kind === 'glider'){   // perspective : il arrive de l'horizon tout petit, est à sa taille à la colonne de Marine, puis grossit au premier plan et sort ahuri
     const mx = PX(), k = j.x > mx ? clamp((j.x - mx)/Math.max(1, VWW - mx), 0, 1) : 0, k2 = j.x < mx ? clamp((mx - j.x)/(mx + 220), 0, 1) : 0;
     const sc = (j.x > mx ? lerp(1, 0.28, k) : 1 + 1.3*k2)*1.3, y = (j.x > mx ? lerp(j.y, HZ + 14, k*k) : j.y + 80*k2) + bob, w = 48;
+    if (has5('jg0')){ ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); ctx.rotate(-0.04 + k2*0.25); spr(Math.floor(realT*4 + j.bob) % 2 ? 'jg1' : 'jg0', 0, 6, 0.5); ctx.restore(); if (k2 === 0) drawQuestion(j, x, y - 40*sc); return; }
     ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); ctx.rotate(-0.08 + k2*0.25);
     ctx.fillStyle = j.col; ctx.beginPath(); ctx.moveTo(-w, 6); ctx.lineTo(0, -16); ctx.lineTo(w, 6); ctx.closePath(); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(-w*0.6, 2); ctx.lineTo(0, -10); ctx.lineTo(w*0.6, 2); ctx.closePath(); ctx.fill();
@@ -1313,6 +1338,7 @@ function drawJourno(j){
   }
   // hélicoptère (rouge), ×1.7
   const y = j.y + bob*0.5;
+  if (has5('jh0')){ spr(Math.floor(realT*20) % 2 ? 'jh1' : 'jh0', x, y, 0.75); if (j.track > 0){ ctx.fillStyle = '#d63b3b'; ctx.beginPath(); ctx.arc(x - 70, y - 4, 5 + 2*Math.sin(realT*20), 0, 7); ctx.fill(); } drawQuestion(j, x, y - 56); return; }
   ctx.save(); ctx.translate(x, y); ctx.scale(1.7, 1.7);
   ctx.strokeStyle = '#14213d'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-44, -2); ctx.lineTo(-18, -2); ctx.stroke();   // queue
   ctx.fillStyle = '#14213d'; ctx.fillRect(-50, -9, 7, 12);
@@ -1344,6 +1370,7 @@ function drawStormSky(){
 function drawEmitter(){
   const e = emitter, E = e.E, bob = Math.sin(realT*1.3)*3;
   if (e.kind === 'bard'){ spr('bkite0', e.x + 40, e.y - 110 + bob, 0.32); spr(E.frames[e.fr], e.x, e.y + 40 + bob, E.s); }
+  else if (E.f5 && has5(E.f5[0])) spr(E.f5[e.fr % E.f5.length], e.x, WATER + 12 + bob, E.s5);
   else spr(E.frames[e.fr], e.x, e.y + bob, E.s);
   // les touches restantes
   const n = P.useBubbles ? Math.round(P.stormHits) : 0; for (let i=0;i<n;i++){ ctx.fillStyle = i < e.hits ? '#16a34a' : 'rgba(255,255,255,.35)'; ctx.beginPath(); ctx.arc(e.x - (n - 1)*9 + i*18, e.y - E.h - 16, 6, 0, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#14213d'; ctx.stroke(); }
@@ -1366,6 +1393,7 @@ function drawPan(c){
     ctx.fillStyle = 'rgba(214,59,59,.6)'; ctx.beginPath();
     for (let t = 0.1; t < 3; t += 0.12){ const x = c.x + c.vx*t, y = c.y + c.vy*t + 0.5*c.g*t*t; if (y > WATER || x < -40) break; ctx.moveTo(x + 4, y); ctx.arc(x, y, 4, 0, 7); }
     ctx.fill(); ctx.restore(); return; }
+  if (has5('nPan0')){ const n = c.w.startsWith('coc') ? 'nPan1' : (parseInt(c.w.slice(3)) % 2 ? 'nPan2' : 'nPan0'); spr(n, c.x, c.y, c.s*0.42, false, c.rot); return; }
   spr(c.w, c.x, c.y, c.s, false, c.rot);
 }
 function drawBubble(b){
@@ -1421,6 +1449,18 @@ function drawBanner(){
   text(S.sub, VW/2, y + 61, 12, 700, '#5b6475', 'center');
   ctx.restore();
 }
+// la pose de Marine : chute et noyade, puis les réactions (choc, casserole, coup d'épaule, doigt pointé, girouette, réplique), puis le vol
+function marineFrame(){
+  if (sinkAt >= 0){ const t = realT - sinkAt; return t < 0.5 ? 'mSink0' : t < 1.1 ? 'mSink1' : 'mHead'; }
+  if (remountT > 0) return 'mRemount';
+  if (fallen) return Math.floor(realT*6) % 2 ? 'mDrag1' : 'mDrag0';
+  if (hitT > 0) return 'mHit'; if (panT > 0) return 'mDazed'; if (bargeT > 0) return 'mBarge'; if (pointT > 0) return 'mPoint';
+  if (phase === 'chase' && chase && chase.caught) return 'mCatch';
+  if (mBubble) return 'mTalk'; if (landT > 0) return 'mLand';
+  if (onWater) return Math.floor(realT*8) % 2 ? 'mRide1' : 'mRide0';
+  return vy < -80 ? 'mClimb' : vy > 260 ? 'mDive' : 'mGlide';
+}
+function kiteFrame5(){ if (ctrl === 'tap' && wind <= 0 && !onWater) return 'nk3'; if ((ctrl === 'tap' && holding) || vy < -60) return 'nk1'; return Math.sin(realT*0.9) > 0.75 ? 'nk2' : 'nk0'; }
 function kiteFrame(){ if (ctrl === 'tap' && wind <= 0 && !onWater) return 'kite3'; if (ctrl === 'tap' && holding) return Math.floor(realT*8) % 2 ? 'kite3' : 'kite1'; return vy < -60 ? 'kite1' : Math.sin(realT*0.9) > 0.75 ? 'kite2' : 'kite0'; }
 const RS = 0.69;
 function drawMarine(){
@@ -1436,15 +1476,16 @@ function drawMarine(){
   const sag = ctrl === 'tap' && wind <= 0 && !onWater ? 1 : 0;   // jauge vide : le kite s'affaisse
   const dir = ctrl === 'wind' ? aVane : clamp(-vy/P.vDown, -1, 1) - sag*0.6;
   const tilt = -dir*0.2;
-  const kn = kiteFrame(), ks = 0.69*0.56, kx = x + 90 + dir*30 + (shake ? (Math.random() - 0.5)*shake*2 : 0), ky = y - 96 - dir*30 + Math.sin(realT*1.7)*4 + (shake ? (Math.random() - 0.5)*shake*2 : 0);
-  const le = LE2.airN, lx = x + le[0]*RS, ly = y + le[1]*RS;
-  ctx.save(); ctx.translate(kx, ky); ctx.rotate(-dir*0.55); ctx.translate(-kx, -ky);
+  const fr5 = has5('mRide0') ? marineFrame() : null, bar = fr5 && META5[fr5] && META5[fr5].bar;
+  const kn = fr5 ? kiteFrame5() : kiteFrame(), ks = fr5 ? 0.9 : 0.69*0.56, kx = x + 90 + dir*30 + (shake ? (Math.random() - 0.5)*shake*2 : 0), ky = y - 96 - dir*30 + Math.sin(realT*1.7)*4 + (shake ? (Math.random() - 0.5)*shake*2 : 0);
+  const le = LE2.airN, by0 = fallen && onWater ? WATER + 10 : y + 68, lx = bar ? x + bar[0]*MS : x + le[0]*RS, ly = bar ? by0 + bar[1]*MS : y + le[1]*RS;
+  if (fr5 !== 'mHead'){ ctx.save(); ctx.translate(kx, ky); ctx.rotate(-dir*0.55); ctx.translate(-kx, -ky);
   ctx.strokeStyle = 'rgba(236,241,248,.9)'; ctx.lineWidth = 1; ctx.beginPath();
-  for (const p of KT2[kn]){ const tx = kx + p[0]*ks, ty = ky + p[1]*ks; ctx.moveTo(lx, ly); ctx.lineTo(tx, ty); ctx.moveTo(lx + 3, ly + 3); ctx.lineTo(tx + 3, ty); }
+  for (const p of (fr5 ? META5[kn].tips : KT2[kn])){ const tx = kx + p[0]*ks, ty = ky + p[1]*ks; ctx.moveTo(lx, ly); ctx.lineTo(tx, ty); ctx.moveTo(lx + 3, ly + 3); ctx.lineTo(tx + 3, ty); }
   ctx.stroke();
   spr(kn, kx, ky, ks);
-  ctx.restore();
-  if (phase === 'chase'){   // planche d'argent étincelante : Marine est portée par le scandale
+  ctx.restore(); }
+  if (phase === 'chase' && !fr5){   // planche d'argent étincelante (anciens sprites seulement) : Marine est portée par le scandale
     ctx.save(); ctx.translate(x, y + 60); ctx.rotate(tilt*0.5);
     const g = ctx.createLinearGradient(-60, 0, 44, 0); g.addColorStop(0, '#9aa4b2'); g.addColorStop(0.35, '#ffffff'); g.addColorStop(0.6, '#c9d2dc'); g.addColorStop(1, '#8e98a6');
     ctx.fillStyle = g; rr(-62, 2, 108, 13, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#4b5563'; ctx.stroke();
@@ -1452,12 +1493,13 @@ function drawMarine(){
     ctx.restore();
     for (let i=0;i<3;i++){ const a = realT*3 + i*2.1, sx = x - 70 + ((realT*60 + i*37) % 120), sy = y + 50 + Math.sin(a)*10, r = 2 + (Math.sin(a*2) + 1)*2; ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.moveTo(sx, sy - r); ctx.lineTo(sx + r*0.35, sy - r*0.35); ctx.lineTo(sx + r, sy); ctx.lineTo(sx + r*0.35, sy + r*0.35); ctx.lineTo(sx, sy + r); ctx.lineTo(sx - r*0.35, sy + r*0.35); ctx.lineTo(sx - r, sy); ctx.lineTo(sx - r*0.35, sy - r*0.35); ctx.closePath(); ctx.fill(); }
   }
-  if (fallen){   // tombée de la planche (placeholder en attendant les sprites) : la planche file devant, Marine traîne derrière, à plat, tirée par la voile
+  if (fr5){ spr(fr5, x, by0, MS); if (fallen && onWater) for (let i=0;i<3;i++){ const a = realT*9 + i*1.6; ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(x - 70 - i*14 + Math.sin(a)*4, WATER - 4 - Math.abs(Math.sin(a))*14, 4 + i, 0, 7); ctx.fill(); } }   // les sprites du proto 3
+  else if (fallen){   // tombée de la planche (placeholder en attendant les sprites) : la planche file devant, Marine traîne derrière, à plat, tirée par la voile
     ctx.save(); ctx.translate(x + 26, y + 66); ctx.rotate(tilt*0.5 - 0.1); ctx.fillStyle = '#f2b630'; rr(-54, -6, 108, 13, 7); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke(); ctx.restore();
     ctx.save(); ctx.translate(x - 34, y + 74); ctx.rotate(1.15 + Math.sin(realT*7)*0.08); spr('airN', 0, 0, RS*0.95); ctx.restore();
     if (onWater) for (let i=0;i<4;i++){ const a = realT*9 + i*1.6; ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(x - 50 - i*14 + Math.sin(a)*4, WATER - 6 - Math.abs(Math.sin(a))*18, 4 + i, 0, 7); ctx.fill(); }   // gerbe d'eau
   } else spr('airN', x, y + 60, RS, false, tilt);
-  if (mBubble){ ctx.save(); ctx.globalAlpha = clamp(mBubble.life/0.3, 0, 1); speech(mBubble.t, x + 24, y - 44, '#fde68a'); ctx.restore(); }   // la réplique de Marine
+  if (mBubble){ ctx.save(); ctx.globalAlpha = clamp(mBubble.life/0.3, 0, 1); speech(mBubble.t, x + 24, y - (fr5 ? 70 : 44), '#fde68a'); ctx.restore(); }   // la réplique de Marine
   // jauge de vent sous la planche : bleue, orange sous 50 %, rouge sous 20 %, clignote vide ; argent (infini) pendant la course
   { const k = 1/Z, gw = 44*k, gh = 5*k, gx = x - gw/2 - 6, gy = y + 82;   // jauge de vent, petite et discrète, sous la planche
     const wc = phase === 'chase' ? '#c9d2dc' : wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.2 ? '#d63b3b' : wind < 0.5 ? '#f2b630' : '#2563eb';
@@ -1705,6 +1747,7 @@ function draw(){
   for (const b of bubbles) drawBubble(b);
   drawMarine(); for (const j of journos) if (j.kind === 'glider' && j.x < PX()) drawJourno(j); for (const c of pans) if (!(c.delay > 0)) drawPan(c); drawFx(); drawPops();
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);   // l'interface, à l'échelle de l'écran
+  if (hitFlash > 0){ ctx.fillStyle = 'rgba(255,255,255,' + (0.6*hitFlash/0.18) + ')'; ctx.fillRect(0, 0, VW, H); }   // choc avec un journaliste : flash blanc
   if (ctrl === 'wind') drawVane();
   if (state !== 'final' && state !== 'finalRecap'){ drawHud(); if (phase === 'chase' && chase && !card) drawChaseHud(); if (bannerT > 0) drawBanner(); if (card && state === 'play') drawCard(); }
   if (paused){ ctx.fillStyle = 'rgba(15,29,51,.4)'; ctx.fillRect(0, 0, VW, H); outText('Pause', VW/2, H/2, 40, 900, '#fff'); }

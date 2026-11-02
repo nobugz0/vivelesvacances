@@ -1,0 +1,178 @@
+"""Proto 3 : découpe des planches générées (fond magenta) en sprites, atlas5.png + atlas5.js.
+
+Usage : python3 cut.py            (depuis n'importe où)
+Entrées : sheets/<id>_*_v<n>.png (la variante retenue est dans PICK)
+Sorties : ../../game/atlas5.png, ../../game/sky5.png, ../../game/sea5.png, ../../game/atlas5.js (entrées ATLAS + métadonnées),
+          contact5.png (planche contact pour vérifier la découpe)
+Toutes les images sont stockées à la moitié de la taille générée (1 pixel d'art = 2 px).
+"""
+import glob, json, os
+import numpy as np
+from PIL import Image, ImageDraw
+from scipy import ndimage as ndi
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+GAME = os.path.join(HERE, '..', '..', 'game')
+SHEETS = os.path.join(HERE, 'sheets')
+PICK = {'m_fly': 1, 'm_react': 2, 'm_fall': 1}   # variante retenue (1 par défaut)
+HALF = 0.5
+
+def sheet(id_):
+    v = PICK.get(id_, 1)
+    fs = sorted(glob.glob(os.path.join(SHEETS, f'{id_}_*_v{v}.png')))
+    if not fs: raise SystemExit(f'planche introuvable : {id_} v{v}')
+    return np.array(Image.open(fs[-1]).convert('RGB')).astype(np.int16)
+
+def key(a):
+    """alpha : 0 sur le magenta (et ses franges), 255 ailleurs"""
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    mag = (r > 150) & (b > 150) & (g < 110) & (np.abs(r - b) < 90)
+    fringe = (r > 120) & (b > 120) & (g < (np.minimum(r, b) - 60))
+    alpha = np.where(mag | fringe, 0, 255).astype(np.uint8)
+    return alpha
+
+def clean(alpha, min_area):
+    lab, n = ndi.label(alpha > 0)
+    if n == 0: return alpha, []
+    sizes = ndi.sum(alpha > 0, lab, range(1, n + 1))
+    keep = np.zeros(n + 1, bool); keep[1:] = (sizes >= min_area) & (sizes >= 0.02*sizes.max())   # pas de poussières isolées
+    return np.where(keep[lab], alpha, 0).astype(np.uint8), [(i + 1, s) for i, s in enumerate(sizes) if s >= min_area]
+
+def cells(a, cols, rows):
+    H, W = a.shape[:2]; cw, ch = W // cols, H // rows
+    return [(c * cw, r * ch, cw, ch) for r in range(rows) for c in range(cols)]
+
+def erase_lines(rgb, alpha, bar):
+    """efface les lignes de kite peintes (blanches, au-dessus et à droite de la barre) : le jeu les trace lui-même"""
+    if bar is None: return alpha
+    bx, by, bxr = bar
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    white = (r > 170) & (g > 170) & (b > 170) & (np.max(rgb, -1) - np.min(rgb, -1) < 60)
+    yy, xx = np.mgrid[0:alpha.shape[0], 0:alpha.shape[1]]
+    zone = (yy < by - 6) & (xx > bxr - 18)
+    a2 = alpha.copy(); a2[white & zone] = 0
+    # le contour gris foncé des lignes : petits restes isolés
+    a2, _ = clean(a2, 150)
+    return a2
+
+def bar_of(rgb, alpha):
+    """la barre de kite : pixels bleu vif dans les deux tiers hauts (la planche, en bas, a aussi du bleu)"""
+    ys, xs = np.nonzero(alpha)
+    if len(ys) == 0: return None
+    y0, y1 = ys.min(), ys.max()
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    blue = (b > 150) & (r < 110) & (g < 150) & (b - r > 90) & (alpha > 0)
+    blue[int(y0 + (y1 - y0) * 0.72):] = False
+    blue[:, :int(xs.min() + (xs.max() - xs.min()) * 0.4)] = False   # la barre est devant (à droite) ; la planche qui flotte derrière est à gauche
+    by, bx = np.nonzero(blue)
+    if len(by) < 20: return None
+    return float(np.median(bx)), float(np.median(by)), float(np.percentile(bx, 95))
+
+OUT = []   # (name, rgba image, anchor x, anchor y, meta)
+
+def add(name, rgb, alpha, anchor='bottom', meta=None, flip=False, min_area=120):
+    alpha, _ = clean(alpha, min_area)
+    ys, xs = np.nonzero(alpha)
+    if len(ys) == 0: print('VIDE', name); return
+    x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
+    rgba = np.dstack([rgb[y0:y1, x0:x1].clip(0, 255).astype(np.uint8), alpha[y0:y1, x0:x1]])
+    im = Image.fromarray(rgba, 'RGBA')
+    if flip: im = im.transpose(Image.FLIP_LEFT_RIGHT)
+    w, h = im.size
+    ax, ay = (w / 2, h) if anchor == 'bottom' else (w / 2, h / 2)
+    meta = dict(meta or {})
+    if 'bar' in meta and meta['bar']:   # coordonnées relatives à l'ancre
+        bx, by = meta['bar'][0] - x0, meta['bar'][1] - y0
+        if flip: bx = w - bx
+        meta['bar'] = [round((bx - ax) * HALF, 1), round((by - ay) * HALF, 1)]
+    if 'tips' in meta:
+        meta['tips'] = [[round((tx - x0 - ax) * HALF, 1), round((ty - y0 - ay) * HALF, 1)] for tx, ty in meta['tips']]
+    im = im.resize((max(1, round(w * HALF)), max(1, round(h * HALF))), Image.NEAREST)
+    OUT.append((name, im, ax * HALF, ay * HALF, meta))
+
+def grid(id_, cols, rows, names, anchor='bottom', marine=False, flips=(), split=None):
+    a = sheet(id_); alpha = key(a)
+    for i, (x, y, w, h) in enumerate(cells(a, cols, rows)):
+        if i >= len(names) or not names[i]: continue
+        rgb, al = a[y:y + h, x:x + w], alpha[y:y + h, x:x + w].copy()
+        al, _ = clean(al, 120)
+        meta = {}
+        if marine:
+            bar = bar_of(rgb, al)
+            al = erase_lines(rgb, al, bar)
+            if bar: meta['bar'] = [bar[0], bar[1]]
+        if split and names[i] in split:   # une case qui contient deux éléments séparés : le plus haut et le plus bas
+            lab, n = ndi.label(al > 0); comps = ndi.find_objects(lab)
+            sizes = ndi.sum(al > 0, lab, range(1, n + 1)); order = np.argsort(-sizes)[:2]
+            parts = sorted([(comps[k][0].start, k + 1) for k in order])
+            for (top, lid), nm in zip(parts, split[names[i]]):
+                add(nm, rgb, np.where(lab == lid, al, 0).astype(np.uint8), anchor)
+            continue
+        add(names[i], rgb, al, anchor, meta, flip=names[i] in flips)
+
+# Marine
+grid('m_fly', 3, 2, ['mRide0', 'mRide1', 'mClimb', 'mGlide', 'mDive', 'mLand'], marine=True)
+grid('m_react', 3, 2, ['mHit', 'mTalk', 'mPoint', 'mBarge', 'mCatch', 'mDazed'], marine=True)
+grid('m_fall', 3, 2, ['mDrag0', 'mDrag1', 'mRemount', 'mSink0', 'mSink1', 'mHead'], marine=True)
+# la voile : on garde la toile, on enlève les lignes peintes ; points d'attache = les deux extrémités basses de la toile
+a = sheet('kite'); alpha = key(a)
+for i, (x, y, w, h) in enumerate(cells(a, 2, 2)):
+    rgb, al = a[y:y + h, x:x + w], alpha[y:y + h, x:x + w]
+    lab, n = ndi.label(al > 0); sizes = ndi.sum(al > 0, lab, range(1, n + 1)); big = int(np.argmax(sizes)) + 1
+    canopy = np.where(lab == big, al, 0).astype(np.uint8)
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    white = (r > 170) & (g > 170) & (b > 170) & (np.max(rgb, -1) - np.min(rgb, -1) < 50)
+    canopy[white & (ndi.binary_opening(canopy > 0, iterations=3) == 0)] = 0   # les lignes fines collées à la toile
+    canopy, _ = clean(canopy, 400)
+    ys, xs = np.nonzero(canopy); xm = (xs.min() + xs.max()) / 2
+    L = xs < xm; R = ~L
+    tl = (xs[L][np.argmax(ys[L])], ys[L].max()); tr = (xs[R][np.argmax(ys[R])], ys[R].max())
+    add(f'nk{i}', rgb, canopy, 'center', {'tips': [tl, tr]}, min_area=400)
+# journalistes
+grid('j_boats', 3, 2, ['jb0', 'jb1', 'jb2', 'jt0', 'jt1', 'jbHit'], split={'jt1': ['jtJump', 'jtBoat']})
+grid('j_air', 3, 2, ['jg0', 'jg1', 'jh0', 'jh1', 'jj0', 'jj1'], anchor='center', flips=('jh0',))
+# étrangers : debout (rangée du haut), en chute (rangée du bas)
+grid('etr_a', 3, 2, ['e0s', 'e1s', 'e2s', 'e0f', 'e1f', 'e2f'])
+grid('etr_b', 3, 2, ['e3s', 'e4s', 'e5s', 'e3f', 'e4f', 'e5f'])
+grid('theme_boats', 3, 2, ['tb0', 'tb1', 'tb2', 'tb3', 'tb4', 'tb5'])
+grid('scandal_a', 2, 2, ['nJus0', 'nJus1', 'nJus2', 'nJus3'])
+grid('scandal_b', 3, 2, ['nRn0', 'nRn1', 'nRn2', 'nPan0', 'nPan1', 'nPan2'])
+for n in ('nPan0', 'nPan1', 'nPan2'):   # projectiles : ancre au centre
+    i = [k for k, o in enumerate(OUT) if o[0] == n][0]; nm, im, ax, ay, meta = OUT[i]; OUT[i] = (nm, im, im.size[0] / 2, im.size[1] / 2, meta)
+a = sheet('montretout'); alpha = key(a)
+add('mtHouse', a[:560], alpha[:560]); add('mtArch', a[560:], alpha[560:])
+grid('decor_items', 3, 2, ['nSun', 'nCloud0', 'nCloud1', 'nCloud2', 'nCloud3', 'nGulls'], anchor='center')
+grid('decor_far', 3, 2, ['far0', 'far1', 'far2', 'far3', 'far4', 'far5'])
+grid('vane', 3, 2, ['vane0', 'vane1', 'vane2', 'vane3', 'flagCloth', 'sparkle'], anchor='center')
+# les deux mouettes : une case, deux images
+i = [k for k, o in enumerate(OUT) if o[0] == 'nGulls'][0]; nm, im, ax, ay, meta = OUT.pop(i)
+arr = np.array(im); lab, n = ndi.label(arr[..., 3] > 0); objs = sorted(ndi.find_objects(lab), key=lambda s: s[1].start)
+for k, sl in enumerate(objs[:2]):
+    sub = Image.fromarray(arr[sl], 'RGBA'); OUT.append((f'nGull{k}', sub, sub.size[0] / 2, sub.size[1] / 2, {}))
+
+# assemblage : rangées, largeur 2048
+W = 2048; x = y = rowh = 0; ent = {}; meta = {}
+for nm, im, ax, ay, me in sorted(OUT, key=lambda o: -o[1].size[1]):
+    w, h = im.size
+    if x + w > W: x = 0; y += rowh + 2; rowh = 0
+    ent[nm] = [x, y, w, h, round(ax, 1), round(ay, 1), 5]; im._pos = (x, y)
+    if me: meta[nm] = me
+    x += w + 2; rowh = max(rowh, h)
+atlas = Image.new('RGBA', (W, y + rowh), (0, 0, 0, 0))
+for nm, im, ax, ay, me in OUT: atlas.paste(im, im._pos)
+atlas.save(os.path.join(GAME, 'atlas5.png'), optimize=True)
+for nm, out in (('decor_sky', 'sky5.png'), ('decor_sea', 'sea5.png')):
+    Image.fromarray(sheet(nm).astype(np.uint8)).resize((768, 512), Image.NEAREST).save(os.path.join(GAME, out), optimize=True)
+open(os.path.join(GAME, 'atlas5.js'), 'w').write('Object.assign(ATLAS, ' + json.dumps(ent) + ');\nconst META5 = ' + json.dumps(meta) + ';\n')
+# planche contact
+cols = 8; cw, chh = 256, 200; rows = (len(OUT) + cols - 1) // cols
+c = Image.new('RGB', (cols * cw, rows * chh), (90, 110, 140)); d = ImageDraw.Draw(c)
+for k, (nm, im, ax, ay, me) in enumerate(OUT):
+    t = im.copy(); t.thumbnail((cw - 10, chh - 30)); px, py = (k % cols) * cw + 5, (k // cols) * chh + 22
+    c.paste(t, (px, py), t); d.text((px, py - 16), nm, fill='white')
+    if me.get('bar'):
+        s = t.size[0] / im.size[0]; d.ellipse([px + (ax + me['bar'][0]) * s - 4, py + (ay + me['bar'][1]) * s - 4, px + (ax + me['bar'][0]) * s + 4, py + (ay + me['bar'][1]) * s + 4], outline='yellow', width=2)
+    for tp in me.get('tips', []):
+        s = t.size[0] / im.size[0]; d.ellipse([px + (ax + tp[0]) * s - 4, py + (ay + tp[1]) * s - 4, px + (ax + tp[0]) * s + 4, py + (ay + tp[1]) * s + 4], outline='cyan', width=2)
+c.save(os.path.join(HERE, 'contact5.png'))
+print(len(OUT), 'sprites, atlas', atlas.size)
