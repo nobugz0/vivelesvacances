@@ -31,11 +31,11 @@ def key(a):
     alpha = np.where(mag | fringe, 0, 255).astype(np.uint8)
     return alpha
 
-def clean(alpha, min_area):
+def clean(alpha, min_area, rel=True):
     lab, n = ndi.label(alpha > 0)
     if n == 0: return alpha, []
     sizes = ndi.sum(alpha > 0, lab, range(1, n + 1))
-    keep = np.zeros(n + 1, bool); keep[1:] = (sizes >= min_area) & (sizes >= 0.02*sizes.max())   # pas de poussières isolées
+    keep = np.zeros(n + 1, bool); keep[1:] = (sizes >= min_area) & ((sizes >= 0.02*sizes.max()) if rel else True)   # pas de poussières isolées
     return np.where(keep[lab], alpha, 0).astype(np.uint8), [(i + 1, s) for i, s in enumerate(sizes) if s >= min_area]
 
 def cells(a, cols, rows):
@@ -52,7 +52,7 @@ def erase_lines(rgb, alpha, bar):
     zone = (yy < by - 6) & (xx > bxr - 18)
     a2 = alpha.copy(); a2[white & zone] = 0
     # le contour gris foncé des lignes : petits restes isolés
-    a2, _ = clean(a2, 150)
+    a2, _ = clean(a2, 150, rel=False)
     return a2
 
 def bar_of(rgb, alpha):
@@ -70,8 +70,8 @@ def bar_of(rgb, alpha):
 
 OUT = []   # (name, rgba image, anchor x, anchor y, meta)
 
-def add(name, rgb, alpha, anchor='bottom', meta=None, flip=False, min_area=120):
-    alpha, _ = clean(alpha, min_area)
+def add(name, rgb, alpha, anchor='bottom', meta=None, flip=False, min_area=120, rel=True, fixed=None):
+    alpha, _ = clean(alpha, min_area, rel)
     ys, xs = np.nonzero(alpha)
     if len(ys) == 0: print('VIDE', name); return
     x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
@@ -80,6 +80,7 @@ def add(name, rgb, alpha, anchor='bottom', meta=None, flip=False, min_area=120):
     if flip: im = im.transpose(Image.FLIP_LEFT_RIGHT)
     w, h = im.size
     ax, ay = (w / 2, h) if anchor == 'bottom' else (w / 2, h / 2)
+    if fixed: ax, ay = fixed[0] - x0, fixed[1] - y0   # ancre commune (coordonnées de la case) : les poses s'échangent sans sauter
     meta = dict(meta or {})
     if 'bar' in meta and meta['bar']:   # coordonnées relatives à l'ancre
         bx, by = meta['bar'][0] - x0, meta['bar'][1] - y0
@@ -173,6 +174,35 @@ cards('cards_tuto', 2, 2, ['cTuto0', 'cTuto1', 'cTuto2', 'cTuto3'])
 for v in (1, 2):   # la carte des brebis galeuses (une image carrée), quand elle existe
     if glob.glob(os.path.join(SHEETS, f'cards_brebis{"2" if v == 2 else ""}_*_v1.png')):
         cards('cards_brebis' + ('2' if v == 2 else ''), 1, 1, ['cScan3'])
+
+# poses de Marine redessinées sur une même pose de repos (planche m_lock) : elles remplacent les anciennes ; la gerbe d'eau n'est gardée que sur la glisse
+def no_spray(rgb, al):
+    """la gerbe d'eau : les pixels clairs (blanc, bleu d'écume) dans le tiers bas et le tiers gauche (derrière la planche)"""
+    ys, xs = np.nonzero(al)
+    if len(ys) == 0: return al
+    y0, y1, x0, x1 = ys.min(), ys.max(), xs.min(), xs.max()
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    light = ((r > 150) & (g > 150) & (b > 150)) | ((b > 150) & (r < 150) & (g > 120))
+    yy, xx = np.mgrid[0:al.shape[0], 0:al.shape[1]]
+    zone = (yy > y0 + (y1 - y0) * 0.7) & (xx < x0 + (x1 - x0) * 0.33)
+    al = al.copy(); al[light & zone] = 0
+    lab, n = ndi.label(al > 0)
+    if n:
+        sizes = ndi.sum(al > 0, lab, range(1, n + 1)); big = int(np.argmax(sizes)) + 1
+        cy = ndi.center_of_mass(al > 0, lab, range(1, n + 1))
+        for k in range(n):   # restes de gouttelettes dans le bas ; les étoiles, en haut, restent
+            if k + 1 != big and sizes[k] < 2000 and cy[k][0] > y0 + (y1 - y0) * 0.6: al[lab == k + 1] = 0
+    return al
+if glob.glob(os.path.join(SHEETS, 'm_lock_*_v1.png')):
+    LOCK = ['mRide0', 'mHit', 'mDazed', 'mClimb', 'mGlide', 'mCatch']
+    OUT[:] = [o for o in OUT if o[0] not in LOCK]
+    a = sheet('m_lock'); alpha = key(a); fy = None
+    for i, (x, y, w, h) in enumerate(cells(a, 3, 2)):
+        rgb, al = a[y:y + h, x:x + w], alpha[y:y + h, x:x + w].copy()
+        bar = bar_of(rgb, al); al = erase_lines(rgb, al, bar)
+        if LOCK[i] != 'mRide0': al = no_spray(rgb, al)
+        if fy is None: fy = int(np.nonzero(al)[0].max()) + 1   # le dessous de la planche de la pose de repos
+        add(LOCK[i], rgb, al, 'bottom', {'bar': [bar[0], bar[1]]} if bar else {}, min_area=60, rel=False, fixed=(w * 0.5, fy))
 
 # assemblage : rangées, largeur 2048
 W = 2048; x = y = rowh = 0; ent = {}; meta = {}
