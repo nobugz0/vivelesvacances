@@ -382,5 +382,29 @@
   "n": 1,
   "batch": 1,
   "prompt": "Pixel art key art for the title screen of a satirical mobile game, landscape 1536x1024, full bleed, no chroma background.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels, no anti-aliasing, flat cel shading, dark outline #14213d, bright saturated summer colours. On the left third: the woman of the attached approved character sheet (and reference photos) kitesurfing towards the viewer in a big jump, navy suit, red and white kite above her, reaching with one hand for a shiny golden weathervane with a little golden rooster that flies just out of reach. Background: bright summer sea, a few red journalists' boats with red pennants chasing her, far away on a barge the Second Empire mansion with a slate mansard roof, white clouds, seagulls. Keep the right two thirds and the centre calm and uncluttered (open sky and sea) because the title and the buttons will be placed there. No text, no logo."
+ },
+ {
+  "id": "ui_icons",
+  "name": "Interface : icônes",
+  "size": "1536x1024",
+  "uses": [
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Game UI icon sheet, landscape 1536x1024. The attached image is only a colour palette reference: do not copy its pixel art style.\nStyle: bold flat graphic game UI stickers, simple chunky shapes, thick dark navy outline #14213d (about 10 px), flat bright colours with one light highlight shape, no gradients, no realistic detail, no pixel art, fun and readable at small size. Palette: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, pink #ff2d95, green #22a447. Flat solid chroma background #FF00FF around every icon, at least 30 px of background around each, never use magenta inside an icon. Layout: 4 columns x 3 rows of equal 384x341 cells, one icon per cell, centred, each icon about 240 px, read left to right then top to bottom. No text except where asked.\n1. Polls: a bold rising bar chart (three bars blue, white, red) with a big upward arrow and a percent sign.\n2. Party slush fund: a black strongbox overflowing with gold coins, gold padlock.\n3. A thick gold coin with an embossed star.\n4. U-turn: a golden weathervane with a little rooster on top, inside a circular arrow showing it spinning around.\n5. Scandal: a red lightning bolt striking a dented cooking pot.\n6. Journalist: a hand-held TV microphone with a red foam cover.\n7. A navy bulletproof vest.\n8. A red petrol pump whose nozzle sucks up gold coins.\n9. A ballot box with a paper ballot going in.\n10. The gates of a French presidential palace with a tricolour flag on top (the final goal).\n11. A stately French mansion with a slate mansard roof (the campaign HQ).\n12. A tear-off calendar page showing \"2027\" (the only text)."
+ },
+ {
+  "id": "ui_logos",
+  "name": "Interface : logo et tampons",
+  "size": "1536x1024",
+  "uses": [
+   "charref"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Game title logo and stamps, landscape 1536x1024. The attached image is only a style and colour reference for the game: do not draw the character, do not use pixel art for the letters.\nStyle: bold flat graphic game UI stickers, simple chunky shapes, thick dark navy outline #14213d (about 10 px), flat bright colours with one light highlight shape, no gradients, no realistic detail, no pixel art, fun and readable at small size. Palette: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, pink #ff2d95, green #22a447. Flat solid chroma background #FF00FF around every icon, at least 30 px of background around each, never use magenta inside an icon. Layout: 2 columns x 2 rows of equal 768x512 cells, one element per cell, centred, about 600 px wide. Spell every text exactly as written, in French, with accents.\n1. The title logo of a satirical arcade game: the words \"MARINE LA MALINE\" in big bouncy rounded bold letters, cream fill with thick navy outline and a red drop shadow, slightly tilted, a small golden weathervane with a rooster perched on the last letter, little sparkles.\n2. A punchy comic stamp reading \"VOLTE-FACE !\", gold starburst shape behind, navy letters, slightly rotated.\n3. A punchy comic stamp reading \"SCANDALE !\", red jagged explosion shape behind, cream letters with navy outline, lightning bolts.\n4. A punchy comic stamp reading \"ÉLIMINÉE !\", navy splash shape behind, red letters with cream outline, little water drops."
  }
 ]

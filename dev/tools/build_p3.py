@@ -8,8 +8,8 @@ for src, dst, q in (('atlas5.png', 'atlas5_q90.webp', 90), ('sky5.png', 'sky5.we
 tmp = os.path.join(G, '_p3_tmp.html')
 s = open(os.path.join(G, sys.argv[1]), encoding='utf-8').read()
 import base64
-for name, path in (('atlas5.png', 'single/atlas5_q90.webp'), ('sky5.png', 'single/sky5.webp'), ('sea5.png', 'single/sea5.webp')):
-    uri = 'data:image/webp;base64,' + base64.b64encode(open(os.path.join(G, path), 'rb').read()).decode()
+for name, path in (('atlas5.png', 'single/atlas5_q90.webp'), ('sky5.png', 'single/sky5.webp'), ('sea5.png', 'single/sea5.webp'), ('closeup5.jpg', 'closeup5.jpg')):
+    uri = ('data:image/jpeg;base64,' if path.endswith('.jpg') else 'data:image/webp;base64,') + base64.b64encode(open(os.path.join(G, path), 'rb').read()).decode()
     s = s.replace("'" + name + "'", "'" + uri + "'")
 open(tmp, 'w', encoding='utf-8').write(s)
 try:
