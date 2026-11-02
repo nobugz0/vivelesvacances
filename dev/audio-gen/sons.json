@@ -1,0 +1,1220 @@
+[
+ {
+  "id": "sfx_coin",
+  "type": "sfx",
+  "text": "Single bright gold coin pickup, crisp metallic ting with a tiny sparkle shimmer, very short attack, quick decay, arcade game, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "test"
+ },
+ {
+  "id": "sfx_hit",
+  "type": "sfx",
+  "text": "Cartoon body bump into a person, soft punchy thud with a camera flash pop and a short comic boing, snappy, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.6,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "test"
+ },
+ {
+  "id": "sfx_splash_big",
+  "type": "sfx",
+  "text": "Big comedic belly-flop splash into the sea, heavy water slap followed by bubbles, cartoon, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 1.2,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "test"
+ },
+ {
+  "id": "sfx_coin",
+  "type": "sfx",
+  "text": "Single bright gold coin pickup, crisp metallic ting with a tiny sparkle shimmer, very short attack, quick decay, arcade game, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 3,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_hit",
+  "type": "sfx",
+  "text": "Cartoon body bump into a person, soft punchy thud with a camera flash pop and a short comic boing, snappy, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.6,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 3,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_clank",
+  "type": "sfx",
+  "text": "Dented aluminium saucepan bonking a head, hollow metallic clang with a short wobbly ring, comedic, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.6,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 3,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_bonk",
+  "type": "sfx",
+  "text": "Light cartoon shove and a person tipping off a surfboard into the water, short plop, playful, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.8,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 2,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_plouf",
+  "type": "sfx",
+  "text": "Small object dropping into the sea, short bright water plop, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 3,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_splash_big",
+  "type": "sfx",
+  "text": "Big comedic belly-flop splash into the sea, heavy water slap followed by bubbles, cartoon, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 1.2,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 2,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_sink",
+  "type": "sfx",
+  "text": "Comedic sinking, descending gurgling bubbles and a final blub, cartoon, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 1.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_ring",
+  "type": "sfx",
+  "text": "Magical golden ring fly-through, airy rising shimmer whoosh, bright and rewarding, short, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.6,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 3,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_ring_miss",
+  "type": "sfx",
+  "text": "Soft dull whiff, missing a target, short descending air puff, slightly disappointed, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 2,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_orb",
+  "type": "sfx",
+  "text": "Golden weathervane appearing, magical glittering chime swell, sparkling, short, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 1.0,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_grab",
+  "type": "sfx",
+  "text": "Grabbing a golden trophy, satisfying metallic shing with a sparkle burst, triumphant, short, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.7,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_alert",
+  "type": "sfx",
+  "text": "Arcade warning blip, two quick rising beeps, urgent but light, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_whoosh",
+  "type": "sfx",
+  "text": "Quick cartoon whoosh, something thrown fast past the ear, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 2,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_gust",
+  "type": "sfx",
+  "text": "Strong gust of sea wind building up, ominous but cartoonish, short, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 1.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_thunder",
+  "type": "sfx",
+  "text": "Comic thunderclap, sharp crack and short rumble, cartoon storm, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 1.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 2,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_throw",
+  "type": "sfx",
+  "text": "Cartoon overhand throw of a cooking pot, quick swoosh with a tiny wobble, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 2,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_gavel",
+  "type": "sfx",
+  "text": "Giant wooden judge gavel strike, deep resonant wood knock with comic weight, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.7,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 2,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_card",
+  "type": "sfx",
+  "text": "Card slamming onto a table, punchy paper and wood slap, satisfying, game UI, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 2,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_click",
+  "type": "sfx",
+  "text": "Soft rubbery game UI button press, short pop click, satisfying, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 2,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_cash",
+  "type": "sfx",
+  "text": "Cash register ka-ching with coins, cheerful, short, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.8,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_tick",
+  "type": "sfx",
+  "text": "Tiny bubbly UI pop, speech bubble appearing, light and cute, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.5,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_vote",
+  "type": "sfx",
+  "text": "Ballot paper dropped into a ballot box, paper swish and a soft wooden thunk, satisfying, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.6,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_kite_down",
+  "type": "sfx",
+  "text": "Kite canopy deflating and flapping in the wind, fabric flutter losing power, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 1.0,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_flash",
+  "type": "sfx",
+  "text": "Camera flash burst, several quick shutter clicks and flash pops, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.6,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "sfx_iris",
+  "type": "sfx",
+  "text": "Cartoon iris wipe transition, quick airy swoop closing, dry close recording, no music, no voice, no reverb tail, starts immediately",
+  "duration_seconds": 0.6,
+  "prompt_influence": 0.7,
+  "loop": false,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "amb_ride",
+  "type": "sfx",
+  "text": "Kitesurf board skimming fast on a choppy sea, steady water hiss and light spray, seamless loop",
+  "duration_seconds": 6,
+  "prompt_influence": 0.7,
+  "loop": true,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "amb_wind",
+  "type": "sfx",
+  "text": "Steady wind rushing past while flying above the sea, light whistle, seamless loop",
+  "duration_seconds": 6,
+  "prompt_influence": 0.7,
+  "loop": true,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "amb_rain",
+  "type": "sfx",
+  "text": "Cartoon storm at sea, steady rain and light distant rumbles, seamless loop",
+  "duration_seconds": 8,
+  "prompt_influence": 0.7,
+  "loop": true,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "amb_press",
+  "type": "sfx",
+  "text": "Crowd of excited reporters shouting questions all at once in French, unintelligible press scrum walla, seamless loop",
+  "duration_seconds": 4,
+  "prompt_influence": 0.7,
+  "loop": true,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 1,
+  "batch": "full"
+ },
+ {
+  "id": "mus_vol",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Theme A",
+     "positive_local_styles": [
+      "sunny main theme",
+      "catchy synth lead melody",
+      "steady drums",
+      "carefree beach speed"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Theme B",
+     "positive_local_styles": [
+      "same theme answered by synth brass",
+      "fuller drums"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "two bar drum fill leading back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_vol_b",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Theme A dense",
+     "positive_local_styles": [
+      "same sunny theme",
+      "denser drums",
+      "counter-melody",
+      "more urgency"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Theme B dense",
+     "positive_local_styles": [
+      "synth brass stabs",
+      "driving bass",
+      "big energy"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "two bar drum fill leading back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_course",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Chase",
+     "positive_local_styles": [
+      "same theme, faster feeling",
+      "sixteenth-note hi-hats",
+      "rising harmony",
+      "joyful pursuit",
+      "build-up"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "two bar drum fill leading back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_tempete",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "comic fake drama",
+    "cartoon orchestra",
+    "low brass",
+    "timpani",
+    "120 bpm",
+    "4/4",
+    "C minor",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Storm A",
+     "positive_local_styles": [
+      "menacing for laughs",
+      "staccato low brass",
+      "cartoon timpani hits"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Storm B",
+     "positive_local_styles": [
+      "same motif higher",
+      "tremolo strings",
+      "never scary"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "two bar drum fill leading back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_menu",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "kitsch lounge",
+    "cocktail bar",
+    "easy listening",
+    "vintage organ",
+    "vibraphone",
+    "muted wah guitar",
+    "playful",
+    "100 bpm",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Lounge A",
+     "positive_local_styles": [
+      "laid-back groove",
+      "organ melody",
+      "vibraphone answers"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Lounge B",
+     "positive_local_styles": [
+      "muted wah guitar solo",
+      "same groove"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "one bar turnaround back to the start"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_qg",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "kitsch lounge",
+    "cocktail bar",
+    "easy listening",
+    "vintage organ",
+    "vibraphone",
+    "muted wah guitar",
+    "playful",
+    "100 bpm",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Salon A",
+     "positive_local_styles": [
+      "calm cocktail salon",
+      "soft organ chords",
+      "vibraphone melody"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Salon B",
+     "positive_local_styles": [
+      "gentle variation",
+      "brushed drums"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "one bar turnaround back to the start"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "sting_carton",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Sting",
+     "positive_local_styles": [
+      "short announcement fanfare",
+      "new episode",
+      "punchy synth brass",
+      "ends on a held chord"
+     ],
+     "negative_local_styles": [
+      "silence"
+     ],
+     "duration_ms": 3000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "sting_voltface",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Sting",
+     "positive_local_styles": [
+      "exaggerated triumphant fanfare",
+      "celebrating a U-turn as a victory",
+      "ends on a big chord"
+     ],
+     "negative_local_styles": [
+      "silence"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "sting_envol",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Sting",
+     "positive_local_styles": [
+      "sheepish descending phrase",
+      "sad trombone wah-wah",
+      "comedic"
+     ],
+     "negative_local_styles": [
+      "silence"
+     ],
+     "duration_ms": 3000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "sting_scandale",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "soap opera drama",
+    "dramatic brass chord",
+    "timpani roll",
+    "C minor",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Sting",
+     "positive_local_styles": [
+      "dramatic soap opera stab",
+      "big timpani hit",
+      "comic tension"
+     ],
+     "negative_local_styles": [
+      "silence"
+     ],
+     "duration_ms": 3000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "sting_accalmie",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Sting",
+     "positive_local_styles": [
+      "relief",
+      "back to major",
+      "sunny resolution",
+      "light and airy"
+     ],
+     "negative_local_styles": [
+      "silence"
+     ],
+     "duration_ms": 3000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "sting_elimine",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Sting",
+     "positive_local_styles": [
+      "comic game over",
+      "chromatic falling melody",
+      "deflating synth",
+      "final thud"
+     ],
+     "negative_local_styles": [
+      "silence"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "fin_elue",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Finale",
+     "positive_local_styles": [
+      "grand victorious finale",
+      "full synth brass",
+      "big drums",
+      "celebration",
+      "ends with a final chord"
+     ],
+     "negative_local_styles": [
+      "silence"
+     ],
+     "duration_ms": 10000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "fin_second",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Finale",
+     "positive_local_styles": [
+      "mixed feelings finale",
+      "suspended unresolved ending",
+      "half-hearted brass"
+     ],
+     "negative_local_styles": [
+      "silence"
+     ],
+     "duration_ms": 8000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "fin_premier",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 1,
+  "batch": "full",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French variety pop",
+    "bright synth brass",
+    "bouncy synth bass",
+    "cheerful",
+    "summer holiday",
+    "kids TV show energy",
+    "120 bpm",
+    "4/4",
+    "C major",
+    "instrumental"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "slow intro"
+   ],
+   "sections": [
+    {
+     "section_name": "Finale",
+     "positive_local_styles": [
+      "deflated finale",
+      "out-of-tune brass",
+      "comic disappointment",
+      "ends on a sour chord"
+     ],
+     "negative_local_styles": [
+      "silence"
+     ],
+     "duration_ms": 8000,
+     "lines": []
+    }
+   ]
+  }
+ }
+]
