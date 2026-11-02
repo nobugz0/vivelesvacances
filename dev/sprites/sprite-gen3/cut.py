@@ -70,7 +70,7 @@ def bar_of(rgb, alpha):
 
 OUT = []   # (name, rgba image, anchor x, anchor y, meta)
 
-def add(name, rgb, alpha, anchor='bottom', meta=None, flip=False, min_area=120, rel=True, fixed=None):
+def add(name, rgb, alpha, anchor='bottom', meta=None, flip=False, min_area=120, rel=True, fixed=None, smooth=False):
     alpha, _ = clean(alpha, min_area, rel)
     ys, xs = np.nonzero(alpha)
     if len(ys) == 0: print('VIDE', name); return
@@ -88,7 +88,7 @@ def add(name, rgb, alpha, anchor='bottom', meta=None, flip=False, min_area=120, 
         meta['bar'] = [round((bx - ax) * HALF, 1), round((by - ay) * HALF, 1)]
     if 'tips' in meta:
         meta['tips'] = [[round((tx - x0 - ax) * HALF, 1), round((ty - y0 - ay) * HALF, 1)] for tx, ty in meta['tips']]
-    im = im.resize((max(1, round(w * HALF)), max(1, round(h * HALF))), Image.NEAREST)
+    im = im.resize((max(1, round(w * HALF)), max(1, round(h * HALF))), Image.LANCZOS if smooth else Image.NEAREST)
     OUT.append((name, im, ax * HALF, ay * HALF, meta))
 
 def grid(id_, cols, rows, names, anchor='bottom', marine=False, flips=(), split=None):
@@ -203,6 +203,23 @@ if glob.glob(os.path.join(SHEETS, 'm_lock_*_v1.png')):
         if LOCK[i] != 'mRide0': al = no_spray(rgb, al)
         if fy is None: fy = int(np.nonzero(al)[0].max()) + 1   # le dessous de la planche de la pose de repos
         add(LOCK[i], rgb, al, 'bottom', {'bar': [bar[0], bar[1]]} if bar else {}, min_area=60, rel=False, fixed=(w * 0.5, fy))
+
+# le kit d'interface (graphisme plat, lissé) : icônes et tampons ; le logo du titre est aussi exporté à part, en grand
+def ui_grid(id_, cols, rows, names):
+    if not glob.glob(os.path.join(SHEETS, f'{id_}_*_v1.png')): return None
+    a = sheet(id_); alpha = key(a); cs = cells(a, cols, rows)
+    for i, (x, y, w, h) in enumerate(cs):
+        if i < len(names) and names[i]: add(names[i], a[y:y + h, x:x + w], alpha[y:y + h, x:x + w].copy(), 'center', smooth=True, min_area=200)
+    return a, alpha, cs
+ui_grid('ui_icons', 4, 3, ['iPolls', 'iCaisse', 'iCoin', 'iVolte', 'iScandale', 'iMic', 'iKevlar', 'iPump', 'iVote', 'iElysee', 'iMontretout', 'i2027'])
+r = ui_grid('ui_logos', 2, 2, ['logoTitle', 'stampVolte', 'stampScandale', 'stampElim'])
+if r:
+    a, alpha, cs = r; x, y, w, h = cs[0]; al, _ = clean(alpha[y:y + h, x:x + w].copy(), 200); ys, xs = np.nonzero(al)
+    rgba = np.dstack([a[y:y + h, x:x + w].clip(0, 255).astype(np.uint8), al])[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+    Image.fromarray(rgba, 'RGBA').save(os.path.join(GAME, 'logo5.png'), optimize=True)
+if glob.glob(os.path.join(SHEETS, 'menu_art_*_v1.png')):   # le fond de l'écran titre, au format du cadre (845 x 390)
+    m = Image.fromarray(sheet('menu_art').astype(np.uint8)); mh = round(1536 * 390 / 845); top = (1024 - mh) // 2
+    m.crop((0, top, 1536, top + mh)).resize((1300, 600), Image.LANCZOS).save(os.path.join(GAME, 'menu5.jpg'), quality=86)
 
 # assemblage : rangées, largeur 2048
 W = 2048; x = y = rowh = 0; ent = {}; meta = {}
