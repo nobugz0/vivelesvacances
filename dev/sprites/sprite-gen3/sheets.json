@@ -25,7 +25,7 @@
   ],
   "photos": true,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Character: the woman of the attached approved character sheet (and reference photos), same face, hair, outfit and proportions: navy suit with a lighter navy rim light, white shirt, black kitesurf harness with a red accent, black sandals, white board with red and blue edges, blue control bar in both hands, 4 thin white kite lines leaving the bar towards the top right, cut 120 px above the bar (the kite is drawn separately). Side view facing right, about 300 px from the board's underside to the top of the hair, the same scale in every cell; the board's underside on the same invisible baseline in every cell of a row. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. 1. Riding on the water, frame A: knees bent, leaning back against the pull, hair blown back, poker face, small white spray at the tail.\n2. Riding, frame B: same pose, hair and spray in another phase (2-frame loop).\n3. Climbing: airborne, legs tucked, board nose up, bar pulled to the chest, sly sideways glance.\n4. Gliding: body stretched under the bar, arms up, board level, jacket tails flapping, smug half-smile.\n5. Diving: body leaning forward, board nose down, hair streaming up, scheming look.\n6. Landing: knees deeply bent absorbing the impact, a splash at the board, satisfied little smile.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -37,7 +37,7 @@
   ],
   "photos": true,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Character: the woman of the attached approved character sheet (and reference photos), same face, hair, outfit and proportions: navy suit with a lighter navy rim light, white shirt, black kitesurf harness with a red accent, black sandals, white board with red and blue edges, blue control bar in both hands, 4 thin white kite lines leaving the bar towards the top right, cut 120 px above the bar (the kite is drawn separately). Side view facing right, about 300 px from the board's underside to the top of the hair, the same scale in every cell; the board's underside on the same invisible baseline in every cell of a row. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. 1. Hit by a journalist: thrown slightly backwards, eyes squeezed shut, big comic grimace showing clenched teeth, hair in disarray.\n2. Answering: mouth open mid-sentence, one index finger raised, eyebrow up, condescending.\n3. Pointing: one arm fully extended forward, index finger pointing ahead, mouth open shouting, eyes wide (she spots someone); the other hand keeps the bar.\n4. Barging: shoulder first, leaning forward, smug face, as if knocking someone off a board.\n5. Catching the weathervane: one arm raised high, fist closed on an invisible object, triumphant crooked smile.\n6. Hit by a saucepan: dazed, little stars around the head, eyes crossed, tongue slightly out.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -49,7 +49,7 @@
   ],
   "photos": true,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Character: the woman of the attached approved character sheet (and reference photos), same face, hair, outfit and proportions: navy suit with a lighter navy rim light, white shirt, black kitesurf harness with a red accent, black sandals, white board with red and blue edges, blue control bar in both hands, 4 thin white kite lines leaving the bar towards the top right, cut 120 px above the bar (the kite is drawn separately). Side view facing right, about 300 px from the board's underside to the top of the hair, the same scale in every cell; the board's underside on the same invisible baseline in every cell of a row. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. 1. Fallen off the board, dragged by the kite: lying flat on her front at water level, both hands on the bar, arms forward, legs trailing, a wake of white water behind; the board floats alone behind her.\n2. Same, second frame: water and hair in another phase.\n3. Climbing back on the board: one knee on the board, hauling herself up, annoyed face.\n4. Sinking, frame A: half under water up to the chest, arms up, panic face.\n5. Sinking, frame B: only the head and one hand above the water, cheeks puffed.\n6. Head out of the water: just the head above a small flat water line, wet hair stuck to the face, sulking.\nFor cells 1, 2, 4, 5 and 6 draw only a thin flat strip of water (about 20 px) at the waterline, cut flat at the cell's baseline, no sea around it.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -61,7 +61,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. A kitesurf kite (leading-edge inflatable, C shape), red canopy with a white stripe and a thin blue trailing edge, seen from the side and slightly below as from a rider at the bottom left. 4 thin white lines leave the two wingtips and converge down-left, cut 150 px below the kite. Layout: 2 columns x 2 rows of equal 768x512 cells, same size kite in every cell, centred: 1) normal flight, canopy full; 2) pulling hard, canopy taut, slightly rotated forward; 3) relaxed, canopy a bit softer; 4) collapsed: canopy luffing and sagging, tips folding.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -74,7 +74,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Small journalists' motorboats in the exact design of the approved world style board (white hull with red stripes, red triangular pennant), side view facing left, every boat about 280 px long, same scale in every cell, waterline on the same baseline in every cell of a row. Journalists wear red shirts. Mix men and women. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. 1. Crew A: a man with a big TV camera and a woman holding a boom microphone.\n2. Crew B: a woman reporter holding out a hand microphone, a photographer with a long lens.\n3. Crew C: an older journalist with a notepad shouting a question, a young woman filming with a phone.\n4. Trampoline boat, crouched: the boat carries a small trampoline; a journalist in a red shirt crouches on it, ready to jump.\n5. Trampoline boat, jumping: same boat, the journalist high in the air above the trampoline, arms up, microphone in hand.\n6. Crew knocked over: crew A thrown backwards inside the boat, legs in the air, camera flying.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -87,7 +87,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Journalists in red shirts, side view facing left (they come from the right), same scale logic as the approved world style board. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. 1. Hang-glider, frame A: red delta wing, a journalist (man) hanging under it, camera round the neck, wide round astonished eyes, open mouth.\n2. Hang-glider, frame B: same, wing slightly flexed, legs in another position.\n3. Helicopter, frame A: small red news helicopter, a camerawoman leaning out of the side door with a big camera, rotor blades as a light blur on one side.\n4. Helicopter, frame B: same, rotor blades on the other side.\n5. Jet-ski, frame A: red jet-ski ridden by a journalist (woman) holding a microphone forward, white spray behind.\n6. Jet-ski, frame B: same, spray in another phase.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -100,7 +100,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Ordinary holidaymakers in summer clothes, friendly everyday faces, drawn with the same cartoon proportions and the same care as the journalists, no exaggerated or stereotyped facial features. Their clothes and boards are azure blue. Side view facing left, same scale as the bystander of the approved world style board, waterline on the same baseline in every cell of a row. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. Each character appears twice: top row standing on the water, bottom row the same character directly below, tipping over backwards and falling off into the water (arms flailing, surprised face, board or boat staying upright).\nColumn 1: a woman with dark skin and short curly hair, on a surfboard.\nColumn 2: a man with a full beard, on a small blue rowing boat, holding an oar.\nColumn 3: a pale, sunburnt man in a bucket hat and sandals with socks, on a surfboard (an ordinary French tourist).\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -113,7 +113,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Ordinary holidaymakers in summer clothes, friendly everyday faces, drawn with the same cartoon proportions and the same care as the journalists, no exaggerated or stereotyped facial features. Their clothes and boards are azure blue. Side view facing left, same scale as the bystander of the approved world style board, waterline on the same baseline in every cell of a row. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. Each character appears twice: top row standing on the water, bottom row the same character directly below, tipping over backwards and falling off into the water (arms flailing, surprised face, board or boat staying upright).\nColumn 1: a man wearing a turban and a short beard, on a stand-up paddle board with a paddle.\nColumn 2: a blond older woman with big sunglasses and a sun hat, on a small blue pedalo (an ordinary French retiree).\nColumn 3: a young man with dark skin, headphones round the neck, on a bodyboard.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -126,7 +126,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Six satirical floating props, each on a small dark navy barge with a thin gold stripe on the hull, side view facing left, each about 300 px long, waterline on the same baseline in every cell of a row. No people. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. 1. A giant piggy bank full of old French franc coins and banknotes.\n2. A barge whose sail is the European flag (blue with a ring of gold stars).\n3. A giant walking frame (zimmer frame) with a few cheerful pensioners sitting on the barge.\n4. A miniature nuclear cooling tower with a puff of white steam.\n5. A pair of giant handcuffs lying on the barge, slightly open.\n6. A giant pocket calculator standing upright like a mast, with a golden ruler as a yard.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -139,7 +139,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. A small neoclassical courthouse (columns, pediment, scales of justice carved on it) sitting on a floating barge, side view facing left, about 420 px tall, same scale and position in every cell. A giant judge's gavel comes out of the open door as an arm. Layout: 2 columns x 2 rows of equal 768x512 cells: 1) idle, doors closed; 2) doors open, gavel raised; 3) gavel swinging forward, throwing (a motion arc, no projectile); 4) recoil, gavel back, a little dust.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -152,7 +152,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. Top row: a political party's campaign boat (navy hull, red and white stripes, a megaphone on a mast, no logo and no lettering), side view facing left, about 300 px long, same scale in every cell: 1) idle; 2) a sailor in a navy polo winding up to throw; 3) the sailor throwing, arm forward.\nBottom row, kitchenware projectiles, each about 150 px wide, slightly tilted: 4) a dented steel saucepan with a long handle; 5) a red enamel cast-iron casserole pot with its lid; 6) a battered aluminium stockpot.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -165,7 +165,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Top half (1536x560): a stately French Second Empire mansion (mansard roof with slate, dormer windows, cream stone facade, wrought-iron balcony, tall windows with shutters, a small tower), sitting on a wide floating barge with a gold stripe, front-left three-quarter view, about 1200 px wide. Bottom half (1536x464): the entrance arch of the campaign HQ standing on the water: two pink and gold pillars, a gold pediment left empty for a sign, a dark curtain made of gold vertical slats, a red carpet on the water, round light bulbs along the top; about 520 px wide.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -177,7 +177,7 @@
   ],
   "photos": true,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art character model sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Character: the young man in the attached reference photos, as a satirical 16-bit caricature in the exact style and proportions of the attached approved character sheet of the woman (use her sheet only for the style, do not draw her): clearly enlarged head, slick dark brown side-parted hair, neat short beard shadow, polished smile. Outfit: navy fitted suit, white shirt, thin dark tie, black kitesurf harness, white board with blue edges, blue control bar, 4 thin white kite lines cut 120 px above the bar.\nTop row, full body standing on the board, about 420 px tall, same baseline: front view, three-quarter view facing left, side view facing left, back view. Confident poker face.\nBottom row, six head-and-shoulders close-ups facing three-quarter left: 1) polished media smile; 2) smug wink; 3) indignant, eyebrows up; 4) counting on his fingers, pensive; 5) shrugging, innocent look; 6) shouting into a megaphone.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element.",
   "refdir": "refs_bardella"
  },
@@ -191,7 +191,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art background, landscape 1536x1024, full bleed, no chroma background.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. A bright summer seaside sky only: smooth banded pixel gradient from deep azure at the top to pale warm cream near the bottom edge, with dithered transitions between bands. No clouds, no sun, no birds, no sea, no land, nothing else. The left and right edges must match so the image tiles horizontally."
  },
  {
@@ -204,7 +204,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art background, landscape 1536x1024, full bleed, no chroma background.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Open sea seen from the side, filling the whole image: a thin bright horizon line at the very top, then bands of blue from pale near the horizon to deep blue at the bottom, small pixel wave crests and glints scattered regularly, a band of white foam ripples about 70 % down. No boats, no land, no people, no sky. The left and right edges must match so the image tiles horizontally."
  },
  {
@@ -217,7 +217,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. 1. A round summer sun with a soft pixel halo, about 160 px.\n2. A large fluffy cumulus cloud, about 420 px wide.\n3. A medium cloud, about 300 px wide.\n4. A long flat cloud, about 440 px wide.\n5. A small cloud, about 200 px wide.\n6. Two small seagulls side by side, wings up and wings down (two animation frames), each about 60 px wide.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -230,7 +230,7 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Distant elements seen on the horizon, low contrast, hazy blue-grey tones so they sit far away, flat bottom edge at the waterline. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. 1. A long low rocky islet, about 420 px wide, 60 px tall.\n2. A small round islet with a few pine trees, about 280 px wide.\n3. A rocky islet with a white and red lighthouse, about 300 px wide, lighthouse about 140 px tall.\n4. A distant headland with cliffs entering from the left, about 460 px wide.\n5. A small rock with a few seabirds, about 180 px wide.\n6. A lighthouse alone with its lamp lit, a soft yellow glow, about 160 px tall.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
  },
  {
@@ -243,7 +243,90 @@
   ],
   "photos": false,
   "n": 1,
-  "batch": 1,
+  "batch": 2,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. A shiny golden weathervane: a horizontal arrow with a pointed head and a feathered tail on a small pivot, with a little rooster on top of the pivot, 3 tones of gold and a white glint, about 240 px long, sparkling. 1. Pointing right. 2. Pointing up-right (rotated 45 degrees). 3. Pointing left (turned around, the rooster looking surprised). 4. Seen edge-on while spinning, motion lines. 5. A blank cream cloth banner on a small gold pole, waving, about 360 px wide, no text. 6. A burst of golden sparkles and stars, about 220 px.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
+ },
+ {
+  "id": "bard_poses",
+  "name": "Bardella : poses",
+  "size": "1536x1024",
+  "uses": [
+   "bard_ref",
+   "charref"
+  ],
+  "photos": true,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. Character: the young man of the attached approved Bardella character sheet (and reference photos), same face, slick dark hair, navy suit, white shirt, thin tie, black harness, white board with blue edges, blue control bar, 4 thin white kite lines cut 120 px above the bar. Side view facing LEFT, about 300 px tall, same scale in every cell, board underside on the same baseline in every cell of a row. Layout: 3 columns x 2 rows of equal 512x512 cells, read left to right then top to bottom. 1. Riding, frame A: leaning back, polished media smile.\n2. Riding, frame B: same pose, hair and spray in another phase.\n3. Winding up to throw: one hand off the bar, holding a dented saucepan behind his head, smug.\n4. Throwing: arm forward, the saucepan just leaving his hand, mouth open shouting.\n5. Hit by a speech bubble: thrown backwards, offended face, eyebrows up.\n6. Fleeing: turned around facing RIGHT, riding away fast, looking back over his shoulder, nervous grin.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no shadow. At least 50 px of empty background around every element. No text, numbers, logos or borders. Never use magenta or pink inside any element.",
+  "refdir": "refs_bardella"
+ },
+ {
+  "id": "cards_theme",
+  "name": "Cartes : thèmes (position d'alors)",
+  "size": "1536x1024",
+  "uses": [
+   "charref",
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art card illustrations, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. Satirical editorial cartoon illustrations for game cards, in the same pixel art style. Each illustration is a complete little scene with its own simple background (sky, sea, room...), filling a 470x390 rectangle centred in its cell, with a 4 px ink frame; the space outside the rectangles is flat chroma #FF00FF. Readable at small size: one clear idea per card, big simple shapes, strong silhouettes, few details. The woman is the one of the attached approved character sheet (same face, blonde hair, navy suit), the young man the one of the attached approved Bardella sheet. No speech bubbles. Layout: 3 columns x 2 rows of equal 512x512 cells, read left to right then top to bottom. 1. The woman proudly brandishes a giant old one-franc coin like a trophy; a euro banknote sticks out of a wastepaper basket next to her.\n2. The woman, tongue out in concentration, cuts the gold stars out of a European flag with big scissors, stars falling on the floor.\n3. The woman serves a huge birthday cake with 60 candles to a queue of delighted pensioners.\n4. The woman pulls with all her strength on a giant electric plug connected to a nuclear cooling tower.\n5. The woman on a 2013 TV set, pointing at the camera, holding a placard reading \"INÉLIGIBLES À VIE !\" (the only text in the image, exactly these words).\n6. The woman chains a giant golden ruler to a heavy iron ball and kicks it away.\n"
+ },
+ {
+  "id": "cards_volte",
+  "name": "Cartes : volte-face",
+  "size": "1536x1024",
+  "uses": [
+   "charref",
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art card illustrations, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. Satirical editorial cartoon illustrations for game cards, in the same pixel art style. Each illustration is a complete little scene with its own simple background (sky, sea, room...), filling a 470x390 rectangle centred in its cell, with a 4 px ink frame; the space outside the rectangles is flat chroma #FF00FF. Readable at small size: one clear idea per card, big simple shapes, strong silhouettes, few details. The woman is the one of the attached approved character sheet (same face, blonde hair, navy suit), the young man the one of the attached approved Bardella sheet. No speech bubbles. Layout: 3 columns x 2 rows of equal 512x512 cells, read left to right then top to bottom. 1. The woman pays at a market stall with euro banknotes; an old franc coin slips out of her pocket unnoticed.\n2. The woman, all smiles, wrapped in the European flag like a cosy blanket.\n3. The woman as a casino croupier dealing cards labelled \"CARRIÈRE LONGUE\" (the only text, exactly these words) to puzzled workers.\n4. The woman lovingly hugs a nuclear cooling tower, little hearts around her.\n5. The woman, an electronic tag on her ankle, reads a big book titled \"CONSTITUTION\" (the only text) with an innocent look.\n6. The woman as a stern accountant with a green visor, holding a golden ruler, frowning at a huge ledger.\n"
+ },
+ {
+  "id": "cards_scandal",
+  "name": "Cartes : scandales et bonus",
+  "size": "1536x1024",
+  "uses": [
+   "charref",
+   "bard_ref",
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art card illustrations, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. Satirical editorial cartoon illustrations for game cards, in the same pixel art style. Each illustration is a complete little scene with its own simple background (sky, sea, room...), filling a 470x390 rectangle centred in its cell, with a 4 px ink frame; the space outside the rectangles is flat chroma #FF00FF. Readable at small size: one clear idea per card, big simple shapes, strong silhouettes, few details. The woman is the one of the attached approved character sheet (same face, blonde hair, navy suit), the young man the one of the attached approved Bardella sheet. No speech bubbles. Layout: 3 columns x 2 rows of equal 512x512 cells, read left to right then top to bottom. 1. A pile of cardboard boxes stamped \"KIT DE CAMPAGNE\" with a price tag \"16 650 €\"; Marianne (the French republic, Phrygian cap) pays the bill at a cash register, dismayed. Only these texts.\n2. Activists in navy polos tip pallets of campaign booklets into a dumpster; the cover of every booklet shows a small caricature of the handshake in the attached photo (the woman shaking hands with the man), drawn in the same pixel style.\n3. Parliamentary assistants wearing European Parliament badges (blue with gold stars) carry sacks of euro banknotes out of a glass parliament building and into a party office; one sack leaks banknotes.\n4. The young man (Bardella) frantically erases an old school exercise book with a giant eraser and correction fluid; on the book cover \"2013\"; a big red stamp \"ATTRIBUÉ · CONTESTÉ\"; under his arm a document \"PLAINTE\". Only these texts. The pages show only grey scribbles, no readable words.\n5. Bonus: a petrol pump whose nozzle sucks up a stream of gold coins.\n6. Bonus: a navy bulletproof vest with \"RN\" embroidered in gold on the chest (the only text).\n",
+  "extra": [
+   "1493758-marine-le-pen-et-vladimir-poutine-en-mars-2013.jpg"
+  ]
+ },
+ {
+  "id": "cards_brebis",
+  "name": "Carte : brebis galeuses",
+  "size": "1024x1024",
+  "uses": [
+   "bard_ref",
+   "charref"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art card illustration, square 1024x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. One satirical editorial cartoon filling a 940x780 rectangle centred in the image, with a 4 px ink frame; outside the rectangle flat chroma #FF00FF. The young man of the attached approved Bardella sheet, dressed as a shepherd with a crook, raises four fingers and smiles reassuringly at the viewer. Behind him a huge flock of black sheep overflows the frame. Among the sheep, a group of anonymous men in suits wearing French tricolour sashes and spiked Prussian helmets give a stiff straight-arm salute. No text."
+ },
+ {
+  "id": "cards_tuto",
+  "name": "Cartes : tuto",
+  "size": "1536x1024",
+  "uses": [
+   "charref",
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art card illustrations, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. Satirical editorial cartoon illustrations for game cards, in the same pixel art style. Each illustration is a complete little scene with its own simple background (sky, sea, room...), filling a 470x390 rectangle centred in its cell, with a 4 px ink frame; the space outside the rectangles is flat chroma #FF00FF. Readable at small size: one clear idea per card, big simple shapes, strong silhouettes, few details. The woman is the one of the attached approved character sheet (same face, blonde hair, navy suit), the young man the one of the attached approved Bardella sheet. No speech bubbles. Layout: 2 columns x 2 rows of equal 768x512 cells, each illustration filling a 600x440 rectangle centred in its cell. 1. A big finger taps the screen; the woman on her kite board rises into the sky with a motion arrow.\n2. The party's black cash box overflows with gold coins, coins bouncing out.\n3. A red journalists' boat with a red pennant, journalists shouting questions into microphones.\n4. A holidaymaker on a surfboard in the distance; in the foreground the woman points at him, mouth open in outrage.\n"
  }
 ]
