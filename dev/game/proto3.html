@@ -984,7 +984,8 @@ function spawn(){
   const top = patOrder.length - 1; if (lastAir && airKind(patOrder[top]) === lastAir) for (let k = top - 1; k >= 0; k--) if (airKind(patOrder[k]) !== lastAir){ [patOrder[k], patOrder[top]] = [patOrder[top], patOrder[k]]; break; }
   const pi = patOrder.pop(), n0 = journos.length, c0 = coinsList.length; let w = PATTERNS[pi](x);   // chaque motif passe une fois avant qu'un ne revienne
   // fin de vol : un motif qui ne pourrait pas dépasser Marine avant la girouette ne part pas (l'écran se vide avant la phase suivante)
-  if ((w + x - PX())/worldSpeed() + 0.4 > flightDur() - tFlight){ journos.length = n0; coinsList.length = c0; patOrder.push(pi); nextSpawn = 999; return; }
+  if (!(isTuto() && mode === 'camp') && (w + x - PX())/worldSpeed() + 0.4 > flightDur() - tFlight){ journos.length = n0;   // le tuto, lui, finit par ses étapes, pas par la durée
+    coinsList.length = c0; patOrder.push(pi); nextSpawn = 999; return; }
   lastAir = airKind(pi); spawnI++;
   coinsList = coinsList.filter(cn => !journos.slice(n0).some(j => Math.abs(cn.x - j.x) < j.w/2 + 26));   // pas de pièces au-dessus des obstacles
   { const fb = newBlock(); coinLines(x + w + sec(0.15), bandY(pick(['low', 'mid', 'high'])), 6 + Math.floor(rnd()*5), fb, 1 + Math.floor(rnd()*2)); w += (6 + 4)*coinGap() + sec(0.15); }   // un ruban de plus entre deux motifs
