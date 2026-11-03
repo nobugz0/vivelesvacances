@@ -9,7 +9,7 @@ def ev(pg, s): return pg.evaluate(s)
 def boot(p, ctrl, vp=(1280, 720)):
     b = p.chromium.launch(args=['--allow-file-access-from-files', '--autoplay-policy=no-user-gesture-required']); pg = b.new_page(viewport={'width': vp[0], 'height': vp[1]})
     errs = []; pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append('console.' + m.type + ': ' + m.text) if m.type == 'error' else None)
-    pg.goto('file://' + D + FILE); pg.wait_for_timeout(1200)
+    pg.goto('file://' + D + FILE); pg.wait_for_timeout(1200); ev(pg, 'document.getElementById(\"ttests\").hidden = false')
     ev(pg, 'window.__vdd.setCtrl(%r)' % ctrl); pg.click('#flyBtn'); pg.wait_for_timeout(600)
     return b, pg, errs
 ok = True
@@ -112,7 +112,7 @@ with sync_playwright() as p:
     pg.click('#dbgSave'); pg.wait_for_timeout(300); msg = ev(pg, 'document.getElementById("dbgMsg").textContent'); check('Enregistré' in msg, 'sauvegarde : ' + msg)
     pg.screenshot(path=D + 'p3_debug.png')
     ev(pg, '(() => { const i = document.getElementById("dbg_cam"); i.value = 0.6; i.dispatchEvent(new Event("input")); })()'); pg.click('#dbgSave'); pg.wait_for_timeout(300)
-    pg.reload(); pg.wait_for_timeout(1200); check(abs(ev(pg, 'window.__vdd.P.cam') - 0.6) < 1e-6, 'les réglages sauvegardés reviennent après rechargement')
+    pg.reload(); pg.wait_for_timeout(1200); ev(pg, 'document.getElementById("ttests").hidden = false'); check(abs(ev(pg, 'window.__vdd.P.cam') - 0.6) < 1e-6, 'les réglages sauvegardés reviennent après rechargement')
     ev(pg, 'localStorage.removeItem("p3-settings")')
     check(not errs, 'aucune erreur JS (appui) ' + str(errs[:3]))
     b.close()
@@ -227,7 +227,7 @@ with sync_playwright() as p:
     # E. la campagne enchaînée : menu, tuto direct avec ses cartes, carte girouette, carte position, navigation, écran des bonus (cumulables), arrivée du bateau, carte scandale, perte et reprise, sauvegarde, fin
     b = p.chromium.launch(args=['--allow-file-access-from-files', '--autoplay-policy=no-user-gesture-required']); pg = b.new_page(viewport={'width': 1280, 'height': 720})
     errs = []; pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append('console.' + m.type + ': ' + m.text) if m.type == 'error' else None)
-    pg.goto('file://' + D + FILE); pg.wait_for_timeout(1200); ev(pg, 'window.__vdd.resetCamp()'); pg.reload(); pg.wait_for_timeout(1200)
+    pg.goto('file://' + D + FILE); pg.wait_for_timeout(1200); ev(pg, 'document.getElementById(\"ttests\").hidden = false'); ev(pg, 'window.__vdd.resetCamp()'); pg.reload(); pg.wait_for_timeout(1200); ev(pg, 'document.getElementById("ttests").hidden = false')
     check(ev(pg, 'document.getElementById("continueBtn").hidden') and not ev(pg, 'document.getElementById("newBtn").hidden'), 'menu : sans campagne en cours, seulement « Nouvelle campagne »')
     ev(pg, 'window.__vdd.P.tutoFlight = 26'); pg.click('#newBtn'); pg.wait_for_timeout(500); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; cd = ev(pg, 'window.__vdd.card')
     check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.levelN') == 0 and ev(pg, 'window.__vdd.mode') == 'camp' and cd and cd['kind'] == 'msg' and 'skipTuto' not in ids and 'card' in ids and ev(pg, 'window.__vdd.t') < 0.3, 'nouvelle campagne : le tuto démarre tout de suite, première carte, bouton Compris (pas de « Passer le tuto »), jeu en attente')
@@ -293,7 +293,7 @@ with sync_playwright() as p:
     check(st == 'inter' and ev(pg, 'window.__vdd.levelN') == 2 and r['cur'] == 2 and l1['done'] and l2 and abs(l2['entry']['poll'] - l1['poll']) < 0.01, 'chapitre 1 réussi : porte, QG du chapitre 2, sondages transmis (%.1f %%)' % l1['poll'])
     check(not ev(pg, 'window.__vdd.bonuses'), 'les bonus sont consommés'); pg.screenshot(path=D + 'p3_inter2.png')
     # sauvegarde : rechargement de la page, « Continuer » reprend à l'écran des bonus du chapitre 2
-    pg.reload(); pg.wait_for_timeout(1200); r = ev(pg, 'window.__vdd.camp')
+    pg.reload(); pg.wait_for_timeout(1200); ev(pg, 'document.getElementById("ttests").hidden = false'); r = ev(pg, 'window.__vdd.camp')
     check(r['cur'] == 2 and r['levels'][1]['done'] and r['coins'] > 0 and not ev(pg, 'document.getElementById("continueBtn").hidden'), 'la campagne est rechargée (chapitre %d, %d pièces), « Continuer » proposé' % (r['cur'], r['coins']))
     pg.click('#continueBtn'); pg.wait_for_timeout(300); check(ev(pg, 'window.__vdd.state') == 'inter' and ev(pg, 'window.__vdd.levelN') == 2, '« Continuer » reprend au QG du chapitre 2')
     # fin de campagne : chapitre 5, bureau de vote, bilan final

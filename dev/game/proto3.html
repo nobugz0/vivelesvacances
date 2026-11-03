@@ -18,11 +18,12 @@
   --ui:Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; --title:Fraunces,Georgia,serif;
   color-scheme: light;
 }
-html,body{height:100%;margin:0}
+html,body{height:100%;margin:0;overflow:hidden}
+body{position:fixed;inset:0;width:100%}
 [hidden]{display:none!important}
 body{background:#0f1d33;color:var(--ink);font-family:var(--ui);overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 body{background:#0b1526}
-#wrap{position:absolute;left:0;top:0;width:845px;height:390px;overflow:hidden;transform-origin:0 0;background:#4a90d9}
+#wrap{position:absolute;left:0;top:0;width:0;height:0;overflow:hidden;transform-origin:0 0;background:#4a90d9}
 canvas{display:block;width:100%;height:100%;touch-action:none}
 .corner{position:absolute;top:30px;right:12px;display:flex;gap:8px;z-index:6}
 .ib{width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(15,29,51,.25);cursor:pointer;display:grid;place-items:center;color:var(--ink);padding:0}
@@ -149,6 +150,9 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
 .t5 .tb.ic{width:44px;padding:0;display:grid;place-items:center}
 .t5 .tb.ic svg,.t5 .tb.ic img{width:22px;height:22px}
 .t5 .ttests{position:absolute;right:10px;bottom:8px;display:flex;flex-direction:column;gap:4px;align-items:flex-end;opacity:.85}
+.t5 .ttests[hidden]{display:none}
+.t5 .tdbg{position:absolute;left:calc(var(--u)*14);bottom:calc(var(--u)*10);font:800 calc(var(--u)*18)/1 var(--ui);color:rgba(255,255,255,.55);background:none;border:0;padding:calc(var(--u)*8);cursor:pointer}
+.t5 .tdbg.on{color:#fff}
 .t5 .tb.sm{font-size:10px;height:22px;padding:0 8px;border-width:2px;box-shadow:2px 2px 0 #14213d;border-radius:11px}
 .t5 .srec{margin:0;font:800 12px var(--ui);color:#fff;text-shadow:0 1px 2px #14213d}
 .t5 .srec:empty{display:none}
@@ -181,7 +185,8 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
       </div>
       <p class="srec" id="bestLine"></p>
     </div>
-    <div class="ttests">
+    <button class="tdbg" id="dbgBtn" type="button">debug</button>
+    <div class="ttests" id="ttests" hidden>
       <div class="trow sm" id="chapRow">
         <button class="tb sm" data-ch="0" type="button">Tuto</button>
         <button class="tb sm" data-ch="1" type="button">Séq. 1</button>
@@ -209,7 +214,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = 'Fraunces,Georgia,serif';
-const VERSION = 'proto 3 · 0.31', BUILD = '02/11/2026 à 13h00';
+const VERSION = 'proto 3 · 0.32', BUILD = '02/11/2026 à 13h00';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -336,7 +341,7 @@ function layoutScreens(W, H2){
   });
 }
 function resize(){
-  const iw = window.innerWidth, ih = window.innerHeight;
+  const vv = window.visualViewport, iw = vv ? Math.round(vv.width) : window.innerWidth, ih = vv ? Math.round(vv.height) : window.innerHeight;   // le viewport visuel : juste sur iOS quand la barre d'adresse bouge
   const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
   rotated = ih > iw && (coarse || iw < 700);
   const aw = rotated ? ih : iw, ah = rotated ? iw : ih;   // zone disponible, en paysage
@@ -349,7 +354,7 @@ function resize(){
   VWW0 = VW/Z; updateView();
   layoutScreens(w, h); if (dbgReady) placeDebug();
 }
-window.addEventListener('resize', resize);
+window.addEventListener('resize', resize); if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
 window.addEventListener('orientationchange', () => setTimeout(resize, 200));
 resize();
 function toLocal(e){
@@ -1947,6 +1952,7 @@ function syncTitle(){
   document.getElementById('bestLine').textContent = done ? 'Campagne terminée · ' + golds + ' volte-face' + (golds > 1 ? 's' : '') : started ? 'Séquence ' + camp.cur + ' · ' + golds + ' volte-face' + (golds > 1 ? 's' : '') : '';
 }
 document.getElementById('flyBtn').addEventListener('click', startTestFly);
+document.getElementById('dbgBtn').addEventListener('click', () => { const t = document.getElementById('ttests'); t.hidden = !t.hidden; document.getElementById('dbgBtn').classList.toggle('on', !t.hidden); });   // les accès de test ne s'affichent qu'à la demande
 document.querySelectorAll('#chapRow button').forEach(b => b.addEventListener('click', () => startLevel(+b.dataset.ch)));   // un chapitre directement, avec l'état de la campagne en cours
 document.getElementById('chaseBtn').addEventListener('click', startTestChase);
 document.getElementById('stormBtn').addEventListener('click', startTest);
