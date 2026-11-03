@@ -134,7 +134,7 @@ with sync_playwright() as p:
     b.close()
     # C. la tempête : bouton de test direct, carte de pause, tirs par couloirs avec préavis, retombées, chaîne ; un bot qui esquive et un bot immobile
     for lvl, kind, dodge in [(1, 'justice', True), (3, 'rn', False), (4, 'bard', True)]:   # ordre des séquences : Inéligibilité, Europe, Retraites, Énergie, Budget
-        b, pg, errs = boot(p, 'tap'); pg.click('#closeBtn'); pg.wait_for_timeout(200); ev(pg, 'window.__vdd.P.level = %d' % lvl); pg.click('#stormBtn'); pg.wait_for_timeout(800)
+        b, pg, errs = boot(p, 'tap'); pg.click('#closeBtn'); pg.wait_for_timeout(200); ev(pg, 'document.getElementById("ttests").hidden = false'); ev(pg, 'window.__vdd.P.level = %d' % lvl); pg.click('#stormBtn'); pg.wait_for_timeout(800)
         e = ev(pg, 'window.__vdd.emitter'); check(ev(pg, 'window.__vdd.phase') == 'intro' and e and e['kind'] == kind and ev(pg, 'window.__vdd.t') < 1, 'niveau %d : « Tester la tempête » ouvre la carte directement, émetteur %s' % (lvl, e and e['kind']))
         y0 = ev(pg, 'window.__vdd.y'); pg.wait_for_timeout(600)
         ev(pg, 'window.__vdd.tap("card")'); pg.wait_for_timeout(100)
@@ -189,7 +189,7 @@ with sync_playwright() as p:
     # D. la course par cercles : bouton de test, girouette au ras de l'eau, cercles lâchés, bot qui les passe (Marine avance, caméra se rapproche), capture ; sans rien faire, la girouette s'envole
     RING_BOT = """() => new Promise(res => { const v = window.__vdd; const step = () => { const c = v.chase; if (v.state !== 'play' || v.phase !== 'chase' || !c || c.caught || c.leaving){ v.hold(false); res(); return; }
       const nx = c.rings.filter(r => r.state === 'wait' && r.x > v.px).sort((a, b) => a.x - b.x)[0]; const ty = nx ? nx.y : c.y; v.hold(ty < v.y - 6); requestAnimationFrame(step); }; requestAnimationFrame(step); })"""
-    b, pg, errs = boot(p, 'tap'); pg.click('#closeBtn'); pg.wait_for_timeout(200); pg.click('#chaseBtn'); pg.wait_for_timeout(600)
+    b, pg, errs = boot(p, 'tap'); pg.click('#closeBtn'); pg.wait_for_timeout(200); ev(pg, 'document.getElementById("ttests").hidden = false'); pg.click('#chaseBtn'); pg.wait_for_timeout(600)
     c = ev(pg, 'window.__vdd.chase'); check(ev(pg, 'window.__vdd.phase') == 'chase' and c and c['t'] < 1, '« Tester la course » lance la course directement (t=%.1f)' % c['t'])
     check(c['y'] > ev(pg, 'window.__vdd.P.yMax') - 60, 'la girouette part au ras de l\'eau (y %.0f)' % c['y'])
     d0 = c['dist']; px0 = ev(pg, 'window.__vdd.px'); want = ev(pg, 'window.__vdd.P.chaseX0/100*window.__vdd.world.VWW0 - window.__vdd.px'); check(abs(d0 - want) < 40, 'girouette au départ à chaseX0 %% de la largeur de base, Marine à 22 %% (distance %.0f)' % d0)
@@ -311,7 +311,7 @@ with sync_playwright() as p:
     pg.screenshot(path=D + 'p3_final.png'); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; check('newCamp' in ids and 'title' in ids, 'bilan final : Nouvelle campagne et Menu')
     ev(pg, 'window.__vdd.tap("title")'); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.state') == 'title', 'menu après la fin')
     # menu : un bouton par chapitre lance le chapitre directement
-    ev(pg, 'window.__vdd.resetCamp()'); pg.click('#chapRow button[data-ch="3"]'); pg.wait_for_timeout(400); check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.levelN') == 3 and ev(pg, 'window.__vdd.mode') == 'camp', 'menu : « Séq. 3 » lance la séquence 3 directement'); ev(pg, 'window.__vdd.tap("title")')
+    ev(pg, 'window.__vdd.resetCamp(); document.getElementById("ttests").hidden = false'); pg.click('#chapRow button[data-ch="3"]'); pg.wait_for_timeout(400); check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.levelN') == 3 and ev(pg, 'window.__vdd.mode') == 'camp', 'menu : « Séq. 3 » lance la séquence 3 directement'); ev(pg, 'window.__vdd.tap("title")')
     # mobile : tap réel sur « C'est parti » de l'écran des bonus (cadre pivoté)
     ctx2 = b.new_context(viewport={'width': 390, 'height': 844}, device_scale_factor=2, is_mobile=True, has_touch=True); pm = ctx2.new_page(); pm.goto('file://' + D + FILE); pm.wait_for_timeout(1200)
     ev(pm, 'window.__vdd.resetCamp(); window.__vdd.setCur(1); window.__vdd.goInter(1); window.__vdd.setInterStep(2)'); pm.wait_for_timeout(300); bt = [x for x in ev(pm, 'window.__vdd.btns') if x['id'] == 'go'][0]
