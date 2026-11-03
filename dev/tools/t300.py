@@ -55,7 +55,7 @@ with sync_playwright() as p:
     check(abs(yc - ev(pg, 'window.__vdd.P.ceil')) < 2 and ev(pg, 'window.__vdd.state') == 'play', 'plafond : Marine s\'arrête à ceil (%.0f) et le niveau continue' % yc)
     # frôlement : un deltaplane passe juste au-dessus de la zone de contact -> bonus de sondage ; un autre passe au contact -> perte, pas de bonus
     ev(pg, 'window.__vdd.hold(false); window.__vdd.clearField()'); pg.wait_for_timeout(2500); ev(pg, 'window.__vdd.clearField()')
-    p0 = ev(pg, 'window.__vdd.poll'); ev(pg, 'window.__vdd.addJourno("glider", window.__vdd.px + 420, window.__vdd.y - (22 + 28 + 20))'); pg.wait_for_timeout(2500)
+    p0 = ev(pg, 'window.__vdd.poll'); ev(pg, 'window.__vdd.addJourno("glider", window.__vdd.px + 420, window.__vdd.y - (46 + 28 + 20))'); pg.wait_for_timeout(2500)
     check(abs(ev(pg, 'window.__vdd.poll') - p0) < 0.001, 'un journaliste qui passe sans contact ne change pas les sondages (plus de gain à la distance ni au frôlement)')
     h0 = ev(pg, 'window.__vdd.stats.hits'); ev(pg, 'window.__vdd.addJourno("glider", window.__vdd.px + 420, window.__vdd.y)'); pg.wait_for_timeout(2500)
     check(ev(pg, 'window.__vdd.stats.hits') == h0 + 1 and abs(ev(pg, 'window.__vdd.poll') - (p0 - ev(pg, 'window.__vdd.P.hitPoll'))) < 0.001, 'au contact : −hitPoll (%.2f -> %.2f)' % (p0, ev(pg, 'window.__vdd.poll')))
@@ -247,7 +247,7 @@ with sync_playwright() as p:
     ev(pg, 'window.__vdd.hold(false)'); check(c4 is not None and ev(pg, 'window.__vdd.tutoStage') == 2, 'tuto : après les trois étrangers, un journaliste arrive et sa carte s\'affiche (%.1f s)' % ev(pg, 'window.__vdd.t')); pg.screenshot(path=D + 'p3_tuto_msg4.png'); ev(pg, 'window.__vdd.closeCard()')
     t0 = time.time(); cv = None
     while time.time() - t0 < 40 and not cv:
-        bot(pg, 1, False); cd = ev(pg, 'window.__vdd.card')
+        ev(pg, 'window.__vdd.setPoll(40)'); bot(pg, 1, False); cd = ev(pg, 'window.__vdd.card')   # le bot ne sait pas éviter : on le garde dans les sondages
         if cd and cd['kind'] == 'vane': cv = cd
         elif cd and cd['t'] > 0.5: ev(pg, 'window.__vdd.closeCard()')
     check(cv is not None and ev(pg, 'window.__vdd.phase') == 'vane' and ev(pg, 'window.__vdd.emitter') is None, 'fin du vol du tuto (trois étapes passées, champ vide) : pas de tempête, carte de la girouette (%.1f s)' % ev(pg, 'window.__vdd.t')); pg.screenshot(path=D + 'p3_vane_card.png')
