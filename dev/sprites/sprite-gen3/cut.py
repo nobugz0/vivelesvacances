@@ -138,12 +138,15 @@ import os
 if glob.glob(os.path.join(SHEETS, 'j_glider2_*_v1.png')):   # deltaplane avec micro tendu : remplace jg0/jg1 (6 poses : jg0..jg5)
     grid('j_glider2', 3, 2, ['jg0', 'jg1', 'jg2', 'jg3', 'jg4', 'jg5'], anchor='center')
 # étrangers : debout (rangée du haut), en chute (rangée du bas)
-grid('etr_a', 3, 2, ['e0s', 'e1s', 'e2s', 'e0f', 'e1f', 'e2f'])
-grid('etr_b', 3, 2, ['e3s', 'e4s', 'e5s', 'e3f', 'e4f', 'e5f'])
+E2 = bool(glob.glob(os.path.join(SHEETS, 'etr_a2_*_v1.png')))   # 03/11 : sikhs, afghans, sénégalais, sans rouge ni bleu
+grid('etr_a2' if E2 else 'etr_a', 3, 2, ['e0s', 'e1s', 'e2s', 'e0f', 'e1f', 'e2f'])
+grid('etr_b2' if E2 else 'etr_b', 3, 2, ['e3s', 'e4s', 'e5s', 'e3f', 'e4f', 'e5f'])
 grid('theme_boats', 3, 2, ['tb0', 'tb1', 'tb2', 'tb3', 'tb4', 'tb5'])
 grid('scandal_a', 2, 2, ['nJus0', 'nJus1', 'nJus2', 'nJus3'])
-grid('scandal_b', 3, 2, ['nRn0', 'nRn1', 'nRn2', 'nPan0', 'nPan1', 'nPan2'])
-for n in ('nPan0', 'nPan1', 'nPan2'):   # projectiles : ancre au centre
+PR = bool(glob.glob(os.path.join(SHEETS, 'pans_red_*_v1.png')))
+grid('scandal_b', 3, 2, ['nRn0', 'nRn1', 'nRn2'] + ([] if PR else ['nPan0', 'nPan1', 'nPan2']))
+if PR: grid('pans_red', 3, 2, ['nPan0', 'nPan1', 'nPan2', 'nPan3', 'nPan4', 'nPan5'], anchor='center')   # six casseroles rouges
+for n in ['nPan%d' % k for k in range(6 if PR else 3)]:   # projectiles : ancre au centre
     i = [k for k, o in enumerate(OUT) if o[0] == n][0]; nm, im, ax, ay, meta = OUT[i]; OUT[i] = (nm, im, im.size[0] / 2, im.size[1] / 2, meta)
 a = sheet('montretout'); alpha = key(a)
 add('mtHouse', a[:560], alpha[:560]); add('mtArch', a[560:], alpha[560:])
@@ -266,6 +269,12 @@ if glob.glob(os.path.join(SHEETS, 'm_pull_*_v1.png')):
 if glob.glob(os.path.join(SHEETS, 'ui_icons2_*_v1.png')):
     ui_grid('ui_icons2', 3, 2, ['iFire', 'iWind', 'iCheck', 'iStar', 'iBoat', 'iCoq'])
 
+# pièce en rotation (8 vues), éléments d'orage
+if glob.glob(os.path.join(SHEETS, 'coin_spin_*_v1.png')):
+    grid('coin_spin', 4, 2, ['cS%d' % k for k in range(8)], anchor='center')
+if glob.glob(os.path.join(SHEETS, 'storm_items_*_v1.png')):
+    grid('storm_items', 3, 2, ['stCloud', 'stBolt0', 'stBolt1', 'stRain', 'stWave', 'stGust'], anchor='center')
+
 # assemblage : rangées, largeur 2048
 W = 2048; x = y = rowh = 0; ent = {}; meta = {}
 for nm, im, ax, ay, me in sorted(OUT, key=lambda o: -o[1].size[1]):
@@ -277,7 +286,7 @@ for nm, im, ax, ay, me in sorted(OUT, key=lambda o: -o[1].size[1]):
 atlas = Image.new('RGBA', (W, y + rowh), (0, 0, 0, 0))
 for nm, im, ax, ay, me in OUT: atlas.paste(im, im._pos)
 atlas.save(os.path.join(GAME, 'atlas5.png'), optimize=True)
-for nm, out in (('decor_sky', 'sky5.png'), ('decor_sea', 'sea5.png')):
+for nm, out in (('decor_sky', 'sky5.png'), ('decor_sea', 'sea5.png')) + ((('storm_sky', 'storm5.png'),) if glob.glob(os.path.join(SHEETS, 'storm_sky_*_v1.png')) else ()):
     Image.fromarray(sheet(nm).astype(np.uint8)).resize((768, 512), Image.NEAREST).save(os.path.join(GAME, out), optimize=True)
 open(os.path.join(GAME, 'atlas5.js'), 'w').write('Object.assign(ATLAS, ' + json.dumps(ent) + ');\nconst META5 = ' + json.dumps(meta) + ';\n')
 # planche contact
