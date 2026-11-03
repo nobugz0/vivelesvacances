@@ -180,7 +180,7 @@ button.tuto{font-family:var(--ui);color:var(--ink)}
     <img class="tbg" src="menu5.jpg" alt="">
     <div class="tmain">
       <img class="tlogo" src="logo5.png" alt="Marine la maline">
-      <p class="tsub">Cinq positions à retourner, des étrangers à renverser, la presse à semer : finis le plus haut possible dans les sondages, jusqu’en mai 2027.</p>
+      <p class="tsub">Tape sur les étrangers, évite les casseroles, et change d’avis sur tout pour monter dans les sondages !</p>
       <div class="trow">
         <button class="tb pk" id="newBtn" type="button">Nouvelle campagne</button>
         <label class="tchk"><input type="checkbox" id="tutoChk" checked><span>Tuto</span></label>
@@ -223,7 +223,7 @@ const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = '"Inter Tight",Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif';   // Inter Tight 800 pour les titres et les chiffres, Inter pour le reste
 const SHIP = false;   // build_p3.py --ship le passe à true
-const VERSION = 'proto 3 · 0.37', BUILD = '02/11/2026 à 13h00';
+const VERSION = 'proto 3 · 0.38', BUILD = '03/11/2026 à 21h50';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -1731,7 +1731,7 @@ function drawMarine(){
   if (mBubble){ ctx.save(); ctx.globalAlpha = clamp(mBubble.life/0.3, 0, 1); speech(mBubble.t, x + 24, y - (fr5 ? 70 : 44), '#fde68a'); ctx.restore(); }   // la réplique de Marine
   // jauge de vent sous la planche : bleue, orange sous 50 %, rouge sous 20 %, clignote vide ; argent (infini) pendant la course
   { const k = 1/Z, gw = 44*k, gh = 5*k, gx = x - gw/2 - 6, gy = y + 82;   // jauge de vent, petite et discrète, sous la planche
-    const fire = hasBonus('fire'), wc = fire ? GOLD : wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.2 ? '#d63b3b' : wind < 0.5 ? '#f2b630' : GREEN;
+    const fire = hasBonus('fire'), wc = fire ? GOLD : wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.3 ? '#d63b3b' : wind < 0.6 ? '#f2d230' : GREEN;
     ctx.save(); ctx.globalAlpha = 0.8; ctx.fillStyle = 'rgba(20,33,61,.5)'; rr(gx - 1.5*k, gy - 1.5*k, gw + 3*k, gh + 3*k, 3*k); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.25)'; rr(gx, gy, gw, gh, 2.5*k); ctx.fill(); ctx.fillStyle = wc; rr(gx, gy, gw*wind, gh, 2.5*k); ctx.fill();
     if (fire){ ctx.save(); rr(gx, gy, gw, gh, 2.5*k); ctx.clip(); const sx = gx - 10*k + ((realT*0.9) % 1)*(gw + 20*k); ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fillRect(sx, gy, 6*k, gh); ctx.restore(); ctx.strokeStyle = 'rgba(255,230,140,' + (0.5 + 0.4*Math.sin(realT*6)) + ')'; ctx.lineWidth = 1.5*k; rr(gx - 1.5*k, gy - 1.5*k, gw + 3*k, gh + 3*k, 3*k); ctx.stroke(); }   // contre-feu : barre dorée, reflet qui passe
     ctx.restore(); }
