@@ -135,7 +135,7 @@ for i, (x, y, w, h) in enumerate(cells(a, 2, 2)):
 grid('j_boats', 3, 2, ['jb0', 'jb1', 'jb2', 'jt0', 'jt1', 'jbHit'], split={'jt1': ['jtJump', 'jtBoat']})
 grid('j_air', 3, 2, ['jg0', 'jg1', 'jh0', 'jh1', 'jj0', 'jj1'], anchor='center', flips=('jh0',))
 import os
-if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sheets', 'j_glider2.png')):   # deltaplane avec micro tendu : remplace jg0/jg1 (6 poses : jg0..jg5)
+if glob.glob(os.path.join(SHEETS, 'j_glider2_*_v1.png')):   # deltaplane avec micro tendu : remplace jg0/jg1 (6 poses : jg0..jg5)
     grid('j_glider2', 3, 2, ['jg0', 'jg1', 'jg2', 'jg3', 'jg4', 'jg5'], anchor='center')
 # étrangers : debout (rangée du haut), en chute (rangée du bas)
 grid('etr_a', 3, 2, ['e0s', 'e1s', 'e2s', 'e0f', 'e1f', 'e2f'])

@@ -23,7 +23,7 @@ def bot(pg, seconds, wind):
     if wind: pg.mouse.move(900, 360); pg.mouse.down()
     while time.time() - t0 < seconds and ev(pg, 'window.__vdd.state') == 'play':
         cd = ev(pg, 'window.__vdd.card')
-        if cd and cd['t'] > 0.5: ev(pg, 'window.__vdd.closeCard()')
+        if cd and cd['t'] > 0.5 and cd['kind'] in ('msg', 'theme'): ev(pg, 'window.__vdd.closeCard()')   # le bot ne ferme que les cartes du vol ; la girouette, c'est au test de la voir
         cs = ev(pg, 'window.__vdd.coinsList.filter(c => c.x > window.__vdd.px - 10 && c.x < window.__vdd.px + 500)'); y = ev(pg, 'window.__vdd.y')
         ty = max(ceil + (170 if wind else 70), min(cs, key=lambda c: c['x'])['y']) if cs else ceil + 200
         if wind:
