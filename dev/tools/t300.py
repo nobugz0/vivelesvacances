@@ -192,7 +192,7 @@ with sync_playwright() as p:
     b, pg, errs = boot(p, 'tap'); pg.click('#closeBtn'); pg.wait_for_timeout(200); ev(pg, 'document.getElementById("ttests").hidden = false'); pg.click('#chaseBtn'); pg.wait_for_timeout(600)
     c = ev(pg, 'window.__vdd.chase'); check(ev(pg, 'window.__vdd.phase') == 'chase' and c and c['t'] < 1, '« Tester la course » lance la course directement (t=%.1f)' % c['t'])
     check(c['y'] > ev(pg, 'window.__vdd.P.yMax') - 60, 'la girouette part au ras de l\'eau (y %.0f)' % c['y'])
-    d0 = c['dist']; px0 = ev(pg, 'window.__vdd.px'); want = ev(pg, 'window.__vdd.P.chaseX0/100*window.__vdd.world.VWW0 - window.__vdd.px'); check(abs(d0 - want) < 40, 'girouette au départ à chaseX0 %% de la largeur de base, Marine à 22 %% (distance %.0f)' % d0)
+    d0 = c['dist']; px0 = ev(pg, 'window.__vdd.px'); want = ev(pg, '(window.__vdd.P.chaseX0 + (window.__vdd.P.chaseX1 - window.__vdd.P.chaseX0)*window.__vdd.chase.dropped/(window.__vdd.P.ringTotal - 1))/100*window.__vdd.world.VWW0 - window.__vdd.px'); check(abs(d0 - want) < 40, 'girouette au départ à chaseX0 %% de la largeur de base, Marine à 22 %% (distance %.0f)' % d0)
     pg.wait_for_timeout(2800); c = ev(pg, 'window.__vdd.chase'); check(c['dropped'] >= 1 and len(c['rings']) >= 1 and all(abs(r['y'] - c['y']) < 400 for r in c['rings']), 'la girouette lâche des cercles derrière elle (%d)' % c['dropped'])
     ev(pg, RING_BOT); c = ev(pg, 'window.__vdd.chase'); print('   course (cercles) : t %.1f s, passés %d / lâchés %d, dist %.0f, attrapée %s' % (c['t'], c['passed'], c['dropped'], c['dist'], c['caught']))
     check(c['caught'] and c['passed'] == ev(pg, 'window.__vdd.P.ringNeed'), 'un bot qui vise les cercles en passe %d et attrape la girouette (%.1f s)' % (c['passed'], c['t']))
@@ -208,7 +208,7 @@ with sync_playwright() as p:
     ev(pg, 'window.__vdd.startTestChase()'); pg.wait_for_timeout(300); ev(pg, 'window.__vdd.P.ringTotal = 4'); t0 = time.time(); seen = None
     while time.time() - t0 < 16 and ev(pg, 'window.__vdd.state') == 'play':
         c = ev(pg, 'window.__vdd.chase'); ev(pg, 'window.__vdd.hold(window.__vdd.y > 330)')   # reste à mi-hauteur, appui maintenu pendant l'envol
-        if c and c['leaving'] and seen is None: pg.wait_for_timeout(900); seen = ev(pg, 'window.__vdd.chase'); pg.screenshot(path=D + 'p3_flyaway.png')
+        if c and c['leaving'] and seen is None: pg.wait_for_timeout(1500); seen = ev(pg, 'window.__vdd.chase'); pg.screenshot(path=D + 'p3_flyaway.png')
         pg.wait_for_timeout(100)
     pg.mouse.up(); c = ev(pg, 'window.__vdd.chase')
     check(seen is not None and seen['camFx'] < 0.95, 'tous les cercles lâchés sans le compte : la girouette s\'envole, la caméra recule (camFx %.2f)' % (seen['camFx'] if seen else 1))
@@ -228,7 +228,7 @@ with sync_playwright() as p:
     errs = []; pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append('console.' + m.type + ': ' + m.text) if m.type == 'error' else None)
     pg.goto('file://' + D + FILE); pg.wait_for_timeout(1200); ev(pg, 'document.getElementById(\"ttests\").hidden = false'); ev(pg, 'window.__vdd.resetCamp()'); pg.reload(); pg.wait_for_timeout(1200); ev(pg, 'document.getElementById("ttests").hidden = false')
     check(ev(pg, 'document.getElementById("continueBtn")') is None and not ev(pg, 'document.getElementById("newBtn").hidden') and ev(pg, 'document.getElementById("tutoChk").checked'), 'menu : « Nouvelle campagne » et la case « Tuto » cochée, plus de « Continuer »')
-    ev(pg, 'window.__vdd.P.tutoFlight = 26'); pg.click('#newBtn'); pg.wait_for_timeout(500); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; cd = ev(pg, 'window.__vdd.card')
+    ev(pg, 'window.__vdd.P.tutoFlight = 26'); ev(pg, 'document.getElementById("ttests").hidden = true'); pg.click('#newBtn'); pg.wait_for_timeout(500); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; cd = ev(pg, 'window.__vdd.card')
     check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.levelN') == 0 and ev(pg, 'window.__vdd.mode') == 'camp' and cd and cd['kind'] == 'msg' and 'skipTuto' not in ids and 'card' in ids and ev(pg, 'window.__vdd.t') < 0.3, 'nouvelle campagne : le tuto démarre tout de suite, première carte, bouton Compris (pas de « Passer le tuto »), jeu en attente')
     pg.screenshot(path=D + 'p3_tuto_msg1.png')
     pg.mouse.move(640, 500); pg.mouse.down(); pg.wait_for_timeout(100); pg.mouse.up(); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.card') is None and ev(pg, 'window.__vdd.onWater'), 'le tap ferme la carte sans faire décoller Marine')
