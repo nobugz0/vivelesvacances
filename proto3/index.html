@@ -213,7 +213,7 @@ const wrap = document.getElementById('wrap');
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = '"Inter Tight",Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif';   // Inter Tight 800 pour les titres et les chiffres, Inter pour le reste
-const VERSION = 'proto 3 · 0.33', BUILD = '02/11/2026 à 13h00';
+const VERSION = 'proto 3 · 0.34', BUILD = '02/11/2026 à 13h00';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -590,7 +590,7 @@ const STORM_LINES = [null,
   ['Détournement de fonds publics !', 'Exécution provisoire !', 'Confirmé en appel !', 'Quatre ans dont deux ferme !', 'Inéligible, madame !'],
   ['Une barbouzerie !', 'Je porte plainte !', 'Je ne pose pas genou à terre !', 'Documents non authentifiés !', 'J’avais 17 ans !']];
 const LINES = [null, 'Recel d’abus de biens sociaux. Définitif.', 'Oups. La photo avec Poutine est page 6.', 'Quatre ou cinq brebis galeuses, pas plus !', 'Quatre ans dont deux ferme. Confirmé en appel.', 'Une barbouzerie ! Je porte plainte.'];
-const questions = () => QUESTIONS[clamp(levelN, 0, 5)];
+const questions = () => QUESTIONS[ORDER[clamp(levelN, 0, 5)]];
 // Les images à faire (cadres placeholder en attendant) : thème, volte-face (drôle), scandale, bonus, tuto, QG
 const IMG = {
   theme: ['un franc et un euro face à face', 'le drapeau européen qui claque au vent', 'une pendule de retraite à 60 h', 'une tour de refroidissement', 'un bracelet électronique doré', 'une règle d’or sur un livre de comptes'],
@@ -751,7 +751,8 @@ function closeCard(){ const c = card; if (!c) return; card = null; sfxP3('click'
 // mode 'camp' = la campagne (carte, niveaux, sauvegarde) ; 'test' = les boutons de test du menu (niveau P.level, rien n'est sauvegardé)
 let mode = 'test', levelN = 1, testMode = '', kevlarLeft = 0, infoOpen = null, shopMsg = '';
 const hasBonus = id => mode === 'camp' && !!(camp.bonuses && camp.bonuses[id]);   // les bonus activés valent pour le niveau en cours (gardés si on le recommence)
-const curLevel = () => LEVELS[clamp(levelN, 0, 5)];
+const ORDER = [0, 4, 1, 2, 3, 5];   // séquence k → fiche LEVELS[ORDER[k]] : le tuto, puis Inéligibilité, Europe, Retraites, Énergie, Budget
+const curLevel = () => LEVELS[ORDER[clamp(levelN, 0, 5)]];
 const isTuto = () => levelN === 0;
 const flightDur = () => isTuto() ? P.tutoFlight : P.flight*lvlDur();
 // camp.levels[n] = {entry: {poll, cass} (état à l'entrée du niveau), done, poll, cass, gold, hits} ; unlocked = nombre de chapitres jouables (tuto compris)
@@ -875,7 +876,7 @@ window.addEventListener('keydown', e => {
   if (e.code === 'Space'){ if (state === 'play' && !card) keyUp = true; e.preventDefault(); }
   if (e.code === 'Enter' && state === 'title') goInter(camp.cur <= 5 ? camp.cur : 5);
   if (e.code === 'Enter' && state === 'recap') replay();
-  if ((e.code === 'Enter' || e.code === 'Space') && state === 'play' && card && cardT > 0.4 && !infoOpen) closeCard();
+  if ((e.code === 'Enter' || e.code === 'Space') && state === 'play' && card && cardT > 0.8 && !infoOpen) closeCard();
   if (e.code === 'Escape' && infoOpen) infoOpen = null;
   if (e.code === 'KeyP' && state === 'play') togglePause();
 });
@@ -1042,7 +1043,7 @@ function update(dt){
   for (const j of journos){
     if (j.alert > 0){ j.alert -= dt; if (j.alert <= 0) sfxP3('alert'); continue; }   // l'hélico prévient avant d'entrer
     if (j.kind === 'jet' && j.st === 'hold'){ j.x = mx + 60; j.holdT -= dt; if (j.holdT <= 0){ j.st = 'out'; j.vx = 420; } }
-    else if (j.kind === 'glider' && j.x < mx){ j.x -= dx*0.3; j.out = (j.out || 0) + dt; }   // passé Marine, le deltaplane ralentit et grossit vers la caméra
+    else if (j.kind === 'glider' && j.x < mx){ j.x -= dx*1.4; j.out = (j.out || 0) + dt; }   // passé Marine, il file vers le bord gauche en grossissant un peu   // passé Marine, le deltaplane ralentit et grossit vers la caméra
     else j.x -= dx + (j.vx || 0)*dt;
     if (j.kind === 'jet' && j.st === 'in' && j.x <= mx + 60){ j.st = 'hold'; j.holdT = P.jetFollow; }
     if (j.kind === 'tramp'){ const tt = (realT + j.ph) % 2.4; j.crouch = tt < 0.5; j.jy = tt < 0.5 ? 0 : 240*Math.sin(Math.PI*(tt - 0.5)/1.9); }
@@ -1167,7 +1168,7 @@ const chaseProg = () => chase ? clamp(chase.passed/Math.max(1, P.ringNeed), 0, 1
 function updateChase(dt){
   const c = chase, my = py, vs = worldSpeed();
   c.t += dt; dark = Math.max(0, dark - dt/1.5); c.flash = Math.max(0, c.flash - dt);
-  if (c.caught){ c.catchT += dt; marineX += clamp(orbX() - 30 - marineX, -600*dt, 600*dt); if (c.catchT > 2.9 && !c.shown){ c.shown = true; showCard('position'); } return; }   // au compte, Marine fonce sur la girouette, puis la carte de la volte-face
+  if (c.caught){ c.catchT += dt; marineX += clamp(orbX() - 30 - marineX, -600*dt, 600*dt); if (c.catchT > 0.9 && !c.shown){ c.shown = true; showCard('position'); } return; }   // au compte, Marine fonce sur la girouette, puis la carte de la volte-face
   if (c.leaving){ c.catchT += dt; if (c.catchT > 2.4) afterChase(); return; }   // la girouette monte au ciel, la caméra recule, Marine retombe
   // la girouette : un cap qui change à intervalles (plus courts à mesure qu'on avance) ; vitesse et accélération bornées par celles de Marine
   const top = P.ceil + 70, bot = P.yMax, pr = chaseProg(), vmax = Math.min(P.vUp, P.vDown)*P.chaseAgil/100*(0.7 + 0.3*lvlDiff())/(isTuto() ? 1.4 : 1);
@@ -1235,10 +1236,11 @@ function drawChaseHud(){
   else if (!c.caught && left === 0) outText('Derniers cercles !', VW/2, y + 50, 13, 900, '#fff', 'center', 'rgba(20,33,61,.6)');
 }
 // après la volte-face : une respiration de vol libre, puis le scandale (campagne, hors tuto) ; sinon la navigation
-function afterChase(){ chase = null; trail = []; card = null; if (mode === 'camp' && !isTuto()){ phase = 'breath'; breathT = 0; } else startCruise(); }
+function afterChase(){ chase = null; trail = []; card = null; backFrom = null; if (mode === 'camp' && !isTuto()){ phase = 'breath'; breathT = 0; } else startCruise(); }
 function updateBreath(dt){ breathT += dt; dark = Math.max(0, dark - dt); marineBack(dt); if (breathT >= BREATH_T) startStorm(false); }
 // après la course, Marine (poussée à droite vers la girouette) revient à sa place en moins d'une seconde, avant le scandale ou la porte
-function marineBack(dt){ if (marineX === null) return; const d = Math.max(190, VWW0*0.22); marineX += clamp(d - marineX, -1300*dt, 1300*dt); if (Math.abs(marineX - d) < 1) marineX = null; }
+let backFrom = null, backT = 0;
+function marineBack(dt){ if (marineX === null) return; const d = Math.max(190, VWW0*0.22); if (backFrom === null){ backFrom = marineX; backT = 0; } backT += dt; const k = clamp(backT/1.2, 0, 1), e = k < 0.5 ? 2*k*k : 1 - Math.pow(-2*k + 2, 2)/2; marineX = lerp(backFrom, d, e); if (k >= 1){ marineX = null; backFrom = null; } }   // glissé amorti vers sa place
 // après la tempête : l'émetteur a fui, le ciel se dégage, Marine s'en sort ; puis la navigation vers la porte
 function startCalm(){ phase = 'calm'; calmT = 0; emitter = null; pans = []; sting('sting_accalmie'); sfxP3('fanfare'); }
 function updateCalm(dt){ calmT += dt; dark = Math.max(0, dark - dt/1.2); stormCoins(dt); if (calmT >= CALM_T) startCruise(); }
@@ -1248,7 +1250,7 @@ function startCruise(){ phase = 'cruise'; card = null; cruiseT = 0; chase = null
 function updateCruise(dt){
   cruiseT += dt; dark = Math.max(0, dark - dt/1.5); if (!gate || gate.x > VWW + 300) stormCoins(dt);
   marineBack(dt);
-  if (gate){ gate.x -= worldSpeed()*dt; if (!gate.in && gate.x <= PX() + 30){ gate.in = true; sfxP3('cash'); startTrans(() => endLevel('done')); } }
+  if (gate){ gate.x -= worldSpeed()*dt; if (!gate.in && gate.x <= PX() + 30 + worldSpeed()*0.45){ gate.in = true; sfxP3('cash'); startTrans(() => endLevel('done')); } }   // l'iris part 0,45 s avant la porte : il est fermé quand Marine est devant
   else if (cruiseT >= P.cruiseT){ if (mode === 'camp' && isTuto()){ if (!trans) startTrans(() => endLevel('done')); } else endLevel('done'); }   // fin du tuto : l'iris, puis la séquence 1
 }
 // la transition en iris : le noir se referme sur Marine, la bascule se fait à mi-course, puis l'iris se rouvre
@@ -1262,7 +1264,7 @@ function drawTrans(){
 function drawGate(){
   if (!gate) return; const x = gate.x, top = P.ceil + 80, k = 1/Z, pulse = 0.5 + 0.5*Math.sin(realT*5), glow = ctx.createRadialGradient(x, (top + WATER)/2, 20, x, (top + WATER)/2, 420);
   glow.addColorStop(0, 'rgba(255,214,102,' + (0.35 + 0.15*pulse) + ')'); glow.addColorStop(1, 'rgba(255,214,102,0)'); ctx.fillStyle = glow; ctx.fillRect(x - 420, top - 200, 840, WATER - top + 400);
-  if (has5('mtHouse')){ spr('mtHouse', x + 40, WATER + 16, 1.7); return; }   // la bâtisse Second Empire sur sa barge, seule : Marine y entre   // la bâtisse Second Empire sur sa barge, l'arche d'entrée devant
+  if (has5('mtHouse')){ spr('mtHouse', x + 40, WATER + 16, 1.15); return; }   // la bâtisse Second Empire sur sa barge, seule : Marine y entre   // la bâtisse Second Empire sur sa barge, l'arche d'entrée devant
   ctx.fillStyle = 'rgba(20,33,61,.55)'; ctx.fillRect(x - 86, top, 172, WATER - top);   // le rideau sombre : on ne voit pas dedans
   for (let i=0;i<6;i++){ ctx.fillStyle = 'rgba(255,214,102,' + (0.25 + 0.2*Math.sin(realT*6 + i)) + ')'; ctx.fillRect(x - 70 + i*24, top, 10, WATER - top); }   // lamelles dorées
   ctx.fillStyle = PINK; ctx.fillRect(x - 118, top, 32, WATER - top + 8); ctx.fillRect(x + 86, top, 32, WATER - top + 8); ctx.lineWidth = 4; ctx.strokeStyle = INK; ctx.strokeRect(x - 118, top, 32, WATER - top + 8); ctx.strokeRect(x + 86, top, 32, WATER - top + 8);   // les montants
@@ -1369,6 +1371,7 @@ function drawFar(){
 }
 // second plan : bouées, voiliers, pêcheurs, rochers… (planche decor_mid), devant l'horizon, derrière Marine, parallaxe 0,55
 function drawMid(){
+  return;   // 03/11 : rien au second plan à part le bateau du thème
   if (!has5('mid0') || state !== 'play') return;
   const off = scrollX*0.55, st = 1500, base = HZ + 50;   // à un tiers de la bande de mer sous l'horizon
   for (let j = Math.floor(off/st) - 1; j <= Math.ceil((VWW + off)/st) + 1; j++){ if (hash(j*3.1) > 0.7) continue; const n = Math.floor(hash(j + 9)*6), a = ATLAS['mid' + n]; spr('mid' + n, j*st - off + hash(j + 1)*500, base + Math.sin(realT*1.3 + j)*2, 73/a[3]); }   // 73 px monde de haut (44 à l'écran)
@@ -1469,8 +1472,8 @@ function drawJourno(j){
   }
   if (j.kind === 'glider'){   // perspective : il arrive de l'horizon tout petit, est à sa taille à la colonne de Marine, puis grossit au premier plan et sort ahuri
     const mx = PX(), k = j.x > mx ? clamp((j.x - mx)/Math.max(1, VWW - mx), 0, 1) : 0, k2 = j.x < mx ? clamp((mx - j.x)/(mx + 220), 0, 1) : 0;
-    const ko = clamp((j.out || 0)/1.1, 0, 1), sc = (j.x > mx ? lerp(1, 0.3, k) : 1 + 2*ko)*1.95, y = (j.x > mx ? lerp(j.y, HZ + 14, k*k) : j.y + 150*ko) + bob, w = 48;
-    if (has5('jg0')){ ctx.save(); ctx.globalAlpha = ko > 0.6 ? clamp(1 - (ko - 0.6)/0.4, 0, 1) : 1; ctx.translate(x, y); ctx.scale(sc, sc); ctx.rotate(-0.04 + ko*0.2); spr(Math.floor(realT*4 + j.bob) % 2 ? 'jg1' : 'jg0', 0, 6, 0.5); ctx.restore(); if (ko === 0) drawQuestion(j, x, y - 40*sc); return; }
+    const ko = clamp((j.out || 0)/1.1, 0, 1), sc = (j.x > mx ? lerp(1, 0.3, k) : 1 + 0.8*ko)*1.95, y = (j.x > mx ? lerp(j.y, HZ + 14, k*k) : j.y + 40*ko) + bob, w = 48;
+    if (has5('jg0')){ ctx.save(); ctx.globalAlpha = 1; ctx.translate(x, y); ctx.scale(sc, sc); ctx.rotate(-0.04 + ko*0.12); spr(Math.floor(realT*4 + j.bob) % 2 ? 'jg1' : 'jg0', 0, 6, 0.5); ctx.restore(); if (ko === 0) drawQuestion(j, x, y - 40*sc); return; }
     ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); ctx.rotate(-0.08 + k2*0.25);
     ctx.fillStyle = j.col; ctx.beginPath(); ctx.moveTo(-w, 6); ctx.lineTo(0, -16); ctx.lineTo(w, 6); ctx.closePath(); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(-w*0.6, 2); ctx.lineTo(0, -10); ctx.lineTo(w*0.6, 2); ctx.closePath(); ctx.fill();
@@ -1569,7 +1572,7 @@ function drawCard(){
   const button = (label, id) => btnAuto({xr: x + w - 12, y: y + h - 40, label, id, bg: GREEN, fg: '#fff', h: 30, px: 13});
   const more = id => { text('Plus d’infos', tx, y + h - 24, 11.5, 700, SKYB, 'left'); font(11.5, 700); const lw = ctx.measureText('Plus d’infos').width; ctx.fillStyle = SKYB; ctx.fillRect(tx, y + h - 17, lw, 1.5); btns.push({x: tx - 6, y: y + h - 38, w: lw + 12, h: 28, id}); };
   if (c.kind === 'theme'){   // le carton de la séquence : le thème, la position jusqu'ici, la phrase de la séquence
-    band('Séquence ' + n, L.theme, col, ctxt);
+    band('Séquence ' + levelN, L.theme, col, ctxt);
     small('Sa position jusqu’ici', y + bh + 14);
     const ty = lines('« ' + L.old + ' »', tx, y + bh + 36, tw, 20, 800, INK, UIT, 22, 2);
     text(L.pitch || '', tx, ty + 4, 12, 600, '#3b4452');
@@ -1586,13 +1589,16 @@ function drawCard(){
     text(isTuto() ? 'Passe les cercles dorés et attrape la girouette !' : 'Attrape la girouette !', tx, ty + 4, 12, 700, RED);
     button('C’est parti', 'card');
   } else if (c.kind === 'position'){   // le résultat : avant (se barre) → après (arrive), même corps ; pas de date
-    band('Volte-face réussie !', '', GOLD, INK);
-    const neu = L.neu.replace(/\s*\([^)]*\)\s*$/, ''), k1 = clamp((cardT - 0.35)/0.4, 0, 1), k2 = clamp((cardT - 0.85)/0.35, 0, 1), cw1 = Math.round(tw*0.42), cx2 = tx + cw1 + 34, cw2 = tw - cw1 - 34;
+    band('Volte-face réussi !', '', GOLD, INK);
+    const neu = L.neu.replace(/\s*\([^)]*\)\s*$/, ''), k1 = clamp((cardT - 0.4)/0.5, 0, 1), kv = clamp((cardT - 0.4)/1.3, 0, 1), k2 = clamp((cardT - 1.6)/0.4, 0, 1), cw1 = Math.round(tw*0.4), cx2 = tx + cw1 + 44, cw2 = tw - cw1 - 44;
     small('Avant', y + bh + 14);
-    font(15, 800, UIT); const ol = wrapText(L.old, cw1, 15, 800, UIT)[0], ow = Math.min(cw1, ctx.measureText(ol).width);
-    text(ol, tx, y + bh + 34, 15, 800, k1 > 0 ? 'rgba(20,33,61,.45)' : INK, 'left', UIT);
-    if (k1 > 0){ ctx.strokeStyle = RED; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(tx, y + bh + 35); ctx.lineTo(tx + ow*k1, y + bh + 35); ctx.stroke(); }
-    if (k2 > 0){ ctx.save(); ctx.globalAlpha = k2; const ax = tx + cw1 + 17, ay = y + bh + 36; ctx.fillStyle = GOLD; ctx.beginPath(); ctx.arc(ax, ay, 11, 0, 7); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; ctx.stroke(); text('→', ax, ay + 1, 13, 800, INK, 'center', UIT);
+    { const px = L.old.length > 34 ? 13 : 15, lh = px + 3; font(px, 800, UIT); const ols = wrapText(L.old, cw1, px, 800, UIT).slice(0, 3), nl = ols.length;   // l'ancienne position sur 1 à 3 lignes, barrées l'une après l'autre
+      ols.forEach((ol, i) => { const ly = y + bh + 34 + i*lh, ow = Math.min(cw1, ctx.measureText(ol).width), kk = clamp(k1*nl - i, 0, 1);
+        text(ol, tx, ly, px, 800, kk > 0 ? 'rgba(20,33,61,.45)' : INK, 'left', UIT);
+        if (kk > 0){ ctx.strokeStyle = RED; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(tx, ly + 1); ctx.lineTo(tx + ow*kk, ly + 1); ctx.stroke(); } }); }
+    if (cardT > 0.4){ const ax = tx + cw1 + 22, ay = y + bh + 40, spin = (1 - Math.pow(1 - kv, 3))*Math.PI*6;   // la girouette tourne (trois tours, ralentit) et s'arrête pointée vers la nouvelle position
+      if (has5('vane0')) spr('vane0', ax, ay + 10, 0.2, false, spin); else { ctx.save(); ctx.translate(ax, ay); ctx.rotate(spin); ctx.fillStyle = GOLD; ctx.beginPath(); ctx.moveTo(-14, 0); ctx.lineTo(14, 0); ctx.lineTo(8, -6); ctx.moveTo(14, 0); ctx.lineTo(8, 6); ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.stroke(); ctx.restore(); } }
+    if (k2 > 0){ ctx.save(); ctx.globalAlpha = k2;
       ctx.translate((1 - backOut(k2))*120, 0); text('APRÈS', cx2, y + bh + 14, 9.5, 700, GREEN, 'left'); lines(neu, cx2, y + bh + 34, cw2, 15, 800, INK, UIT, 18, 3); ctx.restore(); }
     button('Continuer', 'card'); more('info:' + n);
   } else if (c.kind === 'scandal'){   // le scandale : la date, le titre, une phrase
@@ -1751,7 +1757,7 @@ function drawRecap(){
     btn(VW/2 - 190, y + h - 70, 180, 46, 'Recommencer', GREEN, '#fff', 'again'); btn(VW/2 + 10, y + h - 70, 180, 46, 'Menu', '#fff', INK, 'title');
     ctx.restore(); return;
   }
-  chip(isTuto() ? 'TUTO TERMINÉ' : 'SÉQUENCE ' + L.n + ' TRAVERSÉE', VW/2, y, GOLD, INK, 12);
+  chip(isTuto() ? 'TUTO TERMINÉ' : 'SÉQUENCE ' + levelN + ' TRAVERSÉE', VW/2, y, GOLD, INK, 12);
   text(stats.gold ? 'VOLTE-FACE' : 'POSITION MAINTENUE', VW/2, y + 48, 11, 900, stats.gold ? '#16a34a' : RED, 'center');
   const ol = wrapText(L.old, w - 60, 24, 900, UIT); let ty = y + 82;
   for (const ln of ol){ text(ln, VW/2, ty, 24, 900, INK, 'center', UIT); if (stats.gold){ font(24, 900, UIT); const lw = ctx.measureText(ln).width; strike(VW/2 - lw/2, ty + 1, lw); } ty += 28; }
@@ -1795,7 +1801,7 @@ function drawInter(){
   ctx.fillStyle = INK; ctx.fillRect(0, 0, VW, H); ctx.fillStyle = 'rgba(255,45,149,.16)';   // encre et rayures roses
   for (let i = -4; i < 14; i++){ const sx = i*80 + (interT*20) % 80; ctx.beginPath(); ctx.moveTo(sx, H); ctx.lineTo(sx + 40, H); ctx.lineTo(sx + 180, 0); ctx.lineTo(sx + 140, 0); ctx.closePath(); ctx.fill(); }
   // la réserve, en haut à droite, et le titre en cartouche jaune
-  { const cx = VW - 14 - 124, bump = coinBump > 0 ? 1 + 0.28*Math.sin(coinBump/0.25*Math.PI) : 1; box(cx, 12, 124, 40, GOLD);
+  { const cx = 14, bump = coinBump > 0 ? 1 + 0.28*Math.sin(coinBump/0.25*Math.PI) : 1; box(cx, 12, 124, 40, GOLD);
     ctx.save(); ctx.translate(cx + 22, 32); ctx.scale(bump, bump); ctx.translate(-cx - 22, -32); drawCashbox(cx + 6, 16); ctx.restore(); text(String(camp.coins), cx + 48, 33, 20, 800, INK, 'left', UIT); }
   const title = t => { font(20, 800, UIT); const w = ctx.measureText(t).width + 36; box(VW/2 - w/2, 12, w, 40, GOLD); text(t, VW/2, 33, 20, 800, INK, 'center', UIT); };
   ctx.save(); slam(k, VW/2, H/2 + 20, -0.01);
@@ -1817,6 +1823,11 @@ function drawInter(){
   } else {
     title('Achète des voix !');
     const pr = votePrice(), can = camp.coins >= pr, w = 190, x = VW/2 - w/2, cy0 = 84, h = 232;
+    { const ps = isFinite(e.poll) ? e.poll : P.pollStart, danger = ps < P.pollFall, px0 = 14, py0 = 62, pw = 230, ph = 40; box(px0, py0, pw, ph, '#fff');   // l'état des sondages à l'entrée de la séquence
+      ico('iPolls', px0 + 21, py0 + 20, 30); text(fmtPct(ps), px0 + 40, py0 + 21, 20, 800, danger ? RED : INK, 'left', UIT);
+      const gx = px0 + 124, gy = py0 + 12, gw = pw - 136, gh = 16, mx = 50; ctx.fillStyle = 'rgba(20,33,61,.12)'; rr(gx, gy, gw, gh, 3); ctx.fill(); ctx.fillStyle = 'rgba(227,52,47,.28)'; rr(gx, gy, gw*clamp(P.pollFall/mx, 0, 1), gh, 3); ctx.fill();
+      ctx.fillStyle = danger ? RED : ps < 25 ? GOLD : GREEN; rr(gx, gy, gw*clamp(ps/mx, 0, 1), gh, 3); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; rr(gx, gy, gw, gh, 3); ctx.stroke();
+      text('À l’entrée de la séquence', px0 + 4, py0 + ph + 12, 10.5, 600, 'rgba(255,255,255,.75)', 'left'); }
     ctx.fillStyle = INK; rr(x + 3, cy0 + 3, w, h, 5); ctx.fill(); ctx.fillStyle = PAPER; rr(x, cy0, w, h, 5); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke();
     ctx.fillStyle = '#eef2f8'; rr(x + 10, cy0 + 10, w - 20, 132, 3); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; rr(x + 10, cy0 + 10, w - 20, 132, 3); ctx.stroke(); ico('iVote', x + w/2, cy0 + 76, 100);
     text('+' + fmtPt(P.voteGain) + ' points de sondage', x + w/2, cy0 + 168, 15, 800, INK, 'center', UIT);
@@ -1864,7 +1875,7 @@ function drawFinalRecap(){
   text('d’intentions de vote : le score', x + 30, y + 124, 11, 800, '#5b6475'); ico('iElysee', x + 236, y + 96, 74);
   const vl = wrapText(verdict, 250, 18, 900); let vy2 = y + 156; for (const ln of vl){ text(ln, x + 30, vy2, 18, 900, INK); vy2 += 22; }
   const cx = x + 310, cw = w - 340; text('Cinq séquences, cinq positions', cx, y + 50, 12, 900, RED);
-  for (let i=1;i<=5;i++){ const L = LEVELS[i], r = camp.levels[i], gold = !!(r && r.gold), ry = y + 76 + (i - 1)*50;
+  for (let i=1;i<=5;i++){ const L = LEVELS[ORDER[i]], r = camp.levels[i], gold = !!(r && r.gold), ry = y + 76 + (i - 1)*50;
     text(L.old, cx, ry, 14, 900, INK); if (gold){ font(14, 900); strike(cx, ry + 1, ctx.measureText(L.old).width); }
     text(gold ? 'volte-face' : 'maintenue', cx + cw, ry, 10, 900, gold ? '#16a34a' : RED, 'right');
     const nl = wrapText(L.neu, cw, 10.5, 700); text(nl[0] || '', cx, ry + 17, 10.5, 700, gold ? '#5b6475' : '#9aa4b2'); }
@@ -1897,7 +1908,7 @@ cv.addEventListener('pointerdown', e => {
   const l = toLocal(e), b = hit(l);
   if (b){ if (b.id !== 'locked') sfxP3('click'); pressed = {id: b.id, t: 0}; onBtn(b.id); return; }
   if (infoOpen) return;
-  if (state === 'play' && card && cardT > 0.4) closeCard();
+  if (state === 'play' && card && card.kind === 'msg' && cardT > 0.4) closeCard();   // seules les cartes du tuto se ferment d'un tap n'importe où
 });
 
 function draw(){
@@ -1922,7 +1933,7 @@ function draw(){
   for (const b of bubbles) drawBubble(b);
   drawMarine(); for (const c of pans) if (!(c.delay > 0)) drawPan(c); drawFx(); drawPops();
   ctx.setTransform(dpr*scale, 0, 0, dpr*scale, 0, 0);   // l'interface, à l'échelle de l'écran
-  if (phase === 'chase' && chase && chase.caught && close5Ready && chase.catchT > 0.7 && chase.catchT < 3.5){   // la capture : Marine rejoint la girouette (0,7 s), puis le gros plan (2,2 s), qui s'estompe sous la carte
+  if (false && phase === 'chase' && chase && chase.caught && close5Ready && chase.catchT > 0.7 && chase.catchT < 3.5){   // le gros plan est mis de côté (03/11)   // la capture : Marine rejoint la girouette (0,7 s), puis le gros plan (2,2 s), qui s'estompe sous la carte
     const t = chase.catchT - 0.7, a = t < 0.15 ? t/0.15 : t > 2.2 ? Math.max(0, 1 - (t - 2.2)/0.6) : 1, z = 1.14 - 0.14*clamp(t/2.0, 0, 1);
     ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = INK; ctx.fillRect(0, 0, VW, H); ctx.translate(VW/2, H/2); ctx.rotate(-0.02*(1 - clamp(t/0.4, 0, 1))); ctx.scale(z, z); ctx.imageSmoothingEnabled = true; ctx.drawImage(close5, -VW/2, -H/2, VW, H); ctx.restore();
     if (t < 0.1){ ctx.fillStyle = 'rgba(255,255,255,' + (1 - t/0.1) + ')'; ctx.fillRect(0, 0, VW, H); }
