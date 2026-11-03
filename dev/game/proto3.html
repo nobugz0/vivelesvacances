@@ -1900,7 +1900,7 @@ function onBtn(id){
   else if (id === 'buy:votes'){ if (buyVotes()){ shopMsg = '+' + fmtPt(P.voteGain) + ' points de sondage'; sfxP3('cash'); coinBump = 0.25; burst(VW*0.6, H*0.4, 30); } else shopMsg = 'Pas assez de pièces'; }
   else if (id.startsWith('buy:')){ const bid = id.slice(4), bp = bonusPos[bid] || {x: VW*0.6, y: H*0.45}; if (camp.bonuses && camp.bonuses[bid]){ if (sellBonus(bid)){ shopMsg = 'Désactivé, pièces rendues'; sfxP3('click'); coinBump = 0.25; } } else if (buyBonus(bid)){ shopMsg = 'Activé pour cette séquence'; sfxP3('cash'); coinBump = 0.25; burst(bp.x, bp.y, 30); } else shopMsg = 'Pas assez d’or'; }
   else if (id === 'card' || id === 'storm') closeCard();
-  else if (id === 'sinfo') openInfo(levelN, 'scandal');
+  else if (id === 'sinfo') openInfo(curLevel().n, 'scandal');   // INFO est indexé par la fiche, pas par le rang dans ORDER
 }
 cv.addEventListener('pointerdown', e => {
   const ok = state === 'recap' || state === 'inter' || state === 'finalRecap' || (state === 'play' && card);
