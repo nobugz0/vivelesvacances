@@ -645,5 +645,50 @@
   "n": 1,
   "batch": 1,
   "prompt": "Game UI icon sheet, landscape 1536x1024. The attached image is only a colour palette reference: do not copy its pixel art style.\nStyle: bold flat graphic game UI stickers, simple chunky shapes, thick dark navy outline #14213d (about 10 px), flat bright colours with one light highlight shape, no gradients, no realistic detail, no pixel art, fun and readable at small size. Palette: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, pink #ff2d95, green #22a447. Flat solid chroma background #FF00FF around every icon, at least 30 px of background around each, never use magenta inside an icon. Layout: 3 columns x 2 rows of equal 512x512 cells, one icon per cell, centred, each icon about 300 px. No text.\n1. A big electric fan on a stand, front three-quarter view, navy casing, red blades, a few motion lines.\n2. A red upright vacuum cleaner, side view, with a curved hose.\n3, 4, 5, 6: empty flat chroma #FF00FF.\nFlat solid chroma background #FF00FF, never use magenta inside the icons. No text."
+ },
+ {
+  "id": "j_boats3",
+  "name": "Journalistes : barques animées (2 poses vers Marine + pose retournée)",
+  "size": "1536x1024",
+  "uses": [
+   "charref",
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "extra": [
+   "output\\j_boats_20261102-114955_v1.png"
+  ],
+  "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Small journalists' motorboats exactly as in the attached journalists' boats sheet (white hull with red stripes, red triangular pennant, journalists in red shirts), side view, the BOAT always faces left, every boat about 280 px long, same scale in every cell, waterline on the same baseline in every cell of a row. Layout: 3 columns x 3 rows of equal 512x341 cells, one boat per cell, centred. Each ROW is one crew; the three cells of a row show the SAME boat and the SAME people, only their poses change.\nColumn 1, pose A: the journalists look and point their camera, microphone and lens to the LEFT, eager.\nColumn 2, pose B: almost identical to pose A (same position, same framing), only a tiny change for a two-frame idle loop: heads slightly raised, microphone arm a few pixels further forward, camera slightly tilted, mouths open.\nColumn 3, turned pose: the boat still faces left, but the journalists have turned round in the boat and look and point their camera, microphone and lens to the RIGHT, behind them.\nRow 1: crew A, a man with a big TV camera and a woman holding a boom microphone.\nRow 2: crew B, a woman reporter holding out a hand microphone, a photographer with a long lens.\nRow 3: crew C, an older journalist with a notepad shouting a question, a young woman filming with a phone.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 40 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines. Never use magenta or pink inside any element."
+ },
+ {
+  "id": "j_tramp3",
+  "name": "Journalistes : barque trampoline animée (2 poses + pose retournée)",
+  "size": "1536x1024",
+  "uses": [
+   "charref",
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "extra": [
+   "output\\j_boats_20261102-114955_v1.png"
+  ],
+  "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Small journalists' motorboats exactly as in the attached journalists' boats sheet (white hull with red stripes, red triangular pennant, journalists in red shirts), side view, the BOAT always faces left, every boat about 280 px long, same scale in every cell, waterline on the same baseline in every cell of a row. Layout: 3 columns x 1 row of equal 512x1024 cells, one boat per cell, centred vertically. The three cells show the SAME trampoline boat of the attached sheet (the boat carries a small trampoline, a journalist in a red shirt crouches on it, microphone in hand), only the pose changes.\n1. Pose A: crouched, ready to jump, looking and holding the microphone to the LEFT.\n2. Pose B: almost identical to pose A, a tiny change for a two-frame idle loop: knees a little more bent, microphone arm a few pixels further forward.\n3. Turned pose: the boat still faces left, the journalist has turned round on the trampoline, crouched, looking and holding the microphone to the RIGHT.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 40 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines. Never use magenta or pink inside any element."
+ },
+ {
+  "id": "cards_tuto0b",
+  "name": "Carte tuto « Planer » : Marine en kitesurf qui s'envole",
+  "size": "1024x1024",
+  "uses": [
+   "charref",
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art card illustration, square 1024x1024. Style: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. A complete little scene with its own background (blue sky, a few clouds, sea at the bottom), filling a 900x760 rectangle centred in the image, with a 6 px ink frame; the space outside the rectangle is flat chroma #FF00FF. The woman of the attached approved character sheet (same face, blonde hair, navy suit) on her KITESURF board (a small surfboard), lifted into the air above the sea by her red kite held by lines, joyful, a curved motion arrow showing her rising. The WHOLE woman, board and kite are fully visible inside the frame with a margin, nothing cropped: her head, her feet, the board and the whole kite. No hand, no finger, no hang-glider, no other vehicle, no speech bubble, no text. Never use magenta or pink inside the illustration."
  }
 ]

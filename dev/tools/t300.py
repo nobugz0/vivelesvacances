@@ -19,7 +19,7 @@ def check(cond, msg):
     if not cond: ok = False
 def bot(pg, seconds, wind):
     """suit la pièce la plus proche devant, sans jamais dépasser la limite d'altitude"""
-    t0 = time.time(); ceil = ev(pg, 'window.__vdd.P.ceil')
+    t0 = time.time(); ceil = ev(pg, 'window.__vdd.P.ceil2')
     if wind: pg.mouse.move(900, 360); pg.mouse.down()
     while time.time() - t0 < seconds and ev(pg, 'window.__vdd.state') == 'play':
         cd = ev(pg, 'window.__vdd.card')
@@ -52,7 +52,7 @@ with sync_playwright() as p:
     pg.mouse.down(); t0 = time.time()
     while time.time() - t0 < 4 and ev(pg, 'window.__vdd.state') == 'play': ev(pg, 'window.__vdd.setWind(1)'); pg.wait_for_timeout(50)
     yc = ev(pg, 'window.__vdd.y'); pg.mouse.up(); pg.wait_for_timeout(300)
-    check(abs(yc - ev(pg, 'window.__vdd.P.ceil')) < 2 and ev(pg, 'window.__vdd.state') == 'play', 'plafond : Marine s\'arrête à ceil (%.0f) et le niveau continue' % yc)
+    check(abs(yc - ev(pg, 'window.__vdd.P.ceil2')) < 2 and ev(pg, 'window.__vdd.state') == 'play', 'plafond : Marine s\'arrête à ceil (%.0f) et le niveau continue' % yc)
     # frôlement : un deltaplane passe juste au-dessus de la zone de contact -> bonus de sondage ; un autre passe au contact -> perte, pas de bonus
     ev(pg, 'window.__vdd.hold(false); window.__vdd.clearField()'); pg.wait_for_timeout(2500); ev(pg, 'window.__vdd.clearField()')
     p0 = ev(pg, 'window.__vdd.poll'); ev(pg, 'window.__vdd.addJourno("glider", window.__vdd.px + 420, window.__vdd.y - (46 + 28 + 20))'); pg.wait_for_timeout(2500)
@@ -62,7 +62,7 @@ with sync_playwright() as p:
     w = ev(pg, 'window.__vdd.world'); check(w['camFx'] > 1.15 and w['VWW'] < w['VWW0'], 'en vol, la caméra est rapprochée (camFx %.2f, bord droit %.0f < %.0f)' % (w['camFx'], w['VWW'], w['VWW0']))
     # la bande du score (HUD_H px écran) n'est pas navigable : au plafond, le corps de Marine (py - 60) reste sous la bande, à tous les zooms du jeu (vol et course)
     for z in (ev(pg, 'window.__vdd.P.camFly'), ev(pg, 'window.__vdd.P.camChase')):
-        top = (ev(pg, 'window.__vdd.P.ceil') - 60)*w['Z']*z; check(top >= ev(pg, 'window.__vdd.HUD_H'), 'zone du score réservée : au plafond, Marine commence à %.0f px écran, sous la bande de %d px (zoom %.2f)' % (top, ev(pg, 'window.__vdd.HUD_H'), z))
+        top = (ev(pg, 'window.__vdd.P.ceil2') - 60)*w['Z']*z; check(top >= ev(pg, 'window.__vdd.HUD_H'), 'zone du score réservée : au plafond, Marine commence à %.0f px écran, sous la bande de %d px (zoom %.2f)' % (top, ev(pg, 'window.__vdd.HUD_H'), z))
     # archétypes : au niveau 1, ni hélico ni trampoline ; au niveau 4, le trampoliniste et le jet-ski arrivent, le jet-ski se cale sous Marine
     ev(pg, 'window.__vdd.P.level = 1; window.__vdd.startTestFly()'); seen = set(); t0 = time.time()
     while time.time() - t0 < 16: seen |= set(j['kind'] for j in ev(pg, 'window.__vdd.journos') if j['kind'] != 'etr'); pg.wait_for_timeout(300)
@@ -84,7 +84,7 @@ with sync_playwright() as p:
     qs = ev(pg, 'window.__vdd.qLog'); nn = [q for q in qs if q]
     check(len(qs) >= 3 and 0 < len(nn) < len(qs) and all(nn[i] != nn[i + 1] for i in range(len(nn) - 1)) and len(set(nn[:6])) == len(nn[:6]), 'journalistes : %d sur %d ont une question, les six premières toutes différentes, jamais la même deux fois de suite' % (len(nn), len(qs)))
     ev(pg, 'window.__vdd.startTestFly()'); pg.wait_for_timeout(300)   # un vol neuf : le précédent touche à sa fin (26 s)
-    ev(pg, 'window.__vdd.clearField(); window.__vdd.setY(window.__vdd.P.ceil + 60); window.__vdd.hold(true); window.__vdd.addJourno("boat", window.__vdd.px + 300, 0, true)'); t0 = time.time(); mb = None
+    ev(pg, 'window.__vdd.clearField(); window.__vdd.setY(window.__vdd.P.ceil2 + 60); window.__vdd.hold(true); window.__vdd.addJourno("boat", window.__vdd.px + 300, 0, true)'); t0 = time.time(); mb = None
     while time.time() - t0 < 3 and not mb: mb = ev(pg, 'window.__vdd.mBubble'); pg.wait_for_timeout(50)
     ev(pg, 'window.__vdd.hold(false)'); check(mb is not None, 'Marine saute une barque muette : elle réplique (« %s »)' % mb); pg.screenshot(path=D + 'p3_phrase.png')
     # tout coûte des sondages : sous pollFall Marine tombe de sa planche ; frapper un étranger rapporte et la remonte
@@ -150,7 +150,7 @@ with sync_playwright() as p:
         if dodge:
             # bot dans la page, à la frame : se place dans le couloir le plus loin de toute menace qui atteint sa colonne dans les 1,3 s
             ev(pg, '''() => new Promise(res => { const v = window.__vdd; const step = () => { if (v.state !== 'play'){ v.hold(false); res(); return; } if (v.card){ if (v.card.t > 0.5) v.closeCard(); requestAnimationFrame(step); return; }
-              const px = v.px, y = v.y, P = v.P, top = P.ceil + 60, bot = P.yMax; const th = [];
+              const px = v.px, y = v.y, P = v.P, top = P.ceil2 + 60, bot = P.yMax; const th = [];
               for (const c of v.pansList){ const tc = (c.x - px)/Math.max(1, -c.vx), t = tc + Math.max(0, c.delay); if (t < 1.4 && c.x > px - 30) th.push(c.y + c.vy*tc + 0.5*c.g*tc*tc); }
               let best = y, bestD = -1; for (let k = 0; k <= 8; k++){ const cy = top + (bot - top)*k/8; const d = th.length ? Math.min(...th.map(t => Math.abs(t - cy))) : 1e9; const score = d - Math.abs(cy - y)*0.15; if (score > bestD){ bestD = score; best = cy; } }
               if (!th.length) best = v.onWater ? y : Math.max(y, bot - 120);
@@ -196,7 +196,7 @@ with sync_playwright() as p:
     pg.wait_for_timeout(2800); c = ev(pg, 'window.__vdd.chase'); check(c['dropped'] >= 1 and len(c['rings']) >= 1 and all(abs(r['y'] - c['y']) < 400 for r in c['rings']), 'la girouette lâche des cercles derrière elle (%d)' % c['dropped'])
     ev(pg, RING_BOT); c = ev(pg, 'window.__vdd.chase'); print('   course (cercles) : t %.1f s, passés %d / lâchés %d, dist %.0f, attrapée %s' % (c['t'], c['passed'], c['dropped'], c['dist'], c['caught']))
     check(c['caught'] and c['passed'] == ev(pg, 'window.__vdd.P.ringNeed'), 'un bot qui vise les cercles en passe %d et attrape la girouette (%.1f s)' % (c['passed'], c['t']))
-    check(ev(pg, 'window.__vdd.world.camFx') > 1.22, 'la caméra s\'est rapprochée à chaque cercle (camFx %.2f)' % ev(pg, 'window.__vdd.world.camFx'))
+    check(ev(pg, 'window.__vdd.world.camFx') < 1.1, 'course : la caméra recule un peu (camFx %.2f)' % ev(pg, 'window.__vdd.world.camFx'))
     px1 = ev(pg, 'window.__vdd.px'); check(c['oxCatch'] - c['x0'] < 0.55*ev(pg, 'window.__vdd.world.VWW0'), 'la girouette s\'est rapprochée de Marine à chaque cercle passé (distance à la capture %.0f px)' % (c['oxCatch'] - c['x0']))
     check(ev(pg, 'window.__vdd.wind') <= 1, 'pendant la course, le vol compte comme d\'habitude (jauge %.2f)' % ev(pg, 'window.__vdd.wind'))
     pg.screenshot(path=D + 'p3_chase.png'); t0 = time.time()

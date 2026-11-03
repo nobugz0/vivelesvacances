@@ -286,6 +286,15 @@ if glob.glob(os.path.join(SHEETS, 'coin_spin_*_v1.png')):
 if glob.glob(os.path.join(SHEETS, 'storm_items_*_v1.png')):
     grid('storm_items', 3, 2, ['stCloud', 'stBolt0', 'stBolt1', 'stRain', 'stWave', 'stGust'], anchor='center')
 
+# 03/11 soir : barques de journalistes animées (2 poses vers Marine + pose retournée), trampoline idem, nouvelle carte « Planer »
+if glob.glob(os.path.join(SHEETS, 'j_boats3_*_v1.png')):
+    grid('j_boats3', 3, 3, ['jbP%d%s' % (c, p) for c in range(3) for p in 'abt'])
+if glob.glob(os.path.join(SHEETS, 'j_tramp3_*_v1.png')):
+    grid('j_tramp3', 3, 1, ['jtPa', 'jtPb', 'jtPt'])
+if glob.glob(os.path.join(SHEETS, 'cards_tuto0b_*_v1.png')):
+    OUT[:] = [o for o in OUT if o[0] != 'cTuto0']
+    cards('cards_tuto0b', 1, 1, ['cTuto0'])
+
 # assemblage : rangées, largeur 2048
 W = 2048; x = y = rowh = 0; ent = {}; meta = {}
 for nm, im, ax, ay, me in sorted(OUT, key=lambda o: -o[1].size[1]):
