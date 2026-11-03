@@ -83,7 +83,7 @@ man = {'sfx': {}, 'amb': {}, 'music': {}, 'sting': {}}
 files = sorted(glob.glob(os.path.join(SRC, '*.mp3')))
 for f in files:
     b = os.path.basename(f)[:-4]
-    m = re.match(r'(sfx_[a-z_]+?|amb_[a-z]+)_v2_v(\d)$', b)
+    m = re.match(r'(sfx_[a-z_]+?|amb_[a-z0-9]+)_v2_v(\d)$', b)
     if m:
         name, v = m.group(1), int(m.group(2)); x = load(f)
         if name.startswith('amb'):
