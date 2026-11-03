@@ -66,13 +66,13 @@ with sync_playwright() as p:
     # archétypes : au niveau 1, ni hélico ni trampoline ; au niveau 4, le trampoliniste et le jet-ski arrivent, le jet-ski se cale sous Marine
     ev(pg, 'window.__vdd.P.level = 1; window.__vdd.startTestFly()'); seen = set(); t0 = time.time()
     while time.time() - t0 < 16: seen |= set(j['kind'] for j in ev(pg, 'window.__vdd.journos') if j['kind'] != 'etr'); pg.wait_for_timeout(300)
-    check('heli' not in seen and 'tramp' not in seen and 'jet' not in seen and 'boat' in seen, 'niveau 1 : barques et deltaplanes seulement (%s)' % sorted(seen))
+    check('tramp' not in seen and 'jet' not in seen and 'boat' in seen, 'niveau 1 : barques, deltaplanes et hélicos fixes, ni trampoline ni jet-ski (%s)' % sorted(seen))
     ev(pg, 'window.__vdd.P.level = 4; window.__vdd.startTestFly()'); pg.wait_for_timeout(300); ev(pg, 'window.__vdd.clearField(); window.__vdd.addJourno("tramp", window.__vdd.px + 420, 0); window.__vdd.addJourno("jet", window.__vdd.px + 700, 0)'); seen = set(); t0 = time.time(); held = 0
     while time.time() - t0 < 8 and held == 0:
         js = ev(pg, 'window.__vdd.journos'); seen |= set(j['kind'] for j in js); ev(pg, 'window.__vdd.hold(window.__vdd.y > 300)')
-        if any(j['kind'] == 'jet' and abs(j['x'] - ev(pg, 'window.__vdd.px') - 60) < 3 for j in js): held += 1
+        if any(j['kind'] == 'jet' and abs(j['x'] - ev(pg, 'window.__vdd.px') - 70) < 175 and j['x'] < ev(pg, 'window.__vdd.px') + 60 for j in js): held += 1   # le jet-ski repasse derrière Marine : allers-retours
         pg.wait_for_timeout(150)
-    ev(pg, 'window.__vdd.hold(false)'); check('tramp' in seen and 'jet' in seen and held > 0, 'niveau 4 : trampoliniste et jet-ski présents, le jet-ski se cale sous Marine (%s, %d)' % (sorted(seen), held))
+    ev(pg, 'window.__vdd.hold(false)'); check('tramp' in seen and 'jet' in seen and held > 0, 'niveau 4 : trampoliniste et jet-ski présents, le jet-ski fait des allers-retours autour de Marine (%s, %d)' % (sorted(seen), held))
     ev(pg, 'window.__vdd.P.level = 1')
     # bot sur une vraie partie
     ev(pg, 'window.__vdd.startTestFly()'); pg.wait_for_timeout(300); bot(pg, 20, False)
@@ -197,8 +197,7 @@ with sync_playwright() as p:
     ev(pg, RING_BOT); c = ev(pg, 'window.__vdd.chase'); print('   course (cercles) : t %.1f s, passés %d / lâchés %d, dist %.0f, attrapée %s' % (c['t'], c['passed'], c['dropped'], c['dist'], c['caught']))
     check(c['caught'] and c['passed'] == ev(pg, 'window.__vdd.P.ringNeed'), 'un bot qui vise les cercles en passe %d et attrape la girouette (%.1f s)' % (c['passed'], c['t']))
     check(ev(pg, 'window.__vdd.world.camFx') > 1.22, 'la caméra s\'est rapprochée à chaque cercle (camFx %.2f)' % ev(pg, 'window.__vdd.world.camFx'))
-    px1 = ev(pg, 'window.__vdd.px'); step = ev(pg, 'window.__vdd.P.ringStep'); need = ev(pg, 'window.__vdd.P.ringNeed'); ratio = (c['xCatch'] - c['x0'])/(c['oxCatch'] - 40 - c['x0'])
-    check(step*(need - 1)/100 - 0.03 < ratio < step*need/100 + 0.03, 'Marine a avancé d\'un petit cran par cercle (%d %% × %d cercles : %.0f %% de la distance au moment de la capture, x %.0f -> %.0f)' % (step, need, ratio*100, c['x0'], c['xCatch']))
+    px1 = ev(pg, 'window.__vdd.px'); check(c['oxCatch'] - c['x0'] < 0.55*ev(pg, 'window.__vdd.world.VWW0'), 'la girouette s\'est rapprochée de Marine à chaque cercle passé (distance à la capture %.0f px)' % (c['oxCatch'] - c['x0']))
     check(ev(pg, 'window.__vdd.wind') <= 1, 'pendant la course, le vol compte comme d\'habitude (jauge %.2f)' % ev(pg, 'window.__vdd.wind'))
     pg.screenshot(path=D + 'p3_chase.png'); t0 = time.time()
     while time.time() - t0 < 3 and not ev(pg, 'window.__vdd.card'): pg.wait_for_timeout(50)

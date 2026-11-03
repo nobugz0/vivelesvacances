@@ -268,6 +268,17 @@ if glob.glob(os.path.join(SHEETS, 'm_pull_*_v1.png')):
 # icônes UI 2 : baril (contre-feu), vent, coche, étoile, bateau, coq
 if glob.glob(os.path.join(SHEETS, 'ui_icons2_*_v1.png')):
     ui_grid('ui_icons2', 3, 2, ['iFire', 'iWind', 'iCheck', 'iStar', 'iBoat', 'iCoq'])
+if glob.glob(os.path.join(SHEETS, 'ui_icons3_*_v1.png')):
+    ui_grid('ui_icons3', 3, 2, ['iFan', 'iVac', None, None, None, None])
+# 03/11 : nouvelles cartes (tuto 1 sans deltaplane, étranger sikh, voix, aspirateur, ventilateur, Poutine blond) ; elles remplacent les anciennes du même nom
+if glob.glob(os.path.join(SHEETS, 'cards_v2_*_v1.png')):
+    NV = ['cTuto0', 'cTuto3', 'cVote', 'cPump', 'cFire', 'cScan2']
+    OUT[:] = [o for o in OUT if o[0] not in NV]
+    cards('cards_v2', 3, 2, NV)
+# la barque du franc (tuto) remplace la tirelire
+if glob.glob(os.path.join(SHEETS, 'theme_franc_*_v1.png')):
+    OUT[:] = [o for o in OUT if o[0] not in ('tb0', 'tb0b')]
+    grid('theme_franc', 3, 2, ['tb0', None, None, 'tb0b', None, None])
 
 # pièce en rotation (8 vues), éléments d'orage
 if glob.glob(os.path.join(SHEETS, 'coin_spin_*_v1.png')):

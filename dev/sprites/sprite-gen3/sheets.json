@@ -602,5 +602,48 @@
   "n": 1,
   "batch": 1,
   "prompt": "Pixel art sprite sheet, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no gradients, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, sea blues. Journalists in red shirts, side view facing left (they come from the right), same scale logic as the approved world style board. Layout: 3 columns x 2 rows of equal 512x512 cells, one element per cell, centred, read left to right then top to bottom. ONLY the six cells below are drawn. Hang-glider with a journalist (man) hanging under a red delta wing, side view facing left; in every frame he stretches one arm far out to the front (to the left) holding a big microphone with a foam head towards the rider he is chasing, the other hand holds the control bar, camera round the neck, wide round astonished eyes, open mouth.\n1. Frame A: wing level, arm and microphone stretched straight forward.\n2. Frame B: wing slightly flexed up, microphone a little higher.\n3. Frame C: wing slightly flexed down, microphone a little lower, legs in another position.\n4. Frame D: same as A but legs swung back.\n5. Frame E: same as B but legs swung back.\n6. Frame F: same as C but legs swung back.\nFlat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 50 px of empty background around every element, elements never touch the cell borders. No text, letters, numbers, logos, borders or grid lines unless asked. Never use magenta or pink inside any element."
+ },
+ {
+  "id": "cards_v2",
+  "name": "Cartes : tuto 1 (sans deltaplane), étranger sikh, voix, aspirateur, ventilateur, Poutine blond",
+  "size": "1536x1024",
+  "uses": [
+   "charref",
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "extra": [
+   "1493758-marine-le-pen-et-vladimir-poutine-en-mars-2013.jpg"
+  ],
+  "prompt": "Pixel art card illustrations, landscape 1536x1024.\nStyle: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. Satirical editorial cartoon illustrations for game cards, in the same pixel art style. Each illustration is a complete little scene with its own simple background (sky, sea, room...), filling a 470x390 rectangle centred in its cell, with a 4 px ink frame; the space outside the rectangles is flat chroma #FF00FF. Readable at small size: one clear idea per card, big simple shapes, strong silhouettes, few details. The woman is the one of the attached approved character sheet (same face, blonde hair, navy suit), the young man the one of the attached approved Bardella sheet. No speech bubbles. Layout: 3 columns x 2 rows of equal 512x512 cells, read left to right then top to bottom.\n1. A big finger taps the screen; the woman on her KITESURF board (a small surfboard, a red kite high above her held by lines) rises into the sky with a motion arrow. No hang-glider, no wing, no other vehicle.\n2. A Sikh man with a yellow turban and a full beard, in a lime green T-shirt, standing on a stand-up paddle board at sea in the middle distance, calm; in the foreground the woman points at him, mouth open in outrage.\n3. A queue of ordinary voters waiting in front of two polling booths with curtains and a transparent ballot box; the woman walks along the queue handing gold coins to the people waiting, who look pleased. No text.\n4. Bonus: the woman on her kitesurf board holds a big red vacuum cleaner whose hose sucks a swirling stream of gold coins out of the air, big grin.\n5. Bonus: a giant electric fan on a stand blows a strong gust at the woman on her kitesurf board; her blonde hair streams backwards, the red kite bulges, big grin.\n6. Activists in navy polos tip pallets of campaign booklets into a dumpster; the cover of every booklet shows a small caricature of the handshake in the attached photo: the woman shaking hands with a SHORT-HAIRED BLOND man in a dark suit (he must be blond, not dark-haired), drawn in the same pixel style.\nNo speech bubbles, no text except where asked. Never use magenta or pink inside the illustrations."
+ },
+ {
+  "id": "theme_franc",
+  "name": "Barque du thème du tuto : le franc",
+  "size": "1536x1024",
+  "uses": [
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "extra": [
+   "theme_boats_ref.png"
+  ],
+  "prompt": "Pixel art sprite sheet, landscape 1536x1024. The attached reference sheet shows six satirical theme barges: draw ONE new barge in the same style, same scale and same position in the cell, side view facing left, on a small dark navy barge with a thin gold stripe on the hull, about 300 px long: a giant old French one-franc coin standing upright on its edge like a wheel, silver, with the sower (la Semeuse) in relief and a big '1 F' on it (the only text), a couple of smaller franc coins stacked on the deck. Layout: 3 columns x 2 rows of equal 512x512 cells; column 1 only: top cell frame A, bottom cell frame B of the same barge with a small movement (the coin tilts a little, a small coin pops up), so the two frames loop. Cells 2, 3, 5 and 6 stay empty flat chroma. Style: exactly the pixel art style of the attached sheets: 16-bit pixel art, chunky pixels, no anti-aliasing, flat cel shading, dark outline #14213d. Flat solid chroma background #FF00FF, never use magenta inside the figure. No other text."
+ },
+ {
+  "id": "ui_icons3",
+  "name": "Icônes : ventilateur, aspirateur",
+  "size": "1536x1024",
+  "uses": [
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Game UI icon sheet, landscape 1536x1024. The attached image is only a colour palette reference: do not copy its pixel art style.\nStyle: bold flat graphic game UI stickers, simple chunky shapes, thick dark navy outline #14213d (about 10 px), flat bright colours with one light highlight shape, no gradients, no realistic detail, no pixel art, fun and readable at small size. Palette: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0, pink #ff2d95, green #22a447. Flat solid chroma background #FF00FF around every icon, at least 30 px of background around each, never use magenta inside an icon. Layout: 3 columns x 2 rows of equal 512x512 cells, one icon per cell, centred, each icon about 300 px. No text.\n1. A big electric fan on a stand, front three-quarter view, navy casing, red blades, a few motion lines.\n2. A red upright vacuum cleaner, side view, with a curved hose.\n3, 4, 5, 6: empty flat chroma #FF00FF.\nFlat solid chroma background #FF00FF, never use magenta inside the icons. No text."
  }
 ]
