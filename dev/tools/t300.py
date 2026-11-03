@@ -199,7 +199,7 @@ with sync_playwright() as p:
     check(ev(pg, 'window.__vdd.world.camFx') > 1.22, 'la caméra s\'est rapprochée à chaque cercle (camFx %.2f)' % ev(pg, 'window.__vdd.world.camFx'))
     px1 = ev(pg, 'window.__vdd.px'); step = ev(pg, 'window.__vdd.P.ringStep'); need = ev(pg, 'window.__vdd.P.ringNeed'); ratio = (c['xCatch'] - c['x0'])/(c['oxCatch'] - 40 - c['x0'])
     check(step*(need - 1)/100 - 0.03 < ratio < step*need/100 + 0.03, 'Marine a avancé d\'un petit cran par cercle (%d %% × %d cercles : %.0f %% de la distance au moment de la capture, x %.0f -> %.0f)' % (step, need, ratio*100, c['x0'], c['xCatch']))
-    check(ev(pg, 'window.__vdd.wind') >= 0.99, 'vol infini pendant la course (jauge de vent pleine)')
+    check(ev(pg, 'window.__vdd.wind') <= 1, 'pendant la course, le vol compte comme d\'habitude (jauge %.2f)' % ev(pg, 'window.__vdd.wind'))
     pg.screenshot(path=D + 'p3_chase.png'); t0 = time.time()
     while time.time() - t0 < 3 and not ev(pg, 'window.__vdd.card'): pg.wait_for_timeout(50)
     px2 = ev(pg, 'window.__vdd.px'); cd = ev(pg, 'window.__vdd.card'); check(cd and cd['kind'] == 'position' and px2 > px1 + 150 and ev(pg, 'window.__vdd.stats.gold'), 'au compte, Marine fonce sur la girouette (x %.0f -> %.0f) puis la carte de la volte-face' % (px1, px2)); pg.wait_for_timeout(500); pg.screenshot(path=D + 'p3_position.png')
@@ -228,7 +228,7 @@ with sync_playwright() as p:
     b = p.chromium.launch(args=['--allow-file-access-from-files', '--autoplay-policy=no-user-gesture-required']); pg = b.new_page(viewport={'width': 1280, 'height': 720})
     errs = []; pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append('console.' + m.type + ': ' + m.text) if m.type == 'error' else None)
     pg.goto('file://' + D + FILE); pg.wait_for_timeout(1200); ev(pg, 'document.getElementById(\"ttests\").hidden = false'); ev(pg, 'window.__vdd.resetCamp()'); pg.reload(); pg.wait_for_timeout(1200); ev(pg, 'document.getElementById("ttests").hidden = false')
-    check(ev(pg, 'document.getElementById("continueBtn").hidden') and not ev(pg, 'document.getElementById("newBtn").hidden'), 'menu : sans campagne en cours, seulement « Nouvelle campagne »')
+    check(ev(pg, 'document.getElementById("continueBtn")') is None and not ev(pg, 'document.getElementById("newBtn").hidden') and ev(pg, 'document.getElementById("tutoChk").checked'), 'menu : « Nouvelle campagne » et la case « Tuto » cochée, plus de « Continuer »')
     ev(pg, 'window.__vdd.P.tutoFlight = 26'); pg.click('#newBtn'); pg.wait_for_timeout(500); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; cd = ev(pg, 'window.__vdd.card')
     check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.levelN') == 0 and ev(pg, 'window.__vdd.mode') == 'camp' and cd and cd['kind'] == 'msg' and 'skipTuto' not in ids and 'card' in ids and ev(pg, 'window.__vdd.t') < 0.3, 'nouvelle campagne : le tuto démarre tout de suite, première carte, bouton Compris (pas de « Passer le tuto »), jeu en attente')
     pg.screenshot(path=D + 'p3_tuto_msg1.png')
@@ -240,7 +240,10 @@ with sync_playwright() as p:
     ev(pg, 'window.__vdd.hold(false)'); check(c2 and 'caisse noire' in (c2['text'] or '') and ev(pg, 'window.__vdd.stats.coins') >= 3, 'après les premières pièces attrapées (%d) : carte « caisse noire »' % ev(pg, 'window.__vdd.stats.coins')); pg.screenshot(path=D + 'p3_tuto_msg2.png'); ev(pg, 'window.__vdd.closeCard()')
     # d'abord les pièces seules ; huit ramassées -> trois étrangers (carte au premier en vue) ; puis les journalistes (carte au premier en vue) ; puis la girouette
     t0 = time.time(); seenJ = False
-    while time.time() - t0 < 14 and not ev(pg, 'window.__vdd.card'): seenJ = seenJ or ev(pg, 'window.__vdd.journos.some(j => j.kind !== "etr" && j.x < window.__vdd.world.VWW - 80)'); pg.wait_for_timeout(100)
+    while time.time() - t0 < 24 and not (ev(pg, 'window.__vdd.card') and 'étranger' in (ev(pg, 'window.__vdd.card')['text'] or '')):
+        cd = ev(pg, 'window.__vdd.card')
+        if cd and cd['t'] > 0.5 and 'étranger' not in (cd['text'] or ''): ev(pg, 'window.__vdd.closeCard()')   # la carte « envol » passe avant
+        seenJ = seenJ or ev(pg, 'window.__vdd.journos.some(j => j.kind !== "etr" && j.x < window.__vdd.world.VWW - 80)'); pg.wait_for_timeout(100)
     c3 = ev(pg, 'window.__vdd.card'); check(not seenJ and c3 and 'étranger' in (c3['text'] or ''), 'tuto : les pièces seules (%d ramassées), pas de journaliste, puis la carte « étrangers » au premier en vue (%.1f s)' % (ev(pg, 'window.__vdd.stats.coins'), ev(pg, 'window.__vdd.t'))); pg.screenshot(path=D + 'p3_tuto_msg3.png'); ev(pg, 'window.__vdd.closeCard()')
     t0 = time.time(); c4 = None
     while time.time() - t0 < 20 and not c4:
@@ -299,8 +302,7 @@ with sync_playwright() as p:
     check(not ev(pg, 'window.__vdd.bonuses'), 'les bonus sont consommés'); pg.screenshot(path=D + 'p3_inter2.png')
     # sauvegarde : rechargement de la page, « Continuer » reprend à l'écran des bonus du chapitre 2
     pg.reload(); pg.wait_for_timeout(1200); ev(pg, 'document.getElementById("ttests").hidden = false'); r = ev(pg, 'window.__vdd.camp')
-    check(r['cur'] == 2 and r['levels'][1]['done'] and r['coins'] > 0 and not ev(pg, 'document.getElementById("continueBtn").hidden'), 'la campagne est rechargée (chapitre %d, %d pièces), « Continuer » proposé' % (r['cur'], r['coins']))
-    pg.click('#continueBtn'); pg.wait_for_timeout(300); check(ev(pg, 'window.__vdd.state') == 'inter' and ev(pg, 'window.__vdd.levelN') == 2, '« Continuer » reprend au QG du chapitre 2')
+    check(r['cur'] == 2 and r['levels'][1]['done'] and r['coins'] > 0, 'la campagne est rechargée (chapitre %d, %d pièces)' % (r['cur'], r['coins']))
     # fin de campagne : chapitre 5, bureau de vote, bilan final
     ev(pg, 'window.__vdd.setCur(5); window.__vdd.goInter(5)'); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.state') == 'inter' and ev(pg, 'window.__vdd.levelN') == 5, 'écran des bonus du chapitre 5')
     ev(pg, 'window.__vdd.P.flight = 6; window.__vdd.P.stormMax = 3; window.__vdd.setInterStep(2); window.__vdd.tap("go")'); cv = wait_card(pg, 'vane', 16); ev(pg, 'window.__vdd.closeCard()'); wait_phase(pg, 'chase', 3)
@@ -308,7 +310,7 @@ with sync_playwright() as p:
     pg.wait_for_timeout(1500); pg.screenshot(path=D + 'p3_final_booth.png'); st = wait_state(pg, ('finalRecap',), 8)
     bo = ev(pg, 'window.__vdd.booth'); check(st == 'finalRecap' and bo and bo['reached'] and ev(pg, 'window.__vdd.onWater') and ev(pg, 'window.__vdd.camp.cur') == 6, 'Marine posée, bureau de vote atteint -> bilan final, campagne terminée (%.1f s)' % ev(pg, 'window.__vdd.finalT'))
     pg.screenshot(path=D + 'p3_final.png'); ids = [x['id'] for x in ev(pg, 'window.__vdd.btns')]; check('newCamp' in ids and 'title' in ids, 'bilan final : Nouvelle campagne et Menu')
-    ev(pg, 'window.__vdd.tap("title")'); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.state') == 'title' and ev(pg, 'document.getElementById("continueBtn").hidden'), 'menu après la fin : plus de « Continuer »')
+    ev(pg, 'window.__vdd.tap("title")'); pg.wait_for_timeout(200); check(ev(pg, 'window.__vdd.state') == 'title', 'menu après la fin')
     # menu : un bouton par chapitre lance le chapitre directement
     ev(pg, 'window.__vdd.resetCamp()'); pg.click('#chapRow button[data-ch="3"]'); pg.wait_for_timeout(400); check(ev(pg, 'window.__vdd.state') == 'play' and ev(pg, 'window.__vdd.levelN') == 3 and ev(pg, 'window.__vdd.mode') == 'camp', 'menu : « Séq. 3 » lance la séquence 3 directement'); ev(pg, 'window.__vdd.tap("title")')
     # mobile : tap réel sur « C'est parti » de l'écran des bonus (cadre pivoté)

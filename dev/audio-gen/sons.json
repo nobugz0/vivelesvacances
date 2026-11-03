@@ -1472,5 +1472,673 @@
     }
    ]
   }
+ },
+ {
+  "id": "mus_v3",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "vacances",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s Italo-disco",
+    "French summer hit",
+    "bouncy octave synth bass",
+    "LinnDrum beat",
+    "bright synth lead",
+    "glassy DX7 electric piano",
+    "handclaps",
+    "124 bpm",
+    "4/4",
+    "D major",
+    "80s",
+    "cheerful",
+    "light",
+    "danceable",
+    "summer holiday",
+    "beach",
+    "feel-good",
+    "instrumental",
+    "punchy mix",
+    "tight drums",
+    "bright"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro",
+    "ambient",
+    "soft",
+    "ballad",
+    "minor key",
+    "dark",
+    "heavy metal"
+   ],
+   "sections": [
+    {
+     "section_name": "Hook A",
+     "positive_local_styles": [
+      "catchy sunny synth hook from bar one",
+      "octave bass",
+      "handclaps on 2 and 4"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Hook B",
+     "positive_local_styles": [
+      "same hook with synth brass answers",
+      "open hi-hats",
+      "more lift"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "one bar drum fill back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_v3_b",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "vacances",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s beach synth-pop",
+    "calypso steel drums",
+    "marimba",
+    "cowbell",
+    "funky rhythm guitar",
+    "slap bass",
+    "126 bpm",
+    "4/4",
+    "F major",
+    "80s",
+    "cheerful",
+    "light",
+    "danceable",
+    "summer holiday",
+    "beach",
+    "feel-good",
+    "instrumental",
+    "punchy mix",
+    "tight drums",
+    "bright"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro",
+    "ambient",
+    "soft",
+    "ballad",
+    "minor key",
+    "dark",
+    "heavy metal"
+   ],
+   "sections": [
+    {
+     "section_name": "Groove A",
+     "positive_local_styles": [
+      "steel drum melody over a dancing groove",
+      "cowbell and congas",
+      "smiling mood"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Groove B",
+     "positive_local_styles": [
+      "melody doubled by synth brass",
+      "bass fills",
+      "even more joyful"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "short conga and tom fill back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_v3_c",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "vacances",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s city pop",
+    "Japanese city pop meets French yé-yé revival",
+    "funky slap bass",
+    "shiny synth brass stabs",
+    "chorus guitar",
+    "gated snare",
+    "122 bpm",
+    "4/4",
+    "E major",
+    "80s",
+    "cheerful",
+    "light",
+    "danceable",
+    "summer holiday",
+    "beach",
+    "feel-good",
+    "instrumental",
+    "punchy mix",
+    "tight drums",
+    "bright"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro",
+    "ambient",
+    "soft",
+    "ballad",
+    "minor key",
+    "dark",
+    "heavy metal"
+   ],
+   "sections": [
+    {
+     "section_name": "Theme A",
+     "positive_local_styles": [
+      "breezy catchy theme",
+      "chorus guitar licks",
+      "driving four-on-the-floor"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Theme B",
+     "positive_local_styles": [
+      "key lift feeling without changing tempo",
+      "brass stabs",
+      "sparkly arpeggios"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "one bar fill back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_course3",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "vacances",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s Italo-disco",
+    "racing arpeggiated synth bass",
+    "LinnDrum",
+    "sixteenth-note hi-hats",
+    "bright synth lead",
+    "excited",
+    "joyful chase",
+    "132 bpm",
+    "4/4",
+    "D major",
+    "80s",
+    "cheerful",
+    "light",
+    "danceable",
+    "summer holiday",
+    "beach",
+    "feel-good",
+    "instrumental",
+    "punchy mix",
+    "tight drums",
+    "bright"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro",
+    "ambient",
+    "soft",
+    "ballad",
+    "minor key",
+    "dark",
+    "heavy metal"
+   ],
+   "sections": [
+    {
+     "section_name": "Chase A",
+     "positive_local_styles": [
+      "rising arpeggios",
+      "urgent but happy",
+      "catchy lead"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 12000,
+     "lines": []
+    },
+    {
+     "section_name": "Chase B",
+     "positive_local_styles": [
+      "build-up with snare rolls",
+      "synth brass hits",
+      "climax energy"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 12000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "one bar fill back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_tempete3",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "vacances",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s synth-pop with comic drama",
+    "stabbing synth brass",
+    "thunder-like toms",
+    "pulsing synth bass",
+    "cartoon suspense but still danceable",
+    "120 bpm",
+    "4/4",
+    "A minor turning to A major",
+    "80s",
+    "cheerful",
+    "light",
+    "danceable",
+    "summer holiday",
+    "beach",
+    "feel-good",
+    "instrumental",
+    "punchy mix",
+    "tight drums",
+    "bright"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro",
+    "ambient",
+    "soft",
+    "ballad",
+    "minor key",
+    "dark",
+    "heavy metal"
+   ],
+   "sections": [
+    {
+     "section_name": "Storm A",
+     "positive_local_styles": [
+      "dramatic for laughs",
+      "stabs on the offbeat",
+      "driving groove"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Storm B",
+     "positive_local_styles": [
+      "same groove, more intensity",
+      "cheeky synth lead"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "one bar fill back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_menu3",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "vacances",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s French summer pop",
+    "sunny electric piano",
+    "soft LinnDrum groove",
+    "synth flute lead",
+    "lazy beach afternoon but bouncy",
+    "108 bpm",
+    "4/4",
+    "G major",
+    "80s",
+    "cheerful",
+    "light",
+    "danceable",
+    "summer holiday",
+    "beach",
+    "feel-good",
+    "instrumental",
+    "punchy mix",
+    "tight drums",
+    "bright"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro",
+    "ambient",
+    "soft",
+    "ballad",
+    "minor key",
+    "dark",
+    "heavy metal"
+   ],
+   "sections": [
+    {
+     "section_name": "Menu A",
+     "positive_local_styles": [
+      "catchy relaxed holiday melody",
+      "electric piano chords",
+      "light percussion"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Menu B",
+     "positive_local_styles": [
+      "melody with marimba answers",
+      "warm bass"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "one bar fill back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "mus_qg3",
+  "type": "music",
+  "model_id": "music_v1",
+  "n": 2,
+  "batch": "vacances",
+  "composition_plan": {
+   "positive_global_styles": [
+    "80s lounge disco",
+    "electric piano",
+    "muted funk guitar",
+    "vibraphone",
+    "cocktail on the beach",
+    "light and cheeky",
+    "110 bpm",
+    "4/4",
+    "C major",
+    "80s",
+    "cheerful",
+    "light",
+    "danceable",
+    "summer holiday",
+    "beach",
+    "feel-good",
+    "instrumental",
+    "punchy mix",
+    "tight drums",
+    "bright"
+   ],
+   "negative_global_styles": [
+    "vocals",
+    "lyrics",
+    "singing",
+    "fadeout",
+    "long reverb tails",
+    "slow intro",
+    "ambient",
+    "soft",
+    "ballad",
+    "minor key",
+    "dark",
+    "heavy metal"
+   ],
+   "sections": [
+    {
+     "section_name": "Salon A",
+     "positive_local_styles": [
+      "easy groove",
+      "vibraphone melody",
+      "clinking feel"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Salon B",
+     "positive_local_styles": [
+      "same groove with synth strings",
+      "playful bass"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 16000,
+     "lines": []
+    },
+    {
+     "section_name": "Pickup",
+     "positive_local_styles": [
+      "one bar fill back to the start",
+      "same tempo"
+     ],
+     "negative_local_styles": [
+      "silence",
+      "ending",
+      "fadeout",
+      "tempo change"
+     ],
+     "duration_ms": 4000,
+     "lines": []
+    }
+   ]
+  }
+ },
+ {
+  "id": "amb_ride2",
+  "type": "sfx",
+  "text": "Gentle ocean waves rolling and breaking near a beach, deep watery wash and soft splashes, slow natural variation, no hiss, no wind, seamless loop",
+  "duration_seconds": 12,
+  "prompt_influence": 0.6,
+  "loop": true,
+  "models": [
+   "eleven_text_to_sound_v2"
+  ],
+  "n": 2,
+  "batch": "vacances"
  }
 ]
