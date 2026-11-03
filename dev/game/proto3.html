@@ -223,7 +223,7 @@ const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = '"Inter Tight",Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif';   // Inter Tight 800 pour les titres et les chiffres, Inter pour le reste
 const SHIP = false;   // build_p3.py --ship le passe à true
-const VERSION = 'proto 3 · 0.38', BUILD = '03/11/2026 à 21h50';
+const VERSION = 'proto 3 · 0.39', BUILD = '03/11/2026 à 22h20';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -316,13 +316,14 @@ function imgBox(x, y, w, h, label, px){
 }
 let pressed = null, shakeT = 0, shakeA = 0, coinBump = 0, pollShow = null, confetti = [];
 function shake(a){ shakeT = 0.35; shakeA = Math.max(shakeA, a); }
+function burstCoins(x, y, n){ for (let i=0;i<n;i++){ const a = rnd()*6.28, v = 160 + rnd()*360; confetti.push({x, y, vx: Math.cos(a)*v, vy: Math.sin(a)*v - 200, life: 1.2 + rnd()*0.8, r: 7 + rnd()*4, coin: true, ph: rnd()*8, rot: 0, vr: 0}); } }
 function burst(x, y, n, cols){ for (let i=0;i<n;i++){ const a = rnd()*6.28, v = 160 + rnd()*380; confetti.push({x, y, vx: Math.cos(a)*v, vy: Math.sin(a)*v - 180, life: 1.3 + rnd()*0.9, r: 3 + rnd()*4, col: pick(cols || [GOLD, PINK, '#4ade80', '#60a5fa', '#fff']), rot: rnd()*6.28, vr: (rnd() - 0.5)*14}); } }
 function updateFx(dt){
   shakeT = Math.max(0, shakeT - dt); if (shakeT === 0) shakeA = 0; coinBump = Math.max(0, coinBump - dt); if (pressed) pressed.t += dt;
   for (const c of confetti){ c.life -= dt; c.vy += 700*dt; c.x += c.vx*dt; c.y += c.vy*dt; c.vx *= 0.985; c.rot += c.vr*dt; } confetti = confetti.filter(c => c.life > 0);
   const target = state === 'inter' ? levelEntry(levelN).poll : poll; if (pollShow === null) pollShow = target; pollShow += (target - pollShow)*Math.min(1, dt*6);
 }
-function drawConfetti(){ for (const c of confetti){ ctx.save(); ctx.globalAlpha = clamp(c.life/0.5, 0, 1); ctx.translate(c.x, c.y); ctx.rotate(c.rot); ctx.fillStyle = c.col; ctx.fillRect(-c.r, -c.r*0.6, c.r*2, c.r*1.2); ctx.restore(); } }
+function drawConfetti(){ for (const c of confetti){ if (c.coin && has5('cS0')){ ctx.save(); ctx.globalAlpha = clamp(c.life/0.5, 0, 1); spr('cS' + (Math.floor(realT*14 + c.ph) % 8), c.x, c.y, 2*c.r/ATLAS.cS0[2]); ctx.restore(); continue; } ctx.save(); ctx.globalAlpha = clamp(c.life/0.5, 0, 1); ctx.translate(c.x, c.y); ctx.rotate(c.rot); ctx.fillStyle = c.col; ctx.fillRect(-c.r, -c.r*0.6, c.r*2, c.r*1.2); ctx.restore(); } }
 function font(px, w, fam){ w = w || 600; if (fam === UIT) w = 800; else if (w > 800) w = 800; ctx.font = w + ' ' + px + 'px ' + (fam || UI); }   // Inter Tight n'existe qu'en 800 ; Inter jusqu'à 800
 function text(s, x, y, px, w, color, align, fam){ font(px, w, fam); ctx.textAlign = align || 'left'; ctx.textBaseline = 'middle'; ctx.fillStyle = color || '#14213d'; ctx.fillText(s, x, y); }
 function outText(s, x, y, px, w, color, align, stroke){ font(px, w); ctx.textAlign = align || 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(3, px*0.18); ctx.strokeStyle = stroke || '#14213d'; ctx.strokeText(s, x, y); ctx.fillStyle = color || '#fff'; ctx.fillText(s, x, y); }
@@ -806,7 +807,7 @@ function sellBonus(id){ const b = BONUS.find(x => x.id === id); if (!b || !camp.
 
 function start(){
   camFx = 1; camGoal = 1; applyCam(); seed = 7; realT = 0; tFlight = 0; py = P.yMax; vy = 0; aIn = 0; aVane = 0; holding = false; holdT = relT = 0; inv = 0; onWater = true; endReason = ''; wind = 1; windEmptyT = -9;
-  phase = 'fly'; card = null; mBubble = null; sinkAt = -1; hitT = panT = pointT = bargeT = landT = remountT = hitFlash = 0; cruiseT = 0; tutoSeen = {}; tutoStage = 0; tutoBoats = 0; tutoEtr = 0; tutoEtrN = 0; tutoPat = 0; boatN = 0; lastAir = null; decks = {}; lastQ = null; lastPhrase = null; qLog = []; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chase = null; trail = []; marineX = null; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; panInv = 0; booth = null; infoOpen = null; gate = null; nextEtr = 4 + rnd()*3; confetti = []; shakeT = 0;
+  phase = 'fly'; card = null; mBubble = null; sinkAt = -1; hitT = panT = pointT = bargeT = landT = remountT = hitFlash = 0; cruiseT = 0; tutoSeen = {}; tutoStage = 0; tutoBoats = 0; tutoEtr = 0; tutoEtrN = 0; tutoPat = 0; tbLeave = null; boatN = 0; lastAir = null; decks = {}; lastQ = null; lastPhrase = null; qLog = []; stormT = 0; emitter = null; pans = []; bubbles = []; cass = 0; chase = null; trail = []; marineX = null; nextSalvo = 0; nextBubble = 0; dark = 0; bannerT = 0; flash = 0; panInv = 0; booth = null; infoOpen = null; gate = null; nextEtr = 4 + rnd()*3; confetti = []; shakeT = 0;
   poll = P.pollStart; coins = 0; stats = {hits: 0, coins: 0, cass: 0, etr: 0, bubbles: 0, gold: false, kevlar: 0, themeBoats: 0};
   coinsList = []; journos = []; pops = []; fx = []; nextSpawn = 1.2; coinChain = 0; coinChainT = -9; sea = 'cote'; spawnI = 0; patOrder = [];
   pointerY = null; pointerDown = false; keyUp = keyDown = false;
@@ -1003,6 +1004,7 @@ function spawn(){
 // le tuto commence par des pièces seules (rubans sur l'eau, montée naturelle, bloc), jusqu'à en avoir ramassé dix
 function spawnTutoCoins(){
   const x = VWW + 60, b = newBlock(), k = spawnI % 3; let xe;
+  if (spawnI === 0 && isTuto()){ const pts = simPath(P.yMax - 2*coinGap(), [[true, 2.7], [false, 3.2]]); xe = coinPath(x, pts, b, 0, undefined, 3); spawnI++; nextSpawn = (xe - x + sec(1.4))/worldSpeed(); return; }   /* juste après la carte Planer : un grand saut qui vide toute la réserve, trois rangées */
   if (k === 0) xe = coinLines(x, P.yMax - coinGap(), 10, b, 2);
   else if (k === 1){ const pts = simPath(WATER - 90, [[true, 0.8], [false, 0.6]]); xe = coinPath(x, pts, b, 0, undefined, 2); }
   else xe = coinRect(x, lerp(COIN_TOP(), WATER, 0.5), 6, 3, b);
@@ -1179,7 +1181,7 @@ let vaneT = 0, tbLeave = null, vaneShown = false;   // le bateau du thème : tem
 function showVane(){ phase = 'vane'; vaneT = 0; tbLeave = null; vaneShown = false; emitter = null; pans = []; bubbles = []; journos = []; dark = Math.min(dark, 0.5); }   // le bateau se met en travers (0,8 s), puis la carte
 function themeBoatPos(){   // position du bateau du thème : loin à droite sur l'horizon au départ, de plus en plus près de Marine, en travers sur la ligne d'eau à la fin du vol
   const mx = PX(), k = phase === 'fly' ? clamp(tFlight/flightDur(), 0, 0.97) : 1, e = k*k, rush = phase === 'vane' ? clamp(vaneT/0.8, 0, 1) : phase === 'fly' ? 0 : 1, r = 1 - Math.pow(1 - rush, 3);
-  const fx = lerp(VWW + 140, mx + 360, e), fy = lerp(HZ + 53, WATER - 6, e), fs = lerp(0.42, 0.8, e);
+  const fx0 = lerp(VWW - 110, mx + 360, e), fi = phase === 'fly' ? clamp(tFlight/3.5, 0, 1) : 1, fx = fi < 1 ? lerp(-160, fx0, 1 - Math.pow(1 - fi, 2)) : fx0, fy = lerp(HZ + 53, WATER - 6, e), fs = lerp(0.42, 0.8, e);
   const x = lerp(fx, mx + 215, r) + (tbLeave !== null ? tbLeave : 0), y = lerp(fy, WATER + 12, r), sc = lerp(fs, 0.95, r);
   return {x, y, sc};
 }
@@ -1301,7 +1303,7 @@ function drawTrans(){
 function drawGate(){
   if (!gate) return; const x = gate.x, top = P.ceil + 80, k = 1/Z, pulse = 0.5 + 0.5*Math.sin(realT*5), glow = ctx.createRadialGradient(x, (top + WATER)/2, 20, x, (top + WATER)/2, 420);
   glow.addColorStop(0, 'rgba(255,214,102,' + (0.35 + 0.15*pulse) + ')'); glow.addColorStop(1, 'rgba(255,214,102,0)'); ctx.fillStyle = glow; ctx.fillRect(x - 420, top - 200, 840, WATER - top + 400);
-  if (has5('mtHouse')){ spr('mtHouse', x + 40, WATER + 16, 1.15); outText('QG de campagne', x + 40, WATER + 16 - ATLAS.mtHouse[3]*1.15 - 22, 15, 900, '#fff', 'center', 'rgba(20,33,61,.7)'); return; }   // la bâtisse Second Empire sur sa barge, seule : Marine y entre   // la bâtisse Second Empire sur sa barge, l'arche d'entrée devant
+  if (has5('mtHouse')){ spr('mtHouse', x + 40, WATER + 16, 1.15); outText('QG de campagne', x + 40, WATER + 16 - ATLAS.mtHouse[3]*1.15 - 30, 30, 900, '#fff', 'center', 'rgba(20,33,61,.7)'); return; }   // la bâtisse Second Empire sur sa barge, seule : Marine y entre   // la bâtisse Second Empire sur sa barge, l'arche d'entrée devant
   ctx.fillStyle = 'rgba(20,33,61,.55)'; ctx.fillRect(x - 86, top, 172, WATER - top);   // le rideau sombre : on ne voit pas dedans
   for (let i=0;i<6;i++){ ctx.fillStyle = 'rgba(255,214,102,' + (0.25 + 0.2*Math.sin(realT*6 + i)) + ')'; ctx.fillRect(x - 70 + i*24, top, 10, WATER - top); }   // lamelles dorées
   ctx.fillStyle = PINK; ctx.fillRect(x - 118, top, 32, WATER - top + 8); ctx.fillRect(x + 86, top, 32, WATER - top + 8); ctx.lineWidth = 4; ctx.strokeStyle = INK; ctx.strokeRect(x - 118, top, 32, WATER - top + 8); ctx.strokeRect(x + 86, top, 32, WATER - top + 8);   // les montants
@@ -1693,7 +1695,7 @@ function kiteFrame5(){ if (ctrl === 'tap' && wind <= 0 && !onWater) return 'nk3'
 function kiteFrame(){ if (ctrl === 'tap' && wind <= 0 && !onWater) return 'kite3'; if (ctrl === 'tap' && holding) return Math.floor(realT*8) % 2 ? 'kite3' : 'kite1'; return vy < -60 ? 'kite1' : Math.sin(realT*0.9) > 0.75 ? 'kite2' : 'kite0'; }
 const RS = 0.69;
 function drawMarine(){
-  const x = PX(), y = py, blink = inv > 0 && Math.floor(realT*18) % 2 === 0;
+  const x = PX(), y = py, blink = false;   /* plus de clignotement au coup : l'animation suffit */
   // sillage quand Marine est posée sur l'eau
   if (onWater){ spr('wake' + (Math.floor(realT*10) % 4), x - 10, WATER + 2, 0.9); }
   // feedback de course : dans la traîne, Marine rayonne doré
@@ -1731,7 +1733,7 @@ function drawMarine(){
   if (mBubble){ ctx.save(); ctx.globalAlpha = clamp(mBubble.life/0.3, 0, 1); speech(mBubble.t, x + 24, y - (fr5 ? 70 : 44), '#fde68a'); ctx.restore(); }   // la réplique de Marine
   // jauge de vent sous la planche : bleue, orange sous 50 %, rouge sous 20 %, clignote vide ; argent (infini) pendant la course
   { const k = 1/Z, gw = 44*k, gh = 5*k, gx = x - gw/2 - 6, gy = y + 82;   // jauge de vent, petite et discrète, sous la planche
-    const fire = hasBonus('fire'), wc = fire ? GOLD : wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.3 ? '#d63b3b' : wind < 0.6 ? '#f2d230' : GREEN;
+    const fire = hasBonus('fire'), wc = fire ? GOLD : wind <= 0 ? (Math.floor(realT*6) % 2 ? '#d63b3b' : '#7f1d1d') : wind < 0.4 ? '#d63b3b' : wind < 0.999 ? '#f2d230' : GREEN;
     ctx.save(); ctx.globalAlpha = 0.8; ctx.fillStyle = 'rgba(20,33,61,.5)'; rr(gx - 1.5*k, gy - 1.5*k, gw + 3*k, gh + 3*k, 3*k); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.25)'; rr(gx, gy, gw, gh, 2.5*k); ctx.fill(); ctx.fillStyle = wc; rr(gx, gy, gw*wind, gh, 2.5*k); ctx.fill();
     if (fire){ ctx.save(); rr(gx, gy, gw, gh, 2.5*k); ctx.clip(); const sx = gx - 10*k + ((realT*0.9) % 1)*(gw + 20*k); ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fillRect(sx, gy, 6*k, gh); ctx.restore(); ctx.strokeStyle = 'rgba(255,230,140,' + (0.5 + 0.4*Math.sin(realT*6)) + ')'; ctx.lineWidth = 1.5*k; rr(gx - 1.5*k, gy - 1.5*k, gw + 3*k, gh + 3*k, 3*k); ctx.stroke(); }   // contre-feu : barre dorée, reflet qui passe
     ctx.restore(); }
@@ -1950,8 +1952,8 @@ function onBtn(id){
   else if (id === 'skipTuto'){ card = null; camp.cur = 1; saveCamp(); startLevel(1); }
   else if (id === 'newCamp'){ resetCamp(); startLevel(0); }
   else if (id.startsWith('info:')) openInfo(+id.slice(5), 'level');
-  else if (id === 'buy:votes'){ if (buyVotes()){ shopMsg = '+' + fmtPt(P.voteGain) + ' points de sondage'; sfxP3('cash'); coinBump = 0.25; burst(VW*0.6, H*0.4, 30); } else shopMsg = 'Pas assez de pièces'; }
-  else if (id.startsWith('buy:')){ const bid = id.slice(4), bp = bonusPos[bid] || {x: VW*0.6, y: H*0.45}; if (camp.bonuses && camp.bonuses[bid]){ if (sellBonus(bid)){ shopMsg = 'Désactivé, pièces rendues'; sfxP3('click'); coinBump = 0.25; } } else if (buyBonus(bid)){ shopMsg = 'Activé pour cette séquence'; sfxP3('cash'); coinBump = 0.25; burst(bp.x, bp.y, 30); } else shopMsg = 'Pas assez d’or'; }
+  else if (id === 'buy:votes'){ if (buyVotes()){ shopMsg = '+' + fmtPt(P.voteGain) + ' points de sondage'; sfxP3('cash'); coinBump = 0.25; burstCoins(VW*0.6, H*0.4, 26); } else shopMsg = 'Pas assez de pièces'; }
+  else if (id.startsWith('buy:')){ const bid = id.slice(4), bp = bonusPos[bid] || {x: VW*0.6, y: H*0.45}; if (camp.bonuses && camp.bonuses[bid]){ if (sellBonus(bid)){ shopMsg = 'Désactivé, pièces rendues'; sfxP3('click'); coinBump = 0.25; } } else if (buyBonus(bid)){ shopMsg = 'Activé pour cette séquence'; sfxP3('cash'); coinBump = 0.25; burstCoins(bp.x, bp.y, 26); } else shopMsg = 'Pas assez d’or'; }
   else if (id === 'card' || id === 'storm') closeCard();
   else if (id === 'sinfo') openInfo(curLevel().n, 'scandal');   // INFO est indexé par la fiche, pas par le rang dans ORDER
 }
