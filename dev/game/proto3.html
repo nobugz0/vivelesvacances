@@ -222,7 +222,7 @@ const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 const UI = 'Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif', UIT = '"Inter Tight",Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif';   // Inter Tight 800 pour les titres et les chiffres, Inter pour le reste
 const SHIP = false;   // build_p3.py --ship le passe à true
-const VERSION = 'proto 3 · 0.42', BUILD = '06/11/2026 à 10h30';
+const VERSION = 'proto 3 · 0.43', BUILD = '06/11/2026 à 11h50';
 document.getElementById('ver').textContent = VERSION + ' · ' + BUILD;
 
 // ---------- sprite atlases (banque de ressources des prototypes précédents) ----------
@@ -1007,7 +1007,7 @@ function spawn(){
 // le tuto commence par des pièces seules (rubans sur l'eau, montée naturelle, bloc), jusqu'à en avoir ramassé dix
 function spawnTutoCoins(){
   const x = VWW + 60, b = newBlock(), k = spawnI % 3; let xe;
-  if (isTuto() && tutoSeen.wind && !tutoSeen.hold){ tutoSeen.hold = true; const x1 = Math.max(x, ...coinsList.map(c => c.x + sec(0.7))), pts = simPath(P.yMax, [[false, 1.2], [true, 2.9], [false, 2.4]]); xe = rowsPath(x1, pts, b, 3); tutoSeen.holdEnd = tFlight + (xe - PX())/worldSpeed() + 0.6; nextSpawn = 999; return; }   /* après la carte Réserve de vol : trois rangées, appui maintenu tout du long jusqu'à la réserve vide */
+  if (isTuto() && tutoSeen.wind && !tutoSeen.hold){ tutoSeen.hold = true; const x1 = Math.max(x, ...coinsList.map(c => c.x + sec(0.7))), pts = simPath(P.yMax, [[false, 2.0], [true, 3.4], [false, 2.6]]); xe = rowsPath(x1, pts, b, 3); tutoSeen.holdEnd = tFlight + (xe - PX())/worldSpeed() + 0.6; nextSpawn = 999; return; }   /* après la carte Réserve de vol : trois rangées, appui maintenu tout du long jusqu'à la réserve vide */
   if (spawnI === 0 && isTuto()){ const pts = simPath(P.yMax, [[false, 0.4], [true, 0.8], [false, 1.1]]); xe = rowsPath(x, pts, b, 2); spawnI++; nextSpawn = (xe - x + sec(1.0))/worldSpeed(); return; }   /* juste après la carte Planer : un simple saut, deux rangées */
   if (k === 0) xe = coinLines(x, P.yMax - coinGap(), 10, b, 2);
   else if (k === 1){ const pts = simPath(WATER - 90, [[true, 0.8], [false, 0.6]]); xe = coinPath(x, pts, b, 0, undefined, 2); }
@@ -1040,8 +1040,9 @@ function update(dt){
   inv = Math.max(0, inv - dt);
   if (phase === 'fly'){ const tutoCamp = isTuto() && mode === 'camp', free = mode === 'test' && testMode === 'free';
     if (tutoCamp){   // tuto : les pièces (2 ou 3 motifs), puis 3 étrangers, puis 3 motifs de journalistes
-      if (tutoStage === 0 && tutoSeen.coins && !card && ((stats.coins >= tutoSeen.coinsAt + 10 && tFlight > tutoSeen.tAt + 4) || tFlight > tutoSeen.tAt + 10)){ if (!tutoSeen.wind){ tutoSeen.wind = true; nextSpawn = 0.2; showCard('msg', {title: 'Réserve de vol', text: TUTO_WIND, img: IMG.tuto[0], ic: 'iWind'}); return; } if (!tutoSeen.holdEnd || tFlight < tutoSeen.holdEnd) {} else { tutoStage = 1; nextSpawn = 999; nextEtr = 1.2; } }
-      if (tutoStage === 0 && tutoSeen.coins && !tutoSeen.wind && !card && !onWater && wind < 0.4 && tFlight > tutoSeen.tAt + 3){ tutoSeen.wind = true; nextSpawn = 0.2; showCard('msg', {title: 'Réserve de vol', text: TUTO_WIND, img: IMG.tuto[0], ic: 'iWind'}); return; }   // le tuto envol : dès que la réserve baisse vraiment   // après l'explication, encore quelques pièces
+      if (tutoStage === 0 && tutoSeen.coins && !card && ((stats.coins >= tutoSeen.coinsAt + 10 && tFlight > tutoSeen.tAt + 4) || tFlight > tutoSeen.tAt + 10)){ if (!tutoSeen.wind){ if (onWater){ tutoSeen.wind = true; nextSpawn = 0.2; showCard('msg', {title: 'Réserve de vol', text: TUTO_WIND, img: IMG.tuto[0], ic: 'iWind'}); } return; }   /* jamais en plein vol : on attend que Marine soit sur l'eau */ if (!tutoSeen.holdEnd || tFlight < tutoSeen.holdEnd) {} else { tutoStage = 1; nextSpawn = 999; nextEtr = 1.2; } }
+      if (tutoStage === 0 && tutoSeen.coins && !tutoSeen.wind && !card && !onWater && wind < 0.4 && tFlight > tutoSeen.tAt + 3) tutoSeen.windDue = true;
+      if (tutoSeen.windDue && !tutoSeen.wind && !card && onWater){ tutoSeen.wind = true; nextSpawn = 0.2; showCard('msg', {title: 'Réserve de vol', text: TUTO_WIND, img: IMG.tuto[0], ic: 'iWind'}); return; }   // la carte attend le retour sur l'eau   // le tuto envol : dès que la réserve baisse vraiment   // après l'explication, encore quelques pièces
       if (tutoStage === 1 && tutoEtr >= 3){ tutoStage = 2; nextSpawn = 0.6; tutoPat = 0; }
       if (tutoStage === 2 && tutoPat >= 3){ tutoStage = 3; nextSpawn = 999; }
       if (tutoStage === 3 && !journos.length){ tutoStage = 4; vch = {left: 2, wait: 1.0, v: null, done: false, n: 0}; } }   // puis le défi de la girouette : deux lancers
@@ -1186,7 +1187,7 @@ function stormCoins(dt){ nextStormCoin -= dt; if (nextStormCoin > 0) return; nex
 // la carte de la girouette : le vent tourne, on explique (tuto) ou on rappelle (chapitres) ; au tap, la course
 let vaneT = 0, tbLeave = null, vaneShown = false, vch = null;   // vch : le défi de la girouette (lancers restants, girouette en l'air, terminé)   // le bateau du thème : temps d'arrivée en travers, puis abscisse de fuite
 function showVane(){ phase = 'vane'; vaneT = 0; tbLeave = null; vaneShown = false; emitter = null; pans = []; bubbles = []; journos = []; dark = Math.min(dark, 0.5); }   // le bateau se met en travers (0,8 s), puis la carte
-function endFlight(){ if (vch){ vch.v = null; vch.done = true; } if (tbLeave === null) tbLeave = 0; if (isTuto() && mode === 'camp') startCruise(); else { phase = 'breath'; breathT = 0; } }   // fin du vol : le scandale (le tuto n'en a pas)
+function endFlight(){ if (vch){ vch.v = null; vch.done = true; } if (tbLeave === null) tbLeave = 0; if (isTuto() && mode === 'camp'){ endLevel('done'); return; } else { phase = 'breath'; breathT = 0; } }   // fin du vol : le scandale (le tuto n'en a pas)
 // le défi : le bateau du thème lance une girouette au trajet difficile à prévoir ; la toucher ouvre la course (carte « Je change d'avis ! »), la rater laisse passer la chance
 function updateVch(dt){
   const mx = PX(), my = py, vs = worldSpeed(), tuto = isTuto(), d = tuto ? 0.6 : 0.85 + 0.15*lvlDiff();
@@ -1197,12 +1198,13 @@ function updateVch(dt){
     if (tuto && vch.n === 1) showCard('msg', {title: 'Girouette', text: TUTO_VANE, img: IMG.tuto[4], ic: 'iVolte'});
     return; }
   const v = vch.v; v.t += dt; v.ang += dt*7;
-  v.x -= vs*(tuto ? 0.32 : 0.42 + 0.12*d)*dt;   // elle vient vers Marine, moins vite que le décor
+  v.x -= vs*(tuto ? 0.36 : 0.5 + 0.15*d)*dt;   // elle vient vers Marine, moins vite que le décor
   if (v.t < 0.55){ v.vy += 1500*dt; v.y += v.vy*dt; }   // jetée en l'air par le bateau
-  else { v.nt -= dt; if (v.nt <= 0){ v.nt = (tuto ? 1.0 : 0.75 - 0.25*d) + rnd()*0.35; v.ty = COIN_TOP() + 20 + rnd()*(P.yMax - 40 - COIN_TOP()); }   // puis un cap qui change souvent
-    const vmax = tuto ? 240 : 300 + 160*d, acc = tuto ? 900 : 1500 + 700*d; v.vy += clamp(clamp((v.ty - v.y)*5, -vmax, vmax) - v.vy, -acc*dt, acc*dt); v.y += v.vy*dt; }
+  else { v.nt -= dt; const top = COIN_TOP() + 20, bot = P.yMax - 20, near = v.x - mx < (tuto ? 160 : 300);
+    if (v.nt <= 0){ v.nt = (tuto ? 0.8 : 0.55 - 0.2*d) + rnd()*0.3; v.ty = top + rnd()*(bot - top); if (near && rnd() < (tuto ? 0.4 : 0.75)) v.ty = my < (top + bot)/2 ? bot - rnd()*80 : top + rnd()*80; }   // un cap qui change souvent ; à l'approche, elle esquive Marine
+    const vmax = tuto ? 300 : 400 + 180*d, acc = tuto ? 1200 : 2300 + 900*d; v.vy += clamp(clamp((v.ty - v.y)*5, -vmax, vmax) - v.vy, -acc*dt, acc*dt); v.y += v.vy*dt; }
   v.y = clamp(v.y, COIN_TOP(), P.yMax - 10);
-  if (Math.hypot(v.x - mx, v.y - clamp(v.y, my - 52, my + 44)) < 40){ vch.done = true; vch.y = v.y; vch.v = null; sfxP3('orbB', 3); shake(3); showCard('vane'); return; }   // touchée : la course
+  if (Math.hypot(v.x - mx, v.y - clamp(v.y, my - 40, my + 30)) < (tuto ? 32 : 24)){ vch.done = true; vch.y = v.y; vch.v = null; sfxP3('orbB', 3); shake(3); showCard('vane'); return; }   // touchée : la course
   if (v.x < mx - 90){ vch.v = null; sfxP3('miss'); if (vch.left <= 0){ vch.done = true; tbLeave = 0; } else vch.wait = tuto ? 1.6 : flightDur()*0.24; }   // ratée : un autre lancer, ou le bateau s'en va
 }
 function drawVaneSpin(x, y, th, px){   // la girouette qui tourne sur son axe vertical : les 8 vues générées si elles existent, sinon le sprite écrasé
@@ -1931,7 +1933,7 @@ function drawInter(){
     ctx.fillStyle = INK; rr(x + 3, cy0 + 3, w, h, 5); ctx.fill(); ctx.fillStyle = PAPER; rr(x, cy0, w, h, 5); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke();
     if (has5('cVote')) imgBox(x + 10, cy0 + 10, w - 20, 132, IMG.vote); else { ctx.fillStyle = '#eef2f8'; rr(x + 10, cy0 + 10, w - 20, 132, 3); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; rr(x + 10, cy0 + 10, w - 20, 132, 3); ctx.stroke(); ico('iVote', x + w/2, cy0 + 76, 100); }
     text('+' + fmtPt(P.voteGain) + ' points de sondage', x + w/2, cy0 + 168, 15, 800, INK, 'center', UIT);
-    if (can) btnAuto({xc: x + w/2, y: cy0 + h - 42, label: 'Acheter', price: pr, bg: GREEN, fg: '#fff', id: 'buy:votes'}); else btnAuto({xc: x + w/2, y: cy0 + h - 42, label: 'Pas assez d’or', bg: '#9aa4b2', fg: '#fff', id: 'locked'});
+    if (can) btnAuto({xc: x + w/2, y: cy0 + h - 42, label: 'Acheter', price: pr, bg: GREEN, fg: '#fff', id: 'buy:votes'}); else btnAuto({xc: x + w/2, y: cy0 + h - 42, label: 'Pas assez d’or', price: pr, bg: '#9aa4b2', fg: '#fff', id: 'locked'});   // le prix reste affiché
     if (fin) btnAuto({xc: VW/2, y: H - 46, h: 36, px: 15, label: 'Aller voter  ›', bg: GREEN, fg: '#fff', id: 'vote'});
     else { btnAuto({xr: VW/2 - 10, y: H - 46, h: 36, px: 15, label: '‹ Retour aux bonus', bg: '#fff', fg: INK, id: 'prev'});
     btnAuto({xl: VW/2 + 10, y: H - 46, h: 36, px: 15, label: 'Repartir en campagne  ›', bg: GREEN, fg: '#fff', id: 'go'}); }
