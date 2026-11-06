@@ -690,5 +690,43 @@
   "n": 1,
   "batch": 1,
   "prompt": "Pixel art card illustration, square 1024x1024. Style: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. A complete little scene with its own background (blue sky, a few clouds, sea at the bottom), filling a 900x760 rectangle centred in the image, with a 6 px ink frame; the space outside the rectangle is flat chroma #FF00FF. The woman of the attached approved character sheet (same face, blonde hair, navy suit) on her KITESURF board (a small surfboard), lifted into the air above the sea by her red kite held by lines, joyful, a curved motion arrow showing her rising. The WHOLE woman, board and kite are fully visible inside the frame with a margin, nothing cropped: her head, her feet, the board and the whole kite. No hand, no finger, no hang-glider, no other vehicle, no speech bubble, no text. Never use magenta or pink inside the illustration."
+ },
+ {
+  "id": "gate_arch",
+  "name": "Porte d'arrivée de l'année (arche de course cycliste, banderole vide)",
+  "size": "1024x1024",
+  "uses": [
+   "charref",
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art card illustration, square 1024x1024. Style: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. A single big finish-line arch of a cycling race, front view, standing on the sea (its two feet end at the bottom of the arch, as if planted in water): two tall white inflatable pillars with red bands, joined at the top by a wide horizontal banner. The banner is a plain golden yellow panel, COMPLETELY EMPTY (no text, no number: the year will be written over it by the game), with a black and white checkered strip along its bottom edge and a row of small red, white and blue pennants along its top edge. The opening between the pillars is wide and empty (the player passes through it). The arch fills about 80 % of the image width. Flat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 40 px of empty background around every element. No text, letters, numbers, logos, borders or grid lines. Never use magenta or pink inside any element."
+ },
+ {
+  "id": "cards_tuto4",
+  "name": "Carte tuto « Girouette » : Marine bondit vers la girouette lancée par la barque",
+  "size": "1024x1024",
+  "uses": [
+   "charref",
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art card illustration, square 1024x1024. Style: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. A complete little scene with its own background (blue sky, a few clouds, sea at the bottom), filling a 900x760 rectangle centred in the image, with a 6 px ink frame; the space outside the rectangle is flat chroma #FF00FF. The woman of the attached approved character sheet (same face, blonde hair, navy suit) on her kitesurf board under her red kite, leaping up toward a shiny golden rooster weathervane (a golden rooster on top of a golden arrow with N/S/E/W cross) spinning in the air with motion lines. The weathervane has just been thrown from a small wooden boat loaded with old French franc coins and a big franc coin, on the right, far away. She stretches one hand toward the weathervane, eager. The whole woman, board, kite and weathervane fully visible, nothing cropped. No text, no speech bubble. Never use magenta or pink inside the illustration."
+ },
+ {
+  "id": "vane_rot",
+  "name": "Girouette d'or : rotation autour de l'axe vertical (8 vues)",
+  "size": "1536x1024",
+  "uses": [
+   "world"
+  ],
+  "photos": false,
+  "n": 1,
+  "batch": 1,
+  "prompt": "Pixel art card illustration, square 1024x1024. Style: exactly the pixel art style of the attached approved sheets: 16-bit console-era pixel art, chunky visible pixels on a clean grid (one art pixel = a 4x4 block of image pixels), no anti-aliasing, no blur, flat cel shading in 2 or 3 tones per material, 1-art-pixel dark outline #14213d, satirical cartoon proportions (big heads), bold readable silhouettes. Palette anchors: ink #14213d, red #e3342f, azure #2563eb, gold #f2b630, cream #fffaf0. Layout: 4 columns x 2 rows of equal 384x512 cells, one object per cell, centred, same size and same vertical position in every cell. The object is the same golden rooster weathervane in every cell: a golden rooster standing on a horizontal golden arrow (arrowhead and tail feathers), above a small cross with four short arms, on a short vertical golden rod. The 8 cells show it rotating about its VERTICAL rod, like a turntable, in 45 degree steps, reading order: 1 rooster and arrow seen in pure side view facing right; 2 three-quarter view turning toward the viewer; 3 seen from the front (arrow pointing at the viewer, rooster foreshortened); 4 three-quarter view facing left; 5 pure side view facing left; 6 three-quarter view seen from behind facing left; 7 seen from the back; 8 three-quarter view from behind facing right. The rod stays vertical and at the same place in every cell; only the rotation changes. Flat solid chroma background #FF00FF, perfectly uniform, no gradient, no ground, no sea, no sky, no shadow, no reflection. At least 40 px of empty background around every element. No text, letters, numbers, logos, borders or grid lines. Never use magenta or pink inside any element."
  }
 ]

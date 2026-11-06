@@ -295,6 +295,14 @@ if glob.glob(os.path.join(SHEETS, 'cards_tuto0b_*_v1.png')):
     OUT[:] = [o for o in OUT if o[0] != 'cTuto0']
     cards('cards_tuto0b', 1, 1, ['cTuto0'])
 
+# 06/11 : porte d'arrivée de l'année, carte tuto « Girouette », rotation de la girouette
+if glob.glob(os.path.join(SHEETS, 'gate_arch_*_v1.png')):
+    grid('gate_arch', 1, 1, ['gateArch'])
+if glob.glob(os.path.join(SHEETS, 'cards_tuto4_*_v1.png')):
+    cards('cards_tuto4', 1, 1, ['cTuto4'])
+if glob.glob(os.path.join(SHEETS, 'vane_rot_*_v1.png')):
+    grid('vane_rot', 4, 2, ['vR%d' % i for i in range(8)])
+
 # assemblage : rangées, largeur 2048
 W = 2048; x = y = rowh = 0; ent = {}; meta = {}
 for nm, im, ax, ay, me in sorted(OUT, key=lambda o: -o[1].size[1]):
